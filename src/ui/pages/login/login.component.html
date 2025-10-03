@@ -1,0 +1,106 @@
+<div class="flex items-center justify-center min-h-screen bg-gray-100">
+  <p-card class="w-full max-w-md">
+    <ng-template pTemplate="header">
+      <div class="text-center p-4">
+        <h1 class="text-2xl font-bold text-gray-800">PlanSitter</h1>
+        <p class="text-gray-600 mt-2">Connexion par code OTP</p>
+      </div>
+    </ng-template>
+
+    @if (!otpSent()) {
+      <!-- Étape 1 : Saisie de l'email -->
+      <div class="flex flex-col gap-4">
+        <div class="flex flex-col gap-2">
+          <label for="email" class="font-semibold text-gray-700">Email</label>
+          <input
+            pInputText
+            id="email"
+            type="email"
+            placeholder="votre@email.com"
+            [(ngModel)]="email"
+            [disabled]="isLoading()"
+            class="w-full"
+            (keyup.enter)="sendOtp()"
+          />
+        </div>
+
+        @if (errorMessage()) {
+          <p-message severity="error" [text]="errorMessage()" />
+        }
+
+        <p-button
+          label="Recevoir le code"
+          icon="pi pi-envelope"
+          [loading]="isLoading()"
+          [disabled]="!email()"
+          (onClick)="sendOtp()"
+          styleClass="w-full"
+        />
+
+        <div class="text-sm text-gray-600 text-center mt-2">
+          Un code à 6 chiffres sera envoyé à votre adresse email
+        </div>
+      </div>
+    } @else {
+      <!-- Étape 2 : Saisie du code OTP -->
+      <div class="flex flex-col gap-4">
+        <div class="text-center">
+          <i class="pi pi-envelope text-4xl text-blue-500 mb-3"></i>
+          <h2 class="text-lg font-semibold text-gray-800">Code envoyé !</h2>
+          <p class="text-gray-600 mt-2">
+            Entrez le code à 6 chiffres envoyé à<br />
+            <strong>{{ email() }}</strong>
+          </p>
+        </div>
+
+        <div class="flex flex-col gap-2">
+          <label class="font-semibold text-gray-700 text-center">Code de vérification</label>
+          <div class="flex justify-center">
+            <p-inputOtp
+              [(ngModel)]="otpCode"
+              [length]="6"
+              [integerOnly]="true"
+              [disabled]="isLoading()"
+            />
+          </div>
+        </div>
+
+        @if (errorMessage()) {
+          <p-message severity="error" [text]="errorMessage()" />
+        }
+
+        <p-button
+          label="Vérifier le code"
+          icon="pi pi-check"
+          [loading]="isLoading()"
+          [disabled]="!otpCode() || otpCode().length !== 6"
+          (onClick)="verifyOtp()"
+          styleClass="w-full"
+        />
+
+        <div class="flex flex-col gap-2 mt-2">
+          <p-button
+            label="Renvoyer le code"
+            severity="secondary"
+            [loading]="isLoading()"
+            (onClick)="sendOtp()"
+            styleClass="w-full"
+            [text]="true"
+          />
+
+          <p-button
+            label="Modifier l'email"
+            severity="secondary"
+            (onClick)="resetForm()"
+            styleClass="w-full"
+            [text]="true"
+          />
+        </div>
+
+        <div class="text-xs text-gray-500 text-center mt-2">
+          Le code expire dans 60 minutes
+        </div>
+      </div>
+    }
+  </p-card>
+</div>
