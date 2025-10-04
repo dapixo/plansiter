@@ -1,88 +1,97 @@
 import { Injectable } from '@angular/core';
-import { createClient, SupabaseClient } from '@supabase/supabase-js';
+import { createClient, SupabaseClient, AuthOtpResponse, User, Session, AuthError } from '@supabase/supabase-js';
+import { from, Observable, throwError } from 'rxjs';
+import { map, catchError } from 'rxjs/operators';
 import { environment } from '../environment/environment';
 
 @Injectable({
   providedIn: 'root'
 })
 export class SupabaseService {
-  private supabase: SupabaseClient;
+  private readonly supabaseClient: SupabaseClient;
 
   constructor() {
-    this.supabase = createClient(
+    this.supabaseClient = createClient(
       environment.supabase.url,
-      environment.supabase.anonKey
+      environment.supabase.anonKey,
+      {
+        auth: {
+          autoRefreshToken: true,
+          persistSession: true,
+          detectSessionInUrl: true,
+          flowType: 'pkce'
+        }
+      }
     );
   }
 
   get client(): SupabaseClient {
-    return this.supabase;
+    return this.supabaseClient;
   }
 
-  // Authentication with OTP Code (6 digits)
-  async signInWithOtp(email: string) {
-    const { data, error } = await this.supabase.auth.signInWithOtp({
-      email,
-      options: {
-        shouldCreateUser: true
-      }
-    });
-
-    if (error) throw error;
-    return data;
+  // Authentication avec OTP
+  signInWithOtp(email: string): Observable<AuthOtpResponse> {
+    return from(
+      this.supabaseClient.auth.signInWithOtp({
+        email,
+        options: {
+          shouldCreateUser: true
+        }
+      })
+    ).pipe(
+      map(response => {
+        if (response.error) throw response.error;
+        return response;
+      }),
+      catchError((error: AuthError) => throwError(() => error))
+    );
   }
 
-  async verifyOtp(email: string, token: string) {
-    const { data, error } = await this.supabase.auth.verifyOtp({
-      email,
-      token,
-      type: 'email'
-    });
-
-    if (error) throw error;
-    return data;
+  verifyOtp(email: string, token: string): Observable<{ user: User | null; session: Session | null }> {
+    return from(
+      this.supabaseClient.auth.verifyOtp({
+        email,
+        token,
+        type: 'email'
+      })
+    ).pipe(
+      map(response => {
+        if (response.error) throw response.error;
+        return {
+          user: response.data.user,
+          session: response.data.session
+        };
+      }),
+      catchError((error: AuthError) => throwError(() => error))
+    );
   }
 
-  // Authentication with password (optional)
-  async signUp(email: string, password: string) {
-    const { data, error } = await this.supabase.auth.signUp({
-      email,
-      password
-    });
-
-    if (error) throw error;
-    return data;
+  signOut(): Observable<void> {
+    return from(this.supabaseClient.auth.signOut()).pipe(
+      map(response => {
+        if (response.error) throw response.error;
+      }),
+      catchError((error: AuthError) => throwError(() => error))
+    );
   }
 
-  async signInWithPassword(email: string, password: string) {
-    const { data, error } = await this.supabase.auth.signInWithPassword({
-      email,
-      password
-    });
-
-    if (error) throw error;
-    return data;
+  getCurrentUser(): Observable<User | null> {
+    return from(this.supabaseClient.auth.getUser()).pipe(
+      map(response => {
+        if (response.error) throw response.error;
+        return response.data.user;
+      }),
+      catchError((error: AuthError) => throwError(() => error))
+    );
   }
 
-  async signOut() {
-    const { error } = await this.supabase.auth.signOut();
-    if (error) throw error;
-  }
-
-  async getCurrentUser() {
-    const { data: { user }, error } = await this.supabase.auth.getUser();
-    if (error) throw error;
-    return user;
-  }
-
-  async getSession() {
-    const { data: { session }, error } = await this.supabase.auth.getSession();
-    if (error) throw error;
-    return session;
-  }
-
-  // Subscribe to auth state changes
-  onAuthStateChange(callback: (event: string, session: any) => void) {
-    return this.supabase.auth.onAuthStateChange(callback);
+  getSession(): Observable<Session | null> {
+    return from(this.supabaseClient.auth.getSession()).pipe(
+      map(response => {
+        if (response.error) throw response.error;
+        return response.data.session;
+      }),
+      catchError((error: AuthError) => throwError(() => error))
+    );
   }
 }

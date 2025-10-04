@@ -1,82 +1,90 @@
-import { Injectable, signal } from '@angular/core';
+import { inject, Injectable, signal, DestroyRef } from '@angular/core';
+import { takeUntilDestroyed } from '@angular/core/rxjs-interop';
 import { Router } from '@angular/router';
 import { SupabaseService } from '@infrastructure/supabase/supabase.client';
+import { User, AuthOtpResponse, Session } from '@supabase/supabase-js';
+import { Observable, of, BehaviorSubject } from 'rxjs';
+import { tap, catchError, filter, first } from 'rxjs/operators';
 
 @Injectable({
   providedIn: 'root'
 })
 export class AuthService {
+  private supabase = inject(SupabaseService);
+  private router = inject(Router);
+  private destroyRef = inject(DestroyRef);
+
   private isAuthenticatedSignal = signal<boolean>(false);
-  private currentUserSignal = signal<any>(null);
+  private currentUserSignal = signal<User | null>(null);
+  private sessionLoadedSubject = new BehaviorSubject<boolean>(false);
 
   readonly isAuthenticated = this.isAuthenticatedSignal.asReadonly();
   readonly currentUser = this.currentUserSignal.asReadonly();
+  readonly sessionLoaded$ = this.sessionLoadedSubject.asObservable();
 
-  constructor(
-    private supabase: SupabaseService,
-    private router: Router
-  ) {
+  constructor() {
     this.initAuthListener();
+    this.checkSession();
   }
 
-  private initAuthListener() {
-    this.supabase.onAuthStateChange((event, session) => {
-      if (session?.user) {
-        this.isAuthenticatedSignal.set(true);
-        this.currentUserSignal.set(session.user);
-      } else {
-        this.isAuthenticatedSignal.set(false);
-        this.currentUserSignal.set(null);
-      }
+  private initAuthListener(): void {
+    this.supabase.client.auth.onAuthStateChange((_event, session) => {
+      this.updateAuthState(session);
     });
   }
 
-  async sendOtpCode(email: string): Promise<void> {
-    try {
-      await this.supabase.signInWithOtp(email);
-    } catch (error) {
-      console.error('Error sending OTP:', error);
-      throw error;
-    }
-  }
-
-  async verifyOtpCode(email: string, code: string): Promise<void> {
-    try {
-      await this.supabase.verifyOtp(email, code);
-      const user = await this.supabase.getCurrentUser();
+  private updateAuthState(session: Session | null): void {
+    if (session?.user) {
       this.isAuthenticatedSignal.set(true);
-      this.currentUserSignal.set(user);
-      this.router.navigate(['/dashboard']);
-    } catch (error) {
-      console.error('Error verifying OTP:', error);
-      throw error;
-    }
-  }
-
-  async signOut(): Promise<void> {
-    try {
-      await this.supabase.signOut();
+      this.currentUserSignal.set(session.user);
+    } else {
       this.isAuthenticatedSignal.set(false);
       this.currentUserSignal.set(null);
-      this.router.navigate(['/']);
-    } catch (error) {
-      console.error('Error signing out:', error);
-      throw error;
     }
   }
 
-  async checkSession(): Promise<boolean> {
-    try {
-      const session = await this.supabase.getSession();
-      if (session?.user) {
-        this.isAuthenticatedSignal.set(true);
-        this.currentUserSignal.set(session.user);
-        return true;
-      }
-      return false;
-    } catch (error) {
-      console.error('Error checking session:', error);
-      return false;
-    }
+  sendOtpCode(email: string): Observable<AuthOtpResponse> {
+    return this.supabase.signInWithOtp(email);
+  }
+
+  verifyOtpCode(email: string, code: string): Observable<{ user: User | null; session: Session | null }> {
+    return this.supabase.verifyOtp(email, code).pipe(
+      tap(({ user, session }) => {
+        if (user && session) {
+          this.updateAuthState(session);
+          this.router.navigate(['/dashboard']);
+        }
+      })
+    );
+  }
+
+  signOut(): Observable<void> {
+    return this.supabase.signOut().pipe(
+      tap(() => {
+        this.updateAuthState(null);
+        this.router.navigate(['/']);
+      })
+    );
+  }
+
+  private checkSession(): void {
+    this.supabase.getSession().pipe(
+      tap(session => {
+        this.updateAuthState(session);
+        this.sessionLoadedSubject.next(true);
+      }),
+      catchError(() => {
+        this.sessionLoadedSubject.next(true);
+        return of(null);
+      }),
+      takeUntilDestroyed(this.destroyRef)
+    ).subscribe();
+  }
+
+  waitForSessionLoad(): Observable<boolean> {
+    return this.sessionLoadedSubject.pipe(
+      filter(loaded => loaded),
+      first()
+    );
   }
 }

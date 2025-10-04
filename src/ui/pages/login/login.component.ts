@@ -1,91 +1,114 @@
-import { Component, signal, ChangeDetectionStrategy } from '@angular/core';
+import { Component, signal, ChangeDetectionStrategy, inject, DestroyRef } from '@angular/core';
+import { takeUntilDestroyed } from '@angular/core/rxjs-interop';
 import { CommonModule } from '@angular/common';
-import { FormsModule } from '@angular/forms';
-import { Router } from '@angular/router';
+import {
+  FormControl,
+  FormGroup,
+  ReactiveFormsModule,
+  Validators,
+} from '@angular/forms';
 import { ButtonModule } from 'primeng/button';
 import { InputTextModule } from 'primeng/inputtext';
 import { InputOtpModule } from 'primeng/inputotp';
 import { CardModule } from 'primeng/card';
 import { MessageModule } from 'primeng/message';
 import { AuthService } from '@application/services';
+import { catchError, finalize, tap } from 'rxjs/operators';
+import { EMPTY } from 'rxjs';
 
 @Component({
   selector: 'app-login',
   standalone: true,
   imports: [
     CommonModule,
-    FormsModule,
+    ReactiveFormsModule,
     ButtonModule,
     InputTextModule,
     InputOtpModule,
     CardModule,
-    MessageModule
+    MessageModule,
   ],
   templateUrl: './login.component.html',
   styleUrls: ['./login.component.css'],
-  changeDetection: ChangeDetectionStrategy.OnPush
+  changeDetection: ChangeDetectionStrategy.OnPush,
 })
 export class LoginComponent {
-  email = signal<string>('');
-  otpCode = signal<string>('');
+  private authService = inject(AuthService);
+  private destroyRef = inject(DestroyRef);
+
+  emailForm = new FormGroup({
+    email: new FormControl<string>('', {
+      nonNullable: true,
+      validators: [Validators.required, Validators.email],
+    }),
+  });
+
+  otpForm = new FormGroup({
+    otpCode: new FormControl<string>('', {
+      nonNullable: true,
+      validators: [Validators.required, Validators.minLength(6), Validators.maxLength(6)],
+    }),
+  });
+
   isLoading = signal<boolean>(false);
   otpSent = signal<boolean>(false);
   errorMessage = signal<string>('');
 
-  constructor(
-    private authService: AuthService,
-    private router: Router
-  ) {}
-
-  async sendOtp() {
-    const emailValue = this.email();
-
-    if (!emailValue || !this.isValidEmail(emailValue)) {
+  sendOtp() {
+    if (this.isLoading()) return;
+    if (this.emailForm.invalid) {
       this.errorMessage.set('Veuillez entrer une adresse email valide');
       return;
     }
 
+    const emailValue = this.emailForm.getRawValue().email;
+
     this.isLoading.set(true);
     this.errorMessage.set('');
 
-    try {
-      await this.authService.sendOtpCode(emailValue);
-      this.otpSent.set(true);
-    } catch (error: any) {
-      this.errorMessage.set(error.message || 'Une erreur est survenue');
-    } finally {
-      this.isLoading.set(false);
-    }
+    this.authService
+      .sendOtpCode(emailValue)
+      .pipe(
+        tap(() => this.otpSent.set(true)),
+        catchError((error: any) => {
+          this.errorMessage.set(error.message || 'Une erreur est survenue');
+          return EMPTY;
+        }),
+        finalize(() => this.isLoading.set(false)),
+        takeUntilDestroyed(this.destroyRef)
+      )
+      .subscribe();
   }
 
-  async verifyOtp() {
-    const emailValue = this.email();
-    const codeValue = this.otpCode();
-
-    if (!codeValue || codeValue.length !== 6) {
+  verifyOtp() {
+    if (this.isLoading()) return;
+    if (this.otpForm.invalid) {
       this.errorMessage.set('Veuillez entrer le code à 6 chiffres');
       return;
     }
 
+    const emailValue = this.emailForm.getRawValue().email;
+    const codeValue = this.otpForm.getRawValue().otpCode;
+
     this.isLoading.set(true);
     this.errorMessage.set('');
 
-    try {
-      await this.authService.verifyOtpCode(emailValue, codeValue);
-    } catch (error: any) {
-      this.errorMessage.set(error.message || 'Code invalide ou expiré');
-      this.isLoading.set(false);
-    }
+    this.authService
+      .verifyOtpCode(emailValue, codeValue)
+      .pipe(
+        catchError((error: any) => {
+          this.errorMessage.set(error.message || 'Code invalide ou expiré');
+          return EMPTY;
+        }),
+        finalize(() => this.isLoading.set(false)),
+        takeUntilDestroyed(this.destroyRef)
+      )
+      .subscribe();
   }
 
   resetForm() {
     this.otpSent.set(false);
-    this.otpCode.set('');
+    this.otpForm.reset();
     this.errorMessage.set('');
-  }
-
-  private isValidEmail(email: string): boolean {
-    const emailRegex = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
-    return emailRegex.test(email);
   }
 }

@@ -21,6 +21,11 @@
     ]
   },
   "private": true,
+  "pnpm": {
+    "overrides": {
+      "@supabase/supabase-js>@supabase/auth-js": "2.61.0"
+    }
+  },
   "dependencies": {
     "@angular/common": "^20.2.0",
     "@angular/compiler": "^20.2.0",
