@@ -208,6 +208,86 @@ Le projet suit une **architecture hexagonale (Clean Architecture)** avec sépara
   - Utiliser `onAuthStateChange()` pour la synchronisation multi-onglets
   - Appeler `checkSession()` dans le constructor pour restaurer la session
 
+### Internationalisation (i18n)
+- **Transloco** pour la gestion des traductions
+- **4 langues supportées** : Français (fr), Anglais (en), Espagnol (es), Italien (it)
+- Langue par défaut : Français
+- Configuration :
+  - Loader HTTP personnalisé : `src/infrastructure/i18n/transloco-loader.ts`
+  - Configuration Transloco : `src/infrastructure/i18n/transloco.config.ts`
+  - Fichiers de traduction : `public/assets/i18n/{lang}.json`
+
+- **Pas de typage strict des traductions** :
+  - Les clés de traduction sont des strings simples
+  - Plus flexible pour faire évoluer rapidement les traductions
+  - Pas de maintenance d'interface TypeScript en parallèle
+
+- **Utilisation dans les composants** :
+  ```typescript
+  // ✅ BON - Import TranslocoModule et TranslocoService
+  import { TranslocoModule, TranslocoService } from '@jsverse/transloco';
+
+  @Component({
+    imports: [TranslocoModule, ...]
+  })
+  export class MyComponent {
+    private transloco = inject(TranslocoService);
+
+    // Dans le code TypeScript
+    getMessage(): void {
+      const msg = this.transloco.translate('auth.login.title');
+      console.log(msg);
+    }
+  }
+  ```
+
+  ```html
+  <!-- ✅ BON - Pipe transloco dans le template -->
+  <h1>{{ 'dashboard.title' | transloco }}</h1>
+  <p-button [label]="'auth.login.sendCodeButton' | transloco" />
+
+  <!-- Avec paramètres -->
+  <h2>{{ 'dashboard.welcome' | transloco: { name: userName } }}</h2>
+  ```
+
+- **Gestion de la langue par URL** :
+  - Format des URLs : `/:lang/page` (ex: `/fr/dashboard`, `/en/login`)
+  - Langues valides : `fr`, `en`, `es`, `it`
+  - Service `LanguageService` pour la gestion centralisée
+  - Guard `languageGuard` qui valide et active la langue depuis l'URL
+  - Redirection automatique vers la langue préférée si URL invalide
+
+- **Détection de la langue préférée** :
+  1. localStorage (clé: `selectedLanguage`) - priorité haute
+  2. Langue du navigateur (`navigator.language`) - priorité moyenne
+  3. Langue par défaut (français) - fallback
+
+- **Changement de langue** :
+  - Via le composant `LanguageSwitcherComponent` dans le dashboard
+  - Appel à `languageService.changeLanguage(lang)` qui :
+    - Change l'URL (ex: `/fr/dashboard` → `/en/dashboard`)
+    - Active la nouvelle langue dans Transloco
+    - Sauvegarde dans localStorage
+  - Le `languageGuard` synchronise automatiquement Transloco avec l'URL
+
+- **Navigation et guards** :
+  - `authGuard` et `guestGuard` préservent le préfixe de langue lors des redirections
+  - Route racine `/` redirige vers `/:lang/dashboard` avec langue préférée
+  - Wildcard `**` redirige aussi vers la langue préférée
+
+- **Structure des traductions** :
+  ```json
+  {
+    "common": { ... },      // Termes communs (appName, loading, error, success)
+    "auth": {
+      "login": { ... },     // Formulaire de login
+      "otp": { ... },       // Vérification OTP
+      "signOut": "..."
+    },
+    "dashboard": { ... }    // Page dashboard
+  }
+  ```
+
 ## Entités métier
 
 ### User
@@ -237,13 +317,16 @@ Le projet suit une **architecture hexagonale (Clean Architecture)** avec sépara
 - **Supabase** - Backend (auth + database)
 - **RxJS** - Programmation réactive
 - **TypeScript** - Typage statique
+- **Transloco** - Internationalisation (i18n) avec 4 langues
 - **pnpm** - Package manager
 
 ## Configuration importante
 - Tailwind CSS v3 (pas v4) pour compatibilité Angular
-- Routes définies dans `app.routes.ts` (actuellement vides)
-- Authentification Supabase avec pages login et auth-callback
+- Routes définies dans `app.routes.ts` avec guards d'authentification
+- Authentification Supabase avec OTP (6 digits)
+- Internationalisation avec Transloco - fichiers JSON dans `public/assets/i18n/`
 - Variables d'environnement dans `.env` (gitignored)
+- Langue préférée stockée dans localStorage
 
 ## Commandes
 - `pnpm start` - Démarrer le serveur de dev (localhost:4200)
@@ -255,6 +338,8 @@ Le projet suit une **architecture hexagonale (Clean Architecture)** avec sépara
 - Entités et repositories définis
 - Services de base créés (UserService, BookingService, AuthService)
 - Use cases de base implémentés
-- Page de login créée
-- **Aucune route configurée** - Les routes sont à définir
+- Authentification complète avec OTP (login + guards)
+- Internationalisation (i18n) complète avec Transloco (fr, en, es, it)
+- Pages créées : Login, Dashboard
+- Guards : authGuard (routes protégées), guestGuard (redirection si authentifié)
 - Application démarre sans erreur sur port 4200

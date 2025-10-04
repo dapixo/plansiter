@@ -1,0 +1,38 @@
+{
+  "common": {
+    "appName": "PlanSitter",
+    "loading": "Cargando...",
+    "error": "Se produjo un error",
+    "success": "Éxito"
+  },
+  "auth": {
+    "login": {
+      "title": "Inicio de sesión con código OTP",
+      "emailLabel": "Correo electrónico",
+      "emailPlaceholder": "tu@email.com",
+      "sendCodeButton": "Recibir el código",
+      "emailHint": "Se enviará un código de 6 dígitos a su dirección de correo electrónico",
+      "invalidEmail": "Por favor ingrese una dirección de correo electrónico válida"
+    },
+    "otp": {
+      "codeSentTitle": "¡Código enviado!",
+      "codeSentMessage": "Ingrese el código de 6 dígitos enviado a",
+      "codeLabel": "Código de verificación",
+      "verifyButton": "Verificar código",
+      "resendButton": "Reenviar código",
+      "changeEmailButton": "Cambiar correo electrónico",
+      "expiryInfo": "El código expira en 60 minutos",
+      "invalidCode": "Por favor ingrese el código de 6 dígitos",
+      "verificationError": "Código inválido o expirado",
+      "sendError": "Se produjo un error"
+    },
+    "signOut": "Cerrar sesión"
+  },
+  "dashboard": {
+    "title": "Panel de control",
+    "welcome": "¡Bienvenido, {{name}}!",
+    "userInfo": "Información del usuario",
+    "email": "Correo electrónico",
+    "userId": "ID de usuario"
+  }
+}

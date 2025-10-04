@@ -1,0 +1,23 @@
+<p-select
+  [options]="languages"
+  [ngModel]="selectedLanguage()"
+  (ngModelChange)="onLanguageChange({ value: $event })"
+  optionLabel="label"
+  [showClear]="false"
+  aria-label="Select language"
+>
+  <ng-template pTemplate="selectedItem" let-selectedOption>
+    @if (selectedOption) {
+      <div class="flex items-center gap-2">
+        <span>{{ selectedOption.flag }}</span>
+        <span>{{ selectedOption.label }}</span>
+      </div>
+    }
+  </ng-template>
+  <ng-template pTemplate="item" let-language>
+    <div class="flex items-center gap-2">
+      <span>{{ language.flag }}</span>
+      <span>{{ language.label }}</span>
+    </div>
+  </ng-template>
+</p-select>

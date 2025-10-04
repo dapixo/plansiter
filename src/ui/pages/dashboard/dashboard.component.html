@@ -1,25 +1,33 @@
 <div class="min-h-screen bg-gray-100 p-8">
   <div class="max-w-7xl mx-auto">
     <div class="flex justify-between items-center mb-8">
-      <h1 class="text-3xl font-bold text-gray-800">Dashboard</h1>
-      <p-button
-        label="Déconnexion"
-        icon="pi pi-sign-out"
-        severity="secondary"
-        (onClick)="signOut()"
-        [text]="true"
-      />
+      <h1 class="text-3xl font-bold text-gray-800">{{ 'dashboard.title' | transloco }}</h1>
+      <div class="flex items-center gap-4">
+        <div class="w-48">
+          <app-language-switcher />
+        </div>
+        <p-button
+          [label]="'auth.signOut' | transloco"
+          icon="pi pi-sign-out"
+          severity="secondary"
+          (onClick)="signOut()"
+          [text]="true"
+        />
+      </div>
     </div>
 
     <p-card>
       <ng-template pTemplate="header">
         <div class="p-4">
-          <h2 class="text-xl font-semibold">Bienvenue !</h2>
+          <h2 class="text-xl font-semibold">{{ 'dashboard.welcome' | transloco: { name: getUserDisplayName() } }}</h2>
         </div>
       </ng-template>
 
       @if (currentUser()) {
-        <p class="text-gray-600">Connecté en tant que: <strong>{{ currentUser()?.email }}</strong></p>
+        <div class="space-y-2">
+          <p class="text-gray-600"><strong>{{ 'dashboard.email' | transloco }}:</strong> {{ currentUser()?.email }}</p>
+          <p class="text-gray-600"><strong>{{ 'dashboard.userId' | transloco }}:</strong> {{ currentUser()?.id }}</p>
+        </div>
       }
     </p-card>
   </div>

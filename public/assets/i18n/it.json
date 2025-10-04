@@ -1,0 +1,38 @@
+{
+  "common": {
+    "appName": "PlanSitter",
+    "loading": "Caricamento...",
+    "error": "Si è verificato un errore",
+    "success": "Successo"
+  },
+  "auth": {
+    "login": {
+      "title": "Accesso con codice OTP",
+      "emailLabel": "Email",
+      "emailPlaceholder": "tua@email.com",
+      "sendCodeButton": "Ricevi il codice",
+      "emailHint": "Un codice a 6 cifre verrà inviato al tuo indirizzo email",
+      "invalidEmail": "Inserisci un indirizzo email valido"
+    },
+    "otp": {
+      "codeSentTitle": "Codice inviato!",
+      "codeSentMessage": "Inserisci il codice a 6 cifre inviato a",
+      "codeLabel": "Codice di verifica",
+      "verifyButton": "Verifica codice",
+      "resendButton": "Reinvia codice",
+      "changeEmailButton": "Modifica email",
+      "expiryInfo": "Il codice scade tra 60 minuti",
+      "invalidCode": "Inserisci il codice a 6 cifre",
+      "verificationError": "Codice non valido o scaduto",
+      "sendError": "Si è verificato un errore"
+    },
+    "signOut": "Disconnetti"
+  },
+  "dashboard": {
+    "title": "Pannello di controllo",
+    "welcome": "Benvenuto, {{name}}!",
+    "userInfo": "Informazioni utente",
+    "email": "Email",
+    "userId": "ID Utente"
+  }
+}

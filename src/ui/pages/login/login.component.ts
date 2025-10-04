@@ -12,6 +12,7 @@ import { InputTextModule } from 'primeng/inputtext';
 import { InputOtpModule } from 'primeng/inputotp';
 import { CardModule } from 'primeng/card';
 import { MessageModule } from 'primeng/message';
+import { TranslocoModule, TranslocoService } from '@jsverse/transloco';
 import { AuthService } from '@application/services';
 import { catchError, finalize, tap } from 'rxjs/operators';
 import { EMPTY } from 'rxjs';
@@ -27,6 +28,7 @@ import { EMPTY } from 'rxjs';
     InputOtpModule,
     CardModule,
     MessageModule,
+    TranslocoModule,
   ],
   templateUrl: './login.component.html',
   styleUrls: ['./login.component.css'],
@@ -35,6 +37,7 @@ import { EMPTY } from 'rxjs';
 export class LoginComponent {
   private authService = inject(AuthService);
   private destroyRef = inject(DestroyRef);
+  private transloco = inject(TranslocoService);
 
   emailForm = new FormGroup({
     email: new FormControl<string>('', {
@@ -57,7 +60,7 @@ export class LoginComponent {
   sendOtp() {
     if (this.isLoading()) return;
     if (this.emailForm.invalid) {
-      this.errorMessage.set('Veuillez entrer une adresse email valide');
+      this.errorMessage.set(this.transloco.translate('auth.login.invalidEmail'));
       return;
     }
 
@@ -71,7 +74,7 @@ export class LoginComponent {
       .pipe(
         tap(() => this.otpSent.set(true)),
         catchError((error: any) => {
-          this.errorMessage.set(error.message || 'Une erreur est survenue');
+          this.errorMessage.set(error.message || this.transloco.translate('auth.otp.sendError'));
           return EMPTY;
         }),
         finalize(() => this.isLoading.set(false)),
@@ -83,7 +86,7 @@ export class LoginComponent {
   verifyOtp() {
     if (this.isLoading()) return;
     if (this.otpForm.invalid) {
-      this.errorMessage.set('Veuillez entrer le code à 6 chiffres');
+      this.errorMessage.set(this.transloco.translate('auth.otp.invalidCode'));
       return;
     }
 
@@ -97,7 +100,7 @@ export class LoginComponent {
       .verifyOtpCode(emailValue, codeValue)
       .pipe(
         catchError((error: any) => {
-          this.errorMessage.set(error.message || 'Code invalide ou expiré');
+          this.errorMessage.set(error.message || this.transloco.translate('auth.otp.verificationError'));
           return EMPTY;
         }),
         finalize(() => this.isLoading.set(false)),
