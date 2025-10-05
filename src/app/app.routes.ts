@@ -37,7 +37,7 @@ export const routes: Routes = [
           {
             path: 'planning',
             loadComponent: () =>
-              import('../ui/pages/dashboard/dashboard.component').then(m => m.DashboardComponent) // Placeholder
+              import('../ui/pages/planning/planning.component').then(m => m.PlanningComponent)
           },
           {
             path: 'clients',

@@ -49,6 +49,17 @@
     "collapseMenu": "Collapse menu",
     "mainNavigation": "Main navigation"
   },
+  "planning": {
+    "title": "Planning",
+    "subtitle": "View and manage your bookings",
+    "month": "Month",
+    "week": "Week",
+    "day": "Day",
+    "today": "Today",
+    "previous": "Previous period",
+    "next": "Next period",
+    "noBookings": "No bookings scheduled"
+  },
   "services": {
     "title": "Services",
     "subtitle": "Manage your services and rates",

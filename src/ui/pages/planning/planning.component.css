@@ -1,0 +1,80 @@
+/* Planning component styles */
+
+/* Override angular-calendar default styles to match PrimeNG theme */
+:host ::ng-deep {
+  /* Calendar general */
+  .cal-month-view,
+  .cal-week-view,
+  .cal-day-view {
+    font-family: inherit;
+  }
+
+  /* Month view */
+  .cal-month-view .cal-header {
+    background-color: #f9fafb;
+    border-bottom: 1px solid #e5e7eb;
+  }
+
+  .cal-month-view .cal-cell-top {
+    min-height: 80px;
+  }
+
+  .cal-month-view .cal-day-cell.cal-today {
+    background-color: #dbeafe;
+  }
+
+  .cal-month-view .cal-day-cell:hover {
+    background-color: #f3f4f6;
+  }
+
+  .cal-month-view .cal-day-number {
+    font-size: 0.875rem;
+    font-weight: 500;
+    color: #374151;
+  }
+
+  /* Week view */
+  .cal-week-view .cal-day-headers {
+    border-bottom: 1px solid #e5e7eb;
+  }
+
+  .cal-week-view .cal-day-headers .cal-header {
+    background-color: #f9fafb;
+    padding: 0.75rem;
+  }
+
+  .cal-week-view .cal-time {
+    font-size: 0.75rem;
+    color: #6b7280;
+  }
+
+  /* Events */
+  .cal-event {
+    border-radius: 0.375rem;
+    padding: 0.25rem 0.5rem;
+    font-size: 0.875rem;
+    font-weight: 500;
+    border: none;
+    cursor: pointer;
+    transition: all 0.2s;
+  }
+
+  .cal-event:hover {
+    filter: brightness(0.95);
+    transform: scale(1.02);
+  }
+
+  .cal-event-title {
+    font-weight: 500;
+  }
+
+  /* Today indicator */
+  .cal-today {
+    background-color: #dbeafe !important;
+  }
+
+  /* Hour segments */
+  .cal-hour-segment:hover {
+    background-color: #f3f4f6;
+  }
+}

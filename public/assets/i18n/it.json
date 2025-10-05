@@ -49,6 +49,17 @@
     "collapseMenu": "Riduci menu",
     "mainNavigation": "Navigazione principale"
   },
+  "planning": {
+    "title": "Pianificazione",
+    "subtitle": "Visualizza e gestisci le tue prenotazioni",
+    "month": "Mese",
+    "week": "Settimana",
+    "day": "Giorno",
+    "today": "Oggi",
+    "previous": "Periodo precedente",
+    "next": "Periodo successivo",
+    "noBookings": "Nessuna prenotazione programmata"
+  },
   "services": {
     "title": "Servizi",
     "subtitle": "Gestisci i tuoi servizi e tariffe",

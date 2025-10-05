@@ -49,6 +49,17 @@
     "collapseMenu": "Réduire le menu",
     "mainNavigation": "Navigation principale"
   },
+  "planning": {
+    "title": "Planning",
+    "subtitle": "Visualisez et gérez vos gardes",
+    "month": "Mois",
+    "week": "Semaine",
+    "day": "Jour",
+    "today": "Aujourd'hui",
+    "previous": "Période précédente",
+    "next": "Période suivante",
+    "noBookings": "Aucune garde planifiée"
+  },
   "services": {
     "title": "Services",
     "subtitle": "Gérez vos services et tarifs",

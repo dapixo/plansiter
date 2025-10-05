@@ -1,5 +1,5 @@
 import { Injectable } from '@angular/core';
-import { Observable } from 'rxjs';
+import { Observable, of } from 'rxjs';
 import { Booking } from '@domain/entities';
 import { IBookingRepository } from '@domain/repositories';
 import { SupabaseService } from '../supabase.client';
@@ -21,8 +21,9 @@ export class BookingSupabaseRepository implements IBookingRepository {
   }
 
   getBySitterId(sitterId: string): Observable<Booking[]> {
+    // TODO: Implement when bookings table is ready
     // Already filtered by sitterId (which is userId for sitters)
-    throw new Error('Method not implemented');
+    return of([]);
   }
 
   create(booking: Omit<Booking, 'id' | 'createdAt' | 'updatedAt'>): Observable<Booking> {
