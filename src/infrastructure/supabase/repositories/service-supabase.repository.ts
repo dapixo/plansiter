@@ -25,16 +25,12 @@ export class ServiceSupabaseRepository implements IServiceRepository {
 
   // ---------- PUBLIC METHODS ---------- //
 
-  getById(id: string): Observable<Service | null> {
-    return this.queryOne(q => q.eq('id', id));
+  getById(id: string, userId: string): Observable<Service | null> {
+    return this.queryOne(q => q.eq('id', id).eq('user_id', userId));
   }
 
   getByUserId(userId: string): Observable<Service[]> {
     return this.queryMany(q => q.eq('user_id', userId).order('name', { ascending: true }));
-  }
-
-  getAll(): Observable<Service[]> {
-    return this.queryMany(q => q.order('name', { ascending: true }));
   }
 
   create(service: Omit<Service, 'id' | 'createdAt' | 'updatedAt'>): Observable<Service> {
@@ -46,17 +42,17 @@ export class ServiceSupabaseRepository implements IServiceRepository {
     );
   }
 
-  update(id: string, service: Partial<Service>): Observable<Service> {
+  update(id: string, userId: string, service: Partial<Service>): Observable<Service> {
     const payload = this.toDbPayload(service, true);
 
-    return this.supabase.from$('services', q => q.update(payload).eq('id', id).select().single()).pipe(
+    return this.supabase.from$('services', q => q.update(payload).eq('id', id).eq('user_id', userId).select().single()).pipe(
       map(res => this.extractData<ServiceRow>(res, true)),
       map(row => this.mapToEntity(row))
     );
   }
 
-  delete(id: string): Observable<void> {
-    return this.supabase.from$('services', q => q.delete().eq('id', id)).pipe(
+  delete(id: string, userId: string): Observable<void> {
+    return this.supabase.from$('services', q => q.delete().eq('id', id).eq('user_id', userId)).pipe(
       map(res => this.extractData(res, false)),
       map(() => void 0)
     );

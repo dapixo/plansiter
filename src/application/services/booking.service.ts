@@ -18,9 +18,9 @@ export class BookingService {
     return useCase.execute(booking);
   }
 
-  getBookingsByClient(clientId: string): Observable<Booking[]> {
+  getBookingsByClient(clientId: string, userId: string): Observable<Booking[]> {
     const useCase = new GetBookingsByClientUseCase(this.bookingRepository);
-    return useCase.execute(clientId);
+    return useCase.execute(clientId, userId);
   }
 
   setBookings(bookings: Booking[]): void {

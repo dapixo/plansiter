@@ -5,7 +5,7 @@ import { IBookingRepository } from '../../repositories';
 export class GetBookingsByClientUseCase {
   constructor(private bookingRepository: IBookingRepository) {}
 
-  execute(clientId: string): Observable<Booking[]> {
-    return this.bookingRepository.getByClientId(clientId);
+  execute(clientId: string, userId: string): Observable<Booking[]> {
+    return this.bookingRepository.getByClientId(clientId, userId);
   }
 }

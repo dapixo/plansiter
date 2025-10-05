@@ -10,18 +10,13 @@ import { SupabaseService } from '../supabase.client';
 export class SubjectSupabaseRepository implements ISubjectRepository {
   constructor(private supabase: SupabaseService) {}
 
-  getById(id: string): Observable<Subject | null> {
-    // TODO: Implement Supabase query
+  getById(id: string, userId: string): Observable<Subject | null> {
+    // TODO: Implement with userId verification via client ownership (JOIN with clients table)
     throw new Error('Method not implemented');
   }
 
-  getByClientId(clientId: string): Observable<Subject[]> {
-    // TODO: Implement Supabase query
-    throw new Error('Method not implemented');
-  }
-
-  getAll(): Observable<Subject[]> {
-    // TODO: Implement Supabase query
+  getByClientId(clientId: string, userId: string): Observable<Subject[]> {
+    // TODO: Implement with userId verification via client ownership
     throw new Error('Method not implemented');
   }
 
@@ -30,13 +25,13 @@ export class SubjectSupabaseRepository implements ISubjectRepository {
     throw new Error('Method not implemented');
   }
 
-  update(id: string, subject: Partial<Subject>): Observable<Subject> {
-    // TODO: Implement Supabase update
+  update(id: string, userId: string, subject: Partial<Subject>): Observable<Subject> {
+    // TODO: Implement with userId verification via client ownership
     throw new Error('Method not implemented');
   }
 
-  delete(id: string): Observable<void> {
-    // TODO: Implement Supabase delete
+  delete(id: string, userId: string): Observable<void> {
+    // TODO: Implement with userId verification via client ownership
     throw new Error('Method not implemented');
   }
 }

@@ -10,23 +10,18 @@ import { SupabaseService } from '../supabase.client';
 export class BookingSupabaseRepository implements IBookingRepository {
   constructor(private supabase: SupabaseService) {}
 
-  getById(id: string): Observable<Booking | null> {
-    // TODO: Implement Supabase query
+  getById(id: string, userId: string): Observable<Booking | null> {
+    // TODO: Implement with userId verification via client/sitter relationship
     throw new Error('Method not implemented');
   }
 
-  getByClientId(clientId: string): Observable<Booking[]> {
-    // TODO: Implement Supabase query
+  getByClientId(clientId: string, userId: string): Observable<Booking[]> {
+    // TODO: Implement with userId verification via client ownership
     throw new Error('Method not implemented');
   }
 
   getBySitterId(sitterId: string): Observable<Booking[]> {
-    // TODO: Implement Supabase query
-    throw new Error('Method not implemented');
-  }
-
-  getAll(): Observable<Booking[]> {
-    // TODO: Implement Supabase query
+    // Already filtered by sitterId (which is userId for sitters)
     throw new Error('Method not implemented');
   }
 
@@ -35,13 +30,13 @@ export class BookingSupabaseRepository implements IBookingRepository {
     throw new Error('Method not implemented');
   }
 
-  update(id: string, booking: Partial<Booking>): Observable<Booking> {
-    // TODO: Implement Supabase update
+  update(id: string, userId: string, booking: Partial<Booking>): Observable<Booking> {
+    // TODO: Implement with userId verification
     throw new Error('Method not implemented');
   }
 
-  delete(id: string): Observable<void> {
-    // TODO: Implement Supabase delete
+  delete(id: string, userId: string): Observable<void> {
+    // TODO: Implement with userId verification
     throw new Error('Method not implemented');
   }
 }

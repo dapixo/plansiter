@@ -2,6 +2,7 @@ export type ServiceType = 'pet-sitting' | 'plant-sitting' | 'babysitting' | 'hou
 
 export interface Service {
   id: string;
+  userId: string;
   name: string;
   type: ServiceType;
   description?: string;

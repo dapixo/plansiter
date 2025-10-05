@@ -4,6 +4,7 @@ import { rxMethod } from '@ngrx/signals/rxjs-interop';
 import { pipe, switchMap, tap } from 'rxjs';
 import { Service } from '@domain/entities';
 import { IServiceRepository, SERVICE_REPOSITORY } from '@domain/repositories';
+import { AuthService } from '../services/auth.service';
 
 interface ServiceState {
   services: Service[];
@@ -30,7 +31,7 @@ export const ServiceStore = signalStore(
     servicesCount: computed(() => state.services().length),
   })),
 
-  withMethods((store, repo = inject<IServiceRepository>(SERVICE_REPOSITORY)) => {
+  withMethods((store, repo = inject<IServiceRepository>(SERVICE_REPOSITORY), authService = inject(AuthService)) => {
     const setLoading = () => patchState(store, { loading: true, error: null });
     const setError = (error: unknown) =>
       patchState(store, { error: error instanceof Error ? error.message : String(error), loading: false });
@@ -40,15 +41,20 @@ export const ServiceStore = signalStore(
       loadAll: rxMethod<void>(
         pipe(
           tap(setLoading),
-          switchMap(() =>
-            repo.getAll().pipe(
+          switchMap(() => {
+            const userId = authService.currentUser()?.id;
+            if (!userId) {
+              patchState(store, { services: [], loading: false, error: 'No user logged in' });
+              return [];
+            }
+            return repo.getByUserId(userId).pipe(
               tap({
                 next: (services) => patchState(store, { services }),
                 error: setError,
                 finalize: setSuccess
               })
-            )
-          )
+            );
+          })
         )
       ),
 
@@ -71,32 +77,42 @@ export const ServiceStore = signalStore(
       update: rxMethod<{ id: string; data: Partial<Service> }>(
         pipe(
           tap(setLoading),
-          switchMap(({ id, data }) =>
-            repo.update(id, data).pipe(
+          switchMap(({ id, data }) => {
+            const userId = authService.currentUser()?.id;
+            if (!userId) {
+              setError(new Error('No user logged in'));
+              return [];
+            }
+            return repo.update(id, userId, data).pipe(
               tap({
                 next: (updatedService) =>
                   patchState(store, { services: updateServiceInList(store.services(), updatedService) }),
                 error: setError,
                 finalize: setSuccess
               })
-            )
-          )
+            );
+          })
         )
       ),
 
       delete: rxMethod<string>(
         pipe(
           tap(setLoading),
-          switchMap((id) =>
-            repo.delete(id).pipe(
+          switchMap((id) => {
+            const userId = authService.currentUser()?.id;
+            if (!userId) {
+              setError(new Error('No user logged in'));
+              return [];
+            }
+            return repo.delete(id, userId).pipe(
               tap({
                 next: () =>
                   patchState(store, { services: removeServiceFromList(store.services(), id) }),
                 error: setError,
                 finalize: setSuccess
               })
-            )
-          )
+            );
+          })
         )
       ),
     };
