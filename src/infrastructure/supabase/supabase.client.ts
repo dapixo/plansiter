@@ -94,4 +94,12 @@ export class SupabaseService {
       catchError((error: AuthError) => throwError(() => error))
     );
   }
+
+  // Méthode générique pour les requêtes Supabase
+  from$<T = any>(
+    table: string,
+    queryFn: (query: any) => any
+  ): Observable<{ data: T; error: any }> {
+    return from(queryFn(this.supabaseClient.from(table))) as Observable<{ data: T; error: any }>;
+  }
 }

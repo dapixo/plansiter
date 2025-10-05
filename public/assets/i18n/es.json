@@ -3,7 +3,11 @@
     "appName": "PlanSitter",
     "loading": "Cargando...",
     "error": "Se produjo un error",
-    "success": "Éxito"
+    "success": "Éxito",
+    "cancel": "Cancelar",
+    "save": "Guardar",
+    "cancelAction": "Cancelar la creación o modificación del servicio",
+    "saveService": "Guardar la información del servicio"
   },
   "auth": {
     "login": {
@@ -34,5 +38,58 @@
     "userInfo": "Información del usuario",
     "email": "Correo electrónico",
     "userId": "ID de usuario"
+  },
+  "sidebar": {
+    "planning": "Planificación",
+    "clients": "Clientes",
+    "services": "Servicios",
+    "myAccount": "Mi cuenta",
+    "expandMenu": "Expandir menú",
+    "collapseMenu": "Contraer menú",
+    "mainNavigation": "Navegación principal"
+  },
+  "services": {
+    "title": "Servicios",
+    "subtitle": "Gestiona tus servicios y tarifas",
+    "addService": "Agregar servicio",
+    "edit": "Editar",
+    "delete": "Eliminar",
+    "deleteTitle": "Confirmar eliminación",
+    "deleteConfirm": "¿Está seguro de que desea eliminar \"{{name}}\"?",
+    "deleteAccept": "Eliminar",
+    "editService": "Editar servicio",
+    "createService": "Crear servicio",
+    "noServices": "No hay servicios disponibles",
+    "pricePerHour": "{{price}}€/h",
+    "pricePerDay": "{{price}}€/día",
+    "pricePerNight": "{{price}}€/noche",
+    "priceNotSet": "-",
+    "form": {
+      "name": "Nombre del servicio",
+      "namePlaceholder": "Ej: Cuidado de mascotas",
+      "nameRequired": "El nombre es obligatorio",
+      "type": "Tipo de servicio",
+      "typePlaceholder": "Seleccione un tipo",
+      "typeRequired": "El tipo es obligatorio",
+      "description": "Descripción",
+      "descriptionPlaceholder": "Describe tu servicio...",
+      "priceType": "Tipo de tarifa",
+      "priceTypePlaceholder": "Seleccione un tipo de tarifa",
+      "priceTypeRequired": "El tipo de tarifa es obligatorio",
+      "pricePerHour": "Por hora",
+      "pricePerDay": "Por día",
+      "pricePerNight": "Por noche",
+      "price": "Monto",
+      "priceRequired": "El monto es obligatorio",
+      "priceGroup": "Tarificación del servicio",
+      "priceAriaLabel": "Monto del servicio en euros"
+    },
+    "types": {
+      "petSitting": "Cuidado de mascotas",
+      "plantSitting": "Cuidado de plantas",
+      "babysitting": "Niñera",
+      "houseSitting": "Cuidado de casa",
+      "other": "Otro"
+    }
   }
 }

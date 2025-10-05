@@ -3,7 +3,11 @@
     "appName": "PlanSitter",
     "loading": "Loading...",
     "error": "An error occurred",
-    "success": "Success"
+    "success": "Success",
+    "cancel": "Cancel",
+    "save": "Save",
+    "cancelAction": "Cancel service creation or modification",
+    "saveService": "Save service information"
   },
   "auth": {
     "login": {
@@ -34,5 +38,58 @@
     "userInfo": "User information",
     "email": "Email",
     "userId": "User ID"
+  },
+  "sidebar": {
+    "planning": "Planning",
+    "clients": "Clients",
+    "services": "Services",
+    "myAccount": "My account",
+    "expandMenu": "Expand menu",
+    "collapseMenu": "Collapse menu",
+    "mainNavigation": "Main navigation"
+  },
+  "services": {
+    "title": "Services",
+    "subtitle": "Manage your services and rates",
+    "addService": "Add service",
+    "edit": "Edit",
+    "delete": "Delete",
+    "deleteTitle": "Confirm deletion",
+    "deleteConfirm": "Are you sure you want to delete \"{{name}}\"?",
+    "deleteAccept": "Delete",
+    "editService": "Edit service",
+    "createService": "Create service",
+    "noServices": "No services available",
+    "pricePerHour": "{{price}}€/h",
+    "pricePerDay": "{{price}}€/day",
+    "pricePerNight": "{{price}}€/night",
+    "priceNotSet": "-",
+    "form": {
+      "name": "Service name",
+      "namePlaceholder": "Ex: Pet sitting",
+      "nameRequired": "Name is required",
+      "type": "Service type",
+      "typePlaceholder": "Select a type",
+      "typeRequired": "Type is required",
+      "description": "Description",
+      "descriptionPlaceholder": "Describe your service...",
+      "priceType": "Price type",
+      "priceTypePlaceholder": "Select a price type",
+      "priceTypeRequired": "Price type is required",
+      "pricePerHour": "Per hour",
+      "pricePerDay": "Per day",
+      "pricePerNight": "Per night",
+      "price": "Amount",
+      "priceRequired": "Amount is required",
+      "priceGroup": "Service pricing",
+      "priceAriaLabel": "Service amount in euros"
+    },
+    "types": {
+      "petSitting": "Pet sitting",
+      "plantSitting": "Plant sitting",
+      "babysitting": "Babysitting",
+      "houseSitting": "House sitting",
+      "other": "Other"
+    }
   }
 }

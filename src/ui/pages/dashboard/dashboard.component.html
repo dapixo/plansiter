@@ -2,18 +2,6 @@
   <div class="max-w-7xl mx-auto">
     <div class="flex justify-between items-center mb-8">
       <h1 class="text-3xl font-bold text-gray-800">{{ 'dashboard.title' | transloco }}</h1>
-      <div class="flex items-center gap-4">
-        <div class="w-48">
-          <app-language-switcher />
-        </div>
-        <p-button
-          [label]="'auth.signOut' | transloco"
-          icon="pi pi-sign-out"
-          severity="secondary"
-          (onClick)="signOut()"
-          [text]="true"
-        />
-      </div>
     </div>
 
     <p-card>

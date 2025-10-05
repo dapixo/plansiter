@@ -1,0 +1,93 @@
+<div class="flex h-screen bg-gray-50">
+  <!-- Sidebar -->
+  <aside
+    [class]="isCollapsed() ? 'w-20' : 'w-64'"
+    class="bg-white border-r border-gray-200 flex flex-col transition-all duration-300"
+  >
+    <!-- Header avec logo et nom de l'app + bouton toggle -->
+    <div class="p-6 border-b border-gray-200 flex items-center justify-between">
+      @if (!isCollapsed()) {
+      <h1 class="text-2xl font-bold text-blue-600">{{ 'common.appName' | transloco }}</h1>
+      }
+      <button
+        type="button"
+        (click)="toggleSidebar()"
+        class="p-2 hover:bg-gray-100 rounded-lg transition-colors"
+        [class.mx-auto]="isCollapsed()"
+        [attr.aria-label]="isCollapsed() ? ('sidebar.expandMenu' | transloco) : ('sidebar.collapseMenu' | transloco)"
+        [attr.aria-expanded]="!isCollapsed()"
+        aria-controls="main-navigation"
+      >
+        <i
+          [class]="isCollapsed() ? 'pi pi-angle-right' : 'pi pi-angle-left'"
+          aria-hidden="true"
+        ></i>
+      </button>
+    </div>
+
+    <!-- Navigation principale -->
+    <nav id="main-navigation" [attr.aria-label]="'sidebar.mainNavigation' | transloco" class="flex-1 p-4 space-y-2">
+      @for (item of menuItems; track item.route) {
+      <a
+        [routerLink]="item.route"
+        routerLinkActive="bg-blue-50 text-blue-600 border-blue-600"
+        [class]="isCollapsed() ? 'justify-center' : 'gap-3'"
+        class="flex items-center px-4 py-3 rounded-lg text-gray-700 hover:bg-gray-50 transition-colors border-l-4 border-transparent"
+        [pTooltip]="isCollapsed() ? (item.label | transloco) : ''"
+        tooltipPosition="right"
+      >
+        <i [class]="item.icon + ' text-xl'" aria-hidden="true"></i>
+        @if (!isCollapsed()) {
+        <span class="font-medium">{{ item.label | transloco }}</span>
+        }
+      </a>
+      }
+    </nav>
+
+    <!-- Zone inférieure avec compte et déconnexion -->
+    <div class="p-4 border-t border-gray-200 space-y-3">
+      <!-- Sélecteur de langue -->
+      @if (!isCollapsed()) {
+      <app-language-switcher class="px-2" />
+      }
+
+      <!-- Mon compte -->
+      <a
+        routerLink="account"
+        routerLinkActive="bg-gray-50"
+        [class]="isCollapsed() ? 'justify-center px-2' : 'gap-3 px-4'"
+        class="flex items-center py-3 rounded-lg text-gray-700 hover:bg-gray-50 transition-colors"
+        [pTooltip]="isCollapsed() ? ('sidebar.myAccount' | transloco) : ''"
+        tooltipPosition="right"
+      >
+        <p-avatar [label]="getUserInitials()" shape="circle" class="bg-blue-600 text-white" />
+        @if (!isCollapsed()) {
+        <div class="flex-1 min-w-0">
+          <div class="text-sm font-medium truncate">
+            {{ getUserDisplayName() }}
+          </div>
+          <div class="text-xs text-gray-500">{{ 'sidebar.myAccount' | transloco }}</div>
+        </div>
+        }
+      </a>
+
+      <!-- Bouton de déconnexion -->
+      <p-button
+        [label]="isCollapsed() ? '' : ('auth.signOut' | transloco)"
+        icon="pi pi-sign-out"
+        severity="secondary"
+        (onClick)="signOut()"
+        class="w-full"
+        [outlined]="true"
+        [pTooltip]="isCollapsed() ? ('auth.signOut' | transloco) : ''"
+        tooltipPosition="right"
+        [attr.aria-label]="'auth.signOut' | transloco"
+      />
+    </div>
+  </aside>
+
+  <!-- Contenu principal -->
+  <main role="main" class="flex-1 overflow-auto">
+    <router-outlet />
+  </main>
+</div>

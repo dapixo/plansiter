@@ -27,7 +27,34 @@ export const routes: Routes = [
         path: 'dashboard',
         canActivate: [authGuard],
         loadComponent: () =>
-          import('../ui/pages/dashboard/dashboard.component').then(m => m.DashboardComponent)
+          import('../ui/layouts/dashboard-layout/dashboard-layout.component').then(m => m.DashboardLayoutComponent),
+        children: [
+          {
+            path: '',
+            loadComponent: () =>
+              import('../ui/pages/dashboard/dashboard.component').then(m => m.DashboardComponent)
+          },
+          {
+            path: 'planning',
+            loadComponent: () =>
+              import('../ui/pages/dashboard/dashboard.component').then(m => m.DashboardComponent) // Placeholder
+          },
+          {
+            path: 'clients',
+            loadComponent: () =>
+              import('../ui/pages/dashboard/dashboard.component').then(m => m.DashboardComponent) // Placeholder
+          },
+          {
+            path: 'services',
+            loadComponent: () =>
+              import('../ui/pages/services/services.component').then(m => m.ServicesComponent)
+          },
+          {
+            path: 'account',
+            loadComponent: () =>
+              import('../ui/pages/dashboard/dashboard.component').then(m => m.DashboardComponent) // Placeholder
+          }
+        ]
       },
       {
         path: '',

@@ -4,9 +4,7 @@ import { User } from '@domain/entities';
 import { IUserRepository } from '@domain/repositories';
 import { SupabaseService } from '../supabase.client';
 
-@Injectable({
-  providedIn: 'root'
-})
+@Injectable()
 export class UserSupabaseRepository implements IUserRepository {
   constructor(private supabase: SupabaseService) {}
 

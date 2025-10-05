@@ -3,7 +3,11 @@
     "appName": "PlanSitter",
     "loading": "Chargement...",
     "error": "Une erreur est survenue",
-    "success": "Succès"
+    "success": "Succès",
+    "cancel": "Annuler",
+    "save": "Enregistrer",
+    "cancelAction": "Annuler la création ou la modification du service",
+    "saveService": "Enregistrer les informations du service"
   },
   "auth": {
     "login": {
@@ -34,5 +38,58 @@
     "userInfo": "Informations utilisateur",
     "email": "Email",
     "userId": "ID Utilisateur"
+  },
+  "sidebar": {
+    "planning": "Planning",
+    "clients": "Clients",
+    "services": "Services",
+    "myAccount": "Mon compte",
+    "expandMenu": "Développer le menu",
+    "collapseMenu": "Réduire le menu",
+    "mainNavigation": "Navigation principale"
+  },
+  "services": {
+    "title": "Services",
+    "subtitle": "Gérez vos services et tarifs",
+    "addService": "Ajouter un service",
+    "edit": "Modifier",
+    "delete": "Supprimer",
+    "deleteTitle": "Confirmer la suppression",
+    "deleteConfirm": "Êtes-vous sûr de vouloir supprimer \"{{name}}\" ?",
+    "deleteAccept": "Supprimer",
+    "editService": "Modifier le service",
+    "createService": "Créer un service",
+    "noServices": "Aucun service disponible",
+    "pricePerHour": "{{price}}€/h",
+    "pricePerDay": "{{price}}€/jour",
+    "pricePerNight": "{{price}}€/nuit",
+    "priceNotSet": "-",
+    "form": {
+      "name": "Nom du service",
+      "namePlaceholder": "Ex: Garde d'animaux ponctuelle",
+      "nameRequired": "Le nom est obligatoire",
+      "type": "Type de service",
+      "typePlaceholder": "Sélectionnez un type",
+      "typeRequired": "Le type est obligatoire",
+      "description": "Description",
+      "descriptionPlaceholder": "Décrivez votre service...",
+      "priceType": "Type de tarif",
+      "priceTypePlaceholder": "Sélectionnez un type de tarif",
+      "priceTypeRequired": "Le type de tarif est obligatoire",
+      "pricePerHour": "Par heure",
+      "pricePerDay": "Par jour",
+      "pricePerNight": "Par nuit",
+      "price": "Montant",
+      "priceRequired": "Le montant est obligatoire",
+      "priceGroup": "Tarification du service",
+      "priceAriaLabel": "Montant du service en euros"
+    },
+    "types": {
+      "petSitting": "Garde d'animaux",
+      "plantSitting": "Garde de plantes",
+      "babysitting": "Baby-sitting",
+      "houseSitting": "Garde de maison",
+      "other": "Autre"
+    }
   }
 }
