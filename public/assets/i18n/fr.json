@@ -6,8 +6,9 @@
     "success": "Succès",
     "cancel": "Annuler",
     "save": "Enregistrer",
-    "cancelAction": "Annuler la création ou la modification du service",
-    "saveService": "Enregistrer les informations du service"
+    "cancelAction": "Annuler la création ou la modification",
+    "saveService": "Enregistrer les informations du service",
+    "saveClient": "Enregistrer les informations du client"
   },
   "auth": {
     "login": {
@@ -90,6 +91,43 @@
       "babysitting": "Baby-sitting",
       "houseSitting": "Garde de maison",
       "other": "Autre"
+    }
+  },
+  "clients": {
+    "title": "Clients",
+    "subtitle": "Gérez vos clients",
+    "addClient": "Ajouter un client",
+    "edit": "Modifier",
+    "delete": "Supprimer",
+    "deleteTitle": "Confirmer la suppression",
+    "deleteConfirm": "Êtes-vous sûr de vouloir supprimer \"{{name}}\" ?",
+    "deleteAccept": "Supprimer",
+    "editClient": "Modifier le client",
+    "createClient": "Créer un client",
+    "noClients": "Aucun client enregistré",
+    "form": {
+      "name": "Nom du client",
+      "namePlaceholder": "Ex: Jean Dupont",
+      "nameRequired": "Le nom est obligatoire",
+      "address": "Adresse",
+      "addressPlaceholder": "12 rue de la République",
+      "addressRequired": "L'adresse est obligatoire",
+      "city": "Ville",
+      "cityPlaceholder": "Paris",
+      "cityRequired": "La ville est obligatoire",
+      "postalCode": "Code postal",
+      "postalCodePlaceholder": "75001",
+      "state": "État/Province/Région",
+      "statePlaceholder": "Ex: Île-de-France, California, Ontario...",
+      "country": "Pays",
+      "countryPlaceholder": "France",
+      "countryRequired": "Le pays est obligatoire",
+      "notes": "Notes",
+      "notesPlaceholder": "Informations complémentaires...",
+      "personalInfo": "Informations personnelles",
+      "addressInfo": "Adresse",
+      "location": "Localisation",
+      "additionalInfo": "Informations complémentaires"
     }
   }
 }

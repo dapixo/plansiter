@@ -1,10 +1,11 @@
 export interface Client {
   id: string;
   userId: string;
-  companyName?: string;
+  name: string;
   address: string;
   city: string;
-  postalCode: string;
+  postalCode?: string;
+  state?: string;
   country: string;
   notes?: string;
   createdAt: Date;

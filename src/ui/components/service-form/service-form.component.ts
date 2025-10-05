@@ -10,6 +10,7 @@ import { TranslocoModule } from '@jsverse/transloco';
 import { DynamicDialogConfig, DynamicDialogRef } from 'primeng/dynamicdialog';
 import { Service, ServiceType } from '@domain/entities';
 import { ServiceStore } from '@application/stores/service.store';
+import { AuthService } from '@application/services';
 import { TextareaModule } from 'primeng/textarea';
 
 type PriceType = 'hour' | 'day' | 'night';
@@ -37,6 +38,7 @@ export class ServiceFormComponent {
   protected readonly store = inject(ServiceStore);
   private readonly config = inject(DynamicDialogConfig);
   private readonly ref = inject(DynamicDialogRef);
+  private readonly authService = inject(AuthService);
 
   service = signal<Service | null>(this.config.data?.service || null);
   formTouched = signal(false);
@@ -109,7 +111,12 @@ export class ServiceFormComponent {
     if (currentService) {
       this.store.update({ id: currentService.id, data: serviceData });
     } else {
-      this.store.create(serviceData as Omit<Service, 'id' | 'createdAt' | 'updatedAt'>);
+      const currentUser = this.authService.currentUser();
+      if (!currentUser?.id) {
+        console.error('No user logged in');
+        return;
+      }
+      this.store.create({ ...serviceData, userId: currentUser.id, isActive: true } as Omit<Service, 'id' | 'createdAt' | 'updatedAt'>);
     }
 
     this.ref.close();

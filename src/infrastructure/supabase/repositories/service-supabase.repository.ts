@@ -7,6 +7,7 @@ import { SupabaseService } from '../supabase.client';
 
 type ServiceRow = {
   id: string;
+  user_id: string;
   name: string;
   type: ServiceType;
   description: string | null;
@@ -26,6 +27,10 @@ export class ServiceSupabaseRepository implements IServiceRepository {
 
   getById(id: string): Observable<Service | null> {
     return this.queryOne(q => q.eq('id', id));
+  }
+
+  getByUserId(userId: string): Observable<Service[]> {
+    return this.queryMany(q => q.eq('user_id', userId).order('name', { ascending: true }));
   }
 
   getAll(): Observable<Service[]> {
@@ -93,6 +98,7 @@ export class ServiceSupabaseRepository implements IServiceRepository {
   private mapToEntity(row: ServiceRow): Service {
     return {
       id: row.id,
+      userId: row.user_id,
       name: row.name,
       type: row.type,
       description: row.description ?? '',
@@ -108,6 +114,7 @@ export class ServiceSupabaseRepository implements IServiceRepository {
   /** Map entity → Supabase insert/update payload */
   private toDbPayload(service: Partial<Service>, partial = false): Partial<ServiceRow> {
     const payload: Partial<ServiceRow> = {};
+    if (!partial || service.userId !== undefined) payload.user_id = service.userId!;
     if (!partial || service.name !== undefined) payload.name = service.name!;
     if (!partial || service.type !== undefined) payload.type = service.type!;
     if (!partial || service.description !== undefined) payload.description = service.description ?? null;

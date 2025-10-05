@@ -42,7 +42,7 @@ export const routes: Routes = [
           {
             path: 'clients',
             loadComponent: () =>
-              import('../ui/pages/dashboard/dashboard.component').then(m => m.DashboardComponent) // Placeholder
+              import('../ui/pages/clients/clients.component').then(m => m.ClientsComponent)
           },
           {
             path: 'services',

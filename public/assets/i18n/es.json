@@ -6,8 +6,9 @@
     "success": "Éxito",
     "cancel": "Cancelar",
     "save": "Guardar",
-    "cancelAction": "Cancelar la creación o modificación del servicio",
-    "saveService": "Guardar la información del servicio"
+    "cancelAction": "Cancelar la creación o modificación",
+    "saveService": "Guardar la información del servicio",
+    "saveClient": "Guardar la información del cliente"
   },
   "auth": {
     "login": {
@@ -90,6 +91,43 @@
       "babysitting": "Niñera",
       "houseSitting": "Cuidado de casa",
       "other": "Otro"
+    }
+  },
+  "clients": {
+    "title": "Clientes",
+    "subtitle": "Gestiona tus clientes",
+    "addClient": "Añadir cliente",
+    "edit": "Editar",
+    "delete": "Eliminar",
+    "deleteTitle": "Confirmar eliminación",
+    "deleteConfirm": "¿Estás seguro de que quieres eliminar \"{{name}}\"?",
+    "deleteAccept": "Eliminar",
+    "editClient": "Editar cliente",
+    "createClient": "Crear cliente",
+    "noClients": "No hay clientes registrados",
+    "form": {
+      "name": "Nombre del cliente",
+      "namePlaceholder": "Ej: Juan Pérez",
+      "nameRequired": "El nombre es obligatorio",
+      "address": "Dirección",
+      "addressPlaceholder": "12 Calle de la República",
+      "addressRequired": "La dirección es obligatoria",
+      "city": "Ciudad",
+      "cityPlaceholder": "Madrid",
+      "cityRequired": "La ciudad es obligatoria",
+      "postalCode": "Código postal",
+      "postalCodePlaceholder": "28001",
+      "state": "Estado/Provincia/Región",
+      "statePlaceholder": "Ej: California, Cataluña, Ontario...",
+      "country": "País",
+      "countryPlaceholder": "España",
+      "countryRequired": "El país es obligatorio",
+      "notes": "Notas",
+      "notesPlaceholder": "Información adicional...",
+      "personalInfo": "Información personal",
+      "addressInfo": "Dirección",
+      "location": "Ubicación",
+      "additionalInfo": "Información adicional"
     }
   }
 }

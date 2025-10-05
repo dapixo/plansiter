@@ -6,8 +6,9 @@
     "success": "Success",
     "cancel": "Cancel",
     "save": "Save",
-    "cancelAction": "Cancel service creation or modification",
-    "saveService": "Save service information"
+    "cancelAction": "Cancel creation or modification",
+    "saveService": "Save service information",
+    "saveClient": "Save client information"
   },
   "auth": {
     "login": {
@@ -90,6 +91,43 @@
       "babysitting": "Babysitting",
       "houseSitting": "House sitting",
       "other": "Other"
+    }
+  },
+  "clients": {
+    "title": "Clients",
+    "subtitle": "Manage your clients",
+    "addClient": "Add client",
+    "edit": "Edit",
+    "delete": "Delete",
+    "deleteTitle": "Confirm deletion",
+    "deleteConfirm": "Are you sure you want to delete \"{{name}}\"?",
+    "deleteAccept": "Delete",
+    "editClient": "Edit client",
+    "createClient": "Create client",
+    "noClients": "No clients registered",
+    "form": {
+      "name": "Client name",
+      "namePlaceholder": "Ex: John Doe",
+      "nameRequired": "Name is required",
+      "address": "Address",
+      "addressPlaceholder": "12 Republic Street",
+      "addressRequired": "Address is required",
+      "city": "City",
+      "cityPlaceholder": "Paris",
+      "cityRequired": "City is required",
+      "postalCode": "Postal code",
+      "postalCodePlaceholder": "75001",
+      "state": "State/Province/Region",
+      "statePlaceholder": "Ex: California, Ontario, Île-de-France...",
+      "country": "Country",
+      "countryPlaceholder": "France",
+      "countryRequired": "Country is required",
+      "notes": "Notes",
+      "notesPlaceholder": "Additional information...",
+      "personalInfo": "Personal information",
+      "addressInfo": "Address",
+      "location": "Location",
+      "additionalInfo": "Additional information"
     }
   }
 }

@@ -6,8 +6,9 @@
     "success": "Successo",
     "cancel": "Annulla",
     "save": "Salva",
-    "cancelAction": "Annulla la creazione o la modifica del servizio",
-    "saveService": "Salva le informazioni del servizio"
+    "cancelAction": "Annulla la creazione o la modifica",
+    "saveService": "Salva le informazioni del servizio",
+    "saveClient": "Salva le informazioni del cliente"
   },
   "auth": {
     "login": {
@@ -90,6 +91,43 @@
       "babysitting": "Babysitting",
       "houseSitting": "Custodia casa",
       "other": "Altro"
+    }
+  },
+  "clients": {
+    "title": "Clienti",
+    "subtitle": "Gestisci i tuoi clienti",
+    "addClient": "Aggiungi cliente",
+    "edit": "Modifica",
+    "delete": "Elimina",
+    "deleteTitle": "Conferma eliminazione",
+    "deleteConfirm": "Sei sicuro di voler eliminare \"{{name}}\"?",
+    "deleteAccept": "Elimina",
+    "editClient": "Modifica cliente",
+    "createClient": "Crea cliente",
+    "noClients": "Nessun cliente registrato",
+    "form": {
+      "name": "Nome del cliente",
+      "namePlaceholder": "Es: Mario Rossi",
+      "nameRequired": "Il nome è obbligatorio",
+      "address": "Indirizzo",
+      "addressPlaceholder": "Via della Repubblica 12",
+      "addressRequired": "L'indirizzo è obbligatorio",
+      "city": "Città",
+      "cityPlaceholder": "Roma",
+      "cityRequired": "La città è obbligatoria",
+      "postalCode": "Codice postale",
+      "postalCodePlaceholder": "00100",
+      "state": "Stato/Provincia/Regione",
+      "statePlaceholder": "Es: California, Lazio, Ontario...",
+      "country": "Paese",
+      "countryPlaceholder": "Italia",
+      "countryRequired": "Il paese è obbligatorio",
+      "notes": "Note",
+      "notesPlaceholder": "Informazioni aggiuntive...",
+      "personalInfo": "Informazioni personali",
+      "addressInfo": "Indirizzo",
+      "location": "Posizione",
+      "additionalInfo": "Informazioni aggiuntive"
     }
   }
 }
