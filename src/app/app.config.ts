@@ -17,6 +17,10 @@ registerLocaleData(localeFr);
 registerLocaleData(localeEs);
 registerLocaleData(localeIt);
 
+// Stores
+import { ClientStore } from '@application/stores/client.store';
+import { ServiceStore } from '@application/stores/service.store';
+
 // Supabase repositories
 import {
   USER_REPOSITORY,
@@ -49,6 +53,9 @@ export const appConfig: ApplicationConfig = {
         }
       }
     }),
+    // Global Stores
+    ClientStore,
+    ServiceStore,
     // Dependency Injection for repositories
     { provide: USER_REPOSITORY, useClass: UserSupabaseRepository },
     { provide: CLIENT_REPOSITORY, useClass: ClientSupabaseRepository },

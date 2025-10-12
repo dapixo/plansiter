@@ -9,11 +9,9 @@
       </h2>
       <p class="text-gray-500 mt-1">{{ 'clients.subtitle' | transloco }}</p>
     </div>
-    <p-button
-      [label]="'clients.addClient' | transloco"
-      icon="pi pi-plus"
-      (onClick)="openCreateDialog()"
-    />
+    <a routerLink="new" pButton icon="pi pi-plus" [attr.aria-label]="'clients.addClient' | transloco">
+      <span>{{ 'clients.addClient' | transloco }}</span>
+    </a>
   </header>
 
   <!-- Clients list -->
@@ -31,8 +29,10 @@
           <span class="flex items-start">
             <i class="pi pi-map-marker text-xs mr-1.5 mt-0.5" aria-hidden="true"></i>
             <span>
-              {{ client.address }}<br>
-              {{ client.city }}@if (client.postalCode) {<span>, {{ client.postalCode }}</span>}@if (client.state) {<span>, {{ client.state }}</span>}<br>
+              {{ client.address }}<br />
+              {{ client.city }}@if (client.postalCode) {<span>, {{ client.postalCode }}</span
+              >}@if (client.state) {<span>, {{ client.state }}</span
+              >}<br />
               {{ client.country }}
             </span>
           </span>
@@ -46,18 +46,18 @@
       </div>
 
       <div class="border-t border-gray-100 bg-gray-50 px-4 py-3 flex gap-2">
-        <button
-          type="button"
-          (click)="openEditDialog(client)"
+        <a
+          [routerLink]="[client.id, 'edit']"
           class="flex-1 inline-flex items-center justify-center gap-2 px-3 py-2 text-sm font-medium text-gray-700 hover:text-blue-600 hover:bg-blue-50 rounded-lg transition-colors"
+          [attr.aria-label]="'clients.edit' | transloco"
         >
           <i class="pi pi-pencil text-xs" aria-hidden="true"></i>
           {{ 'clients.edit' | transloco }}
-        </button>
+        </a>
 
         <button
           type="button"
-          aria-label="{{ 'clients.delete' | transloco }}"
+          [attr.aria-label]="'clients.delete' | transloco"
           (click)="deleteClient(client)"
           class="inline-flex items-center justify-center px-3 py-2 text-sm font-medium text-gray-700 hover:text-red-600 hover:bg-red-50 rounded-lg transition-colors"
         >

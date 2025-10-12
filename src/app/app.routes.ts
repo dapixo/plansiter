@@ -41,8 +41,23 @@ export const routes: Routes = [
           },
           {
             path: 'clients',
-            loadComponent: () =>
-              import('../ui/pages/clients/clients.component').then(m => m.ClientsComponent)
+            children: [
+              {
+                path: '',
+                loadComponent: () =>
+                  import('../ui/pages/clients/clients.component').then(m => m.ClientsComponent)
+              },
+              {
+                path: 'new',
+                loadComponent: () =>
+                  import('../ui/pages/client-form-page/client-form-page.component').then(m => m.ClientFormPageComponent)
+              },
+              {
+                path: ':id/edit',
+                loadComponent: () =>
+                  import('../ui/pages/client-form-page/client-form-page.component').then(m => m.ClientFormPageComponent)
+              }
+            ]
           },
           {
             path: 'services',

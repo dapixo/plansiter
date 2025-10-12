@@ -1,0 +1,233 @@
+<section class="p-8 max-w-4xl mx-auto" aria-labelledby="client-form-title">
+  <!-- Header -->
+  <header class="mb-8">
+    <div class="flex items-center gap-4 mb-2">
+      <a
+        [routerLink]="['/' + lang.getCurrentLanguage(), 'dashboard', 'clients']"
+        class="inline-flex items-center justify-center w-10 h-10 rounded-lg hover:bg-gray-100 transition-colors"
+        [attr.aria-label]="'common.back' | transloco"
+      >
+        <i class="pi pi-arrow-left text-gray-600" aria-hidden="true"></i>
+      </a>
+      <h1 id="client-form-title" class="text-3xl font-bold text-gray-900">
+        {{ (isEditMode() ? 'clients.editClient' : 'clients.createClient') | transloco }}
+      </h1>
+    </div>
+    <p class="text-gray-500 ml-14">
+      {{ (isEditMode() ? 'clients.form.editSubtitle' : 'clients.form.createSubtitle') | transloco }}
+    </p>
+  </header>
+
+  <!-- Form Card -->
+  <div class="bg-white rounded-xl border border-gray-200 shadow-sm p-8">
+    @if (!isFormReady()) {
+    <!-- Loader en mode édition -->
+    <div class="flex items-center justify-center py-12" role="status" aria-live="polite">
+      <i class="pi pi-spin pi-spinner text-4xl text-blue-600" aria-hidden="true"></i>
+      <span class="sr-only">
+        {{ 'common.loading' | transloco }}
+      </span>
+    </div>
+    } @else {
+    <form
+      [formGroup]="form"
+      (ngSubmit)="onSubmit()"
+      class="flex flex-col gap-6"
+      aria-labelledby="client-form-title"
+    >
+      <fieldset class="flex flex-col gap-6 border-0 p-0">
+        <legend class="sr-only">
+          {{ 'clients.form.personalInfo' | transloco }}
+        </legend>
+
+        <!-- Client Name -->
+        <div class="flex flex-col gap-2">
+          <label for="name" class="font-medium text-gray-700">
+            {{ 'clients.form.name' | transloco }}
+            <span class="text-red-500" aria-hidden="true">*</span>
+          </label>
+          <input
+            pInputText
+            id="name"
+            formControlName="name"
+            autocomplete="name"
+            [placeholder]="'clients.form.namePlaceholder' | transloco"
+            class="w-full"
+            aria-required="true"
+            required
+            [attr.aria-invalid]="form.controls.name.invalid ? 'true' : 'false'"
+            [attr.aria-describedby]="
+              form.controls.name.invalid && form.controls.name.touched ? 'name-error' : null
+            "
+          />
+          @if (form.controls.name.invalid && form.controls.name.touched) {
+          <p-message id="name-error" severity="error" variant="simple">
+            {{ 'clients.form.nameRequired' | transloco }}
+          </p-message>
+          }
+        </div>
+
+        <!-- Address -->
+        <div class="flex flex-col gap-2">
+          <label for="address" class="font-medium text-gray-700">
+            {{ 'clients.form.address' | transloco }}
+            <span class="text-red-500" aria-hidden="true">*</span>
+          </label>
+          <input
+            pInputText
+            id="address"
+            formControlName="address"
+            autocomplete="street-address"
+            [placeholder]="'clients.form.addressPlaceholder' | transloco"
+            class="w-full"
+            aria-required="true"
+            required
+            [attr.aria-invalid]="form.controls.address.invalid ? 'true' : 'false'"
+            [attr.aria-describedby]="
+              form.controls.address.invalid && form.controls.address.touched
+                ? 'address-error'
+                : null
+            "
+          />
+          @if (form.controls.address.invalid && form.controls.address.touched) {
+          <p-message id="address-error" severity="error" variant="simple">
+            {{ 'clients.form.addressRequired' | transloco }}
+          </p-message>
+          }
+        </div>
+      </fieldset>
+
+      <!-- Address Details -->
+      <fieldset class="grid grid-cols-1 md:grid-cols-2 gap-4 border-0 p-0">
+        <legend class="text-sm font-semibold text-gray-700 mb-2 col-span-full">
+          {{ 'clients.form.addressInfo' | transloco }}
+        </legend>
+
+        <div class="flex flex-col gap-2">
+          <label for="city" class="font-medium text-gray-700">
+            {{ 'clients.form.city' | transloco }}
+            <span class="text-red-500" aria-hidden="true">*</span>
+          </label>
+          <input
+            pInputText
+            id="city"
+            formControlName="city"
+            autocomplete="address-level2"
+            [placeholder]="'clients.form.cityPlaceholder' | transloco"
+            class="w-full"
+            aria-required="true"
+            required
+            [attr.aria-invalid]="form.controls.city.invalid ? 'true' : 'false'"
+            [attr.aria-describedby]="
+              form.controls.city.invalid && form.controls.city.touched ? 'city-error' : null
+            "
+          />
+          @if (form.controls.city.invalid && form.controls.city.touched) {
+          <p-message id="city-error" severity="error" variant="simple">
+            {{ 'clients.form.cityRequired' | transloco }}
+          </p-message>
+          }
+        </div>
+
+        <div class="flex flex-col gap-2">
+          <label for="postalCode" class="font-medium text-gray-700">
+            {{ 'clients.form.postalCode' | transloco }}
+          </label>
+          <input
+            pInputText
+            id="postalCode"
+            formControlName="postalCode"
+            autocomplete="postal-code"
+            [placeholder]="'clients.form.postalCodePlaceholder' | transloco"
+            class="w-full"
+          />
+        </div>
+      </fieldset>
+
+      <!-- State & Country -->
+      <fieldset class="grid grid-cols-1 md:grid-cols-2 gap-4 border-0 p-0">
+        <legend class="text-sm font-semibold text-gray-700 mb-2 col-span-full">
+          {{ 'clients.form.location' | transloco }}
+        </legend>
+
+        <div class="flex flex-col gap-2">
+          <label for="state" class="font-medium text-gray-700">
+            {{ 'clients.form.state' | transloco }}
+          </label>
+          <input
+            pInputText
+            id="state"
+            formControlName="state"
+            [placeholder]="'clients.form.statePlaceholder' | transloco"
+            class="w-full"
+          />
+        </div>
+
+        <div class="flex flex-col gap-2">
+          <label for="country" class="font-medium text-gray-700">
+            {{ 'clients.form.country' | transloco }}
+            <span class="text-red-500" aria-hidden="true">*</span>
+          </label>
+          <input
+            pInputText
+            id="country"
+            formControlName="country"
+            autocomplete="country-name"
+            [placeholder]="'clients.form.countryPlaceholder' | transloco"
+            class="w-full"
+            aria-required="true"
+            required
+            [attr.aria-invalid]="form.controls.country.invalid ? 'true' : 'false'"
+            [attr.aria-describedby]="
+              form.controls.country.invalid && form.controls.country.touched
+                ? 'country-error'
+                : null
+            "
+          />
+          @if (form.controls.country.invalid && form.controls.country.touched) {
+          <p-message id="country-error" severity="error" variant="simple">
+            {{ 'clients.form.countryRequired' | transloco }}
+          </p-message>
+          }
+        </div>
+      </fieldset>
+
+      <!-- Notes -->
+      <fieldset class="flex flex-col gap-2 border-0 p-0">
+        <legend class="text-sm font-semibold text-gray-700 mb-2">
+          {{ 'clients.form.additionalInfo' | transloco }}
+        </legend>
+        <label for="notes" class="font-medium text-gray-700">
+          {{ 'clients.form.notes' | transloco }}
+        </label>
+        <textarea
+          pTextarea
+          id="notes"
+          formControlName="notes"
+          [placeholder]="'clients.form.notesPlaceholder' | transloco"
+          rows="4"
+          class="w-full"
+        ></textarea>
+      </fieldset>
+
+      <!-- Actions -->
+      <div class="flex justify-end gap-3 pt-4 border-t border-gray-200">
+        <p-button
+          type="submit"
+          [label]="'common.save' | transloco"
+          [disabled]="form.invalid || uiState().loading"
+          [loading]="uiState().loading"
+          [attr.aria-label]="'common.saveClient' | transloco"
+        />
+      </div>
+
+      <!-- Global Error -->
+      @if (uiState().error) {
+      <p-message severity="error" class="w-full" variant="simple">
+        {{ uiState().error }}
+      </p-message>
+      }
+    </form>
+    }
+  </div>
+</section>

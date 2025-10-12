@@ -1,12 +1,11 @@
 import { Component, inject, ChangeDetectionStrategy } from '@angular/core';
 import { CommonModule } from '@angular/common';
+import { RouterModule } from '@angular/router';
 import { ButtonModule } from 'primeng/button';
 import { ConfirmDialogModule } from 'primeng/confirmdialog';
-import { DialogService } from 'primeng/dynamicdialog';
 import { ConfirmationService } from 'primeng/api';
 import { TranslocoModule, TranslocoService } from '@jsverse/transloco';
 import { Client } from '@domain/entities';
-import { ClientFormComponent } from '@ui/components/client-form/client-form.component';
 import { ClientStore } from '@application/stores/client.store';
 
 @Component({
@@ -14,11 +13,12 @@ import { ClientStore } from '@application/stores/client.store';
   standalone: true,
   imports: [
     CommonModule,
+    RouterModule,
     ButtonModule,
     ConfirmDialogModule,
     TranslocoModule
   ],
-  providers: [ClientStore, DialogService, ConfirmationService],
+  providers: [ConfirmationService],
   templateUrl: './clients.component.html',
   styleUrls: ['./clients.component.css'],
   changeDetection: ChangeDetectionStrategy.OnPush,
@@ -26,26 +26,7 @@ import { ClientStore } from '@application/stores/client.store';
 export class ClientsComponent {
   readonly store = inject(ClientStore);
   private transloco = inject(TranslocoService);
-  private dialogService = inject(DialogService);
   private confirmationService = inject(ConfirmationService);
-
-  protected openCreateDialog(): void {
-    this.dialogService.open(ClientFormComponent, {
-      header: this.transloco.translate('clients.createClient'),
-      width: '600px',
-      focusOnShow: true,
-      data: { client: null }
-    });
-  }
-
-  protected openEditDialog(client: Client): void {
-    this.dialogService.open(ClientFormComponent, {
-      header: this.transloco.translate('clients.editClient'),
-      width: '600px',
-      focusOnShow: true,
-      data: { client }
-    });
-  }
 
   protected deleteClient(client: Client): void {
     this.confirmationService.confirm({

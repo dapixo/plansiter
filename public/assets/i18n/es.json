@@ -6,6 +6,7 @@
     "success": "Éxito",
     "cancel": "Cancelar",
     "save": "Guardar",
+    "back": "Volver",
     "cancelAction": "Cancelar la creación o modificación",
     "saveService": "Guardar la información del servicio",
     "saveClient": "Guardar la información del cliente"
@@ -117,6 +118,8 @@
     "createClient": "Crear cliente",
     "noClients": "No hay clientes registrados",
     "form": {
+      "createSubtitle": "Añade un nuevo cliente a tu lista",
+      "editSubtitle": "Edita la información de tu cliente",
       "name": "Nombre del cliente",
       "namePlaceholder": "Ej: Juan Pérez",
       "nameRequired": "El nombre es obligatorio",

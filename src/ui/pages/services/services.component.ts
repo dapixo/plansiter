@@ -18,7 +18,7 @@ import { ServiceStore } from '@application/stores/service.store';
     ConfirmDialogModule,
     TranslocoModule
   ],
-  providers: [ServiceStore, DialogService, ConfirmationService],
+  providers: [DialogService, ConfirmationService],
   templateUrl: './services.component.html',
   styleUrls: ['./services.component.css'],
   changeDetection: ChangeDetectionStrategy.OnPush,
