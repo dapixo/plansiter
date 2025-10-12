@@ -38,6 +38,8 @@ export const ServiceStore = signalStore(
     const setSuccess = () => patchState(store, { loading: false, error: null });
 
     return {
+      setError: (error: unknown) => setError(error),
+
       loadAll: rxMethod<void>(
         pipe(
           tap(setLoading),

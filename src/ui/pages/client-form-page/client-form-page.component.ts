@@ -54,9 +54,7 @@ export class ClientFormPageComponent {
   });
   protected readonly isEditMode = computed(() => !!this.clientId());
   protected readonly isFormReady = computed(() => !this.isEditMode() || !!this.client());
-
-  /** Form setup */
-  readonly form = this.fb.group<{
+  protected readonly form = this.fb.group<{
     name: FormControl<string>;
     address: FormControl<string>;
     city: FormControl<string>;
@@ -68,24 +66,20 @@ export class ClientFormPageComponent {
     name: this.fb.control('', { validators: Validators.required, nonNullable: true }),
     address: this.fb.control('', { validators: Validators.required, nonNullable: true }),
     city: this.fb.control('', { validators: Validators.required, nonNullable: true }),
-    postalCode: this.fb.control('', { nonNullable: true }),
+    postalCode: this.fb.control('', { validators: Validators.required, nonNullable: true }),
     state: this.fb.control('', { nonNullable: true }),
     country: this.fb.control('', { validators: Validators.required, nonNullable: true }),
     notes: this.fb.control('', { nonNullable: true }),
   });
-
-  /** Reactive UI state (ready, loading, error) */
   protected readonly uiState = computed(() => ({
     ready: this.isFormReady(),
     loading: this.store.loading(),
     error: this.store.error(),
   }));
 
-  /** Signal pour gérer la navigation après sauvegarde */
   private readonly shouldNavigateAfterSave = signal(false);
   private readonly previousLoadingState = signal(false);
 
-  /** Auto-patch du form quand le client change */
   private readonly _patchEffect = effect(() => {
     const client = this.client();
     if (!client) return;

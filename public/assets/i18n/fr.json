@@ -78,6 +78,8 @@
     "pricePerNight": "{{price}}€/nuit",
     "priceNotSet": "-",
     "form": {
+      "createSubtitle": "Ajoutez un nouveau service à votre catalogue",
+      "editSubtitle": "Modifiez les informations de votre service",
       "name": "Nom du service",
       "namePlaceholder": "Ex: Garde d'animaux ponctuelle",
       "nameRequired": "Le nom est obligatoire",

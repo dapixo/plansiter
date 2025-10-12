@@ -1,0 +1,212 @@
+<section class="p-8 max-w-4xl mx-auto" aria-labelledby="service-form-title">
+  <!-- Header -->
+  <header class="mb-8">
+    <div class="flex items-center gap-4 mb-2">
+      <a
+        [routerLink]="['/' + lang.getCurrentLanguage(), 'dashboard', 'services']"
+        class="inline-flex items-center justify-center w-10 h-10 rounded-lg hover:bg-gray-100 transition-colors"
+        [attr.aria-label]="'common.back' | transloco"
+      >
+        <i class="pi pi-arrow-left text-gray-600" aria-hidden="true"></i>
+      </a>
+      <h1 id="service-form-title" class="text-3xl font-bold text-gray-900">
+        {{ (isEditMode() ? 'services.editService' : 'services.createService') | transloco }}
+      </h1>
+    </div>
+    <p class="text-gray-500 ml-14">
+      {{
+        (isEditMode() ? 'services.form.editSubtitle' : 'services.form.createSubtitle') | transloco
+      }}
+    </p>
+  </header>
+
+  <!-- Form Card -->
+  <div class="bg-white rounded-xl border border-gray-200 shadow-sm p-8">
+    @if (!isFormReady()) {
+    <!-- Loader en mode édition -->
+    <div class="flex items-center justify-center py-12" role="status" aria-live="polite">
+      <i class="pi pi-spin pi-spinner text-4xl text-blue-600" aria-hidden="true"></i>
+      <span class="sr-only">
+        {{ 'common.loading' | transloco }}
+      </span>
+    </div>
+    } @else {
+    <form
+      [formGroup]="form"
+      (ngSubmit)="onSubmit()"
+      class="flex flex-col gap-6"
+      aria-labelledby="service-form-title"
+    >
+      <!-- Nom du service -->
+      <div class="flex flex-col gap-2">
+        <label for="name" class="font-medium text-gray-700">
+          {{ 'services.form.name' | transloco }}
+          <span class="text-red-500" aria-hidden="true">*</span>
+        </label>
+        <input
+          pInputText
+          id="name"
+          formControlName="name"
+          [placeholder]="'services.form.namePlaceholder' | transloco"
+          class="w-full"
+          aria-required="true"
+          required
+          [attr.aria-invalid]="form.controls.name.invalid ? 'true' : 'false'"
+          [attr.aria-describedby]="
+            form.controls.name.invalid && form.controls.name.touched ? 'name-error' : null
+          "
+        />
+        @if (form.controls.name.invalid && form.controls.name.touched) {
+        <p-message id="name-error" severity="error" variant="simple">
+          {{ 'services.form.nameRequired' | transloco }}
+        </p-message>
+        }
+      </div>
+
+      <!-- Type de service -->
+      <div class="flex flex-col gap-2">
+        <label for="type" class="font-medium text-gray-700">
+          {{ 'services.form.type' | transloco }}
+          <span class="text-red-500" aria-hidden="true">*</span>
+        </label>
+        <p-select
+          id="type"
+          formControlName="type"
+          [options]="serviceTypes"
+          optionLabel="label"
+          optionValue="value"
+          [placeholder]="'services.form.typePlaceholder' | transloco"
+          class="w-full"
+          aria-required="true"
+          required
+          [attr.aria-invalid]="form.controls.type.invalid ? 'true' : 'false'"
+          [attr.aria-describedby]="
+            form.controls.type.invalid && form.controls.type.touched ? 'type-error' : null
+          "
+        >
+          <ng-template pTemplate="selectedItem" let-selectedOption>
+            @if (selectedOption) {
+            {{ selectedOption.label | transloco }}
+            }
+          </ng-template>
+          <ng-template pTemplate="item" let-option>
+            {{ option.label | transloco }}
+          </ng-template>
+        </p-select>
+        @if (form.controls.type.invalid && form.controls.type.touched) {
+        <p-message id="type-error" severity="error" variant="simple">
+          {{ 'services.form.typeRequired' | transloco }}
+        </p-message>
+        }
+      </div>
+
+      <!-- Description -->
+      <div class="flex flex-col gap-2">
+        <label for="description" class="font-medium text-gray-700">
+          {{ 'services.form.description' | transloco }}
+        </label>
+        <textarea
+          pTextarea
+          id="description"
+          formControlName="description"
+          [placeholder]="'services.form.descriptionPlaceholder' | transloco"
+          rows="3"
+          class="w-full"
+        ></textarea>
+      </div>
+
+      <!-- Groupe Prix -->
+      <fieldset class="grid grid-cols-1 md:grid-cols-2 gap-4 border-0 p-0">
+        <legend class="text-sm font-semibold text-gray-700 mb-2 col-span-full">
+          {{ 'services.form.priceGroup' | transloco }}
+        </legend>
+
+        <!-- Type de tarif -->
+        <div class="flex flex-col gap-2">
+          <label for="priceType" class="font-medium text-gray-700">
+            {{ 'services.form.priceType' | transloco }}
+            <span class="text-red-500" aria-hidden="true">*</span>
+          </label>
+          <p-select
+            id="priceType"
+            formControlName="priceType"
+            [options]="priceTypes"
+            optionLabel="label"
+            optionValue="value"
+            [placeholder]="'services.form.priceTypePlaceholder' | transloco"
+            class="w-full"
+            aria-required="true"
+            required
+            [attr.aria-invalid]="form.controls.priceType.invalid ? 'true' : 'false'"
+            [attr.aria-describedby]="
+              form.controls.priceType.invalid && form.controls.priceType.touched
+                ? 'priceType-error'
+                : null
+            "
+          >
+            <ng-template pTemplate="selectedItem" let-selectedOption>
+              @if (selectedOption) {
+              {{ selectedOption.label | transloco }}
+              }
+            </ng-template>
+            <ng-template pTemplate="item" let-option>
+              {{ option.label | transloco }}
+            </ng-template>
+          </p-select>
+          @if (form.controls.priceType.invalid && form.controls.priceType.touched) {
+          <p-message id="priceType-error" severity="error" variant="simple">
+            {{ 'services.form.priceTypeRequired' | transloco }}
+          </p-message>
+          }
+        </div>
+
+        <!-- Montant -->
+        <div class="flex flex-col gap-2">
+          <label for="price" class="font-medium text-gray-700">
+            {{ 'services.form.price' | transloco }}
+            <span class="text-red-500" aria-hidden="true">*</span>
+          </label>
+          <p-inputNumber
+            id="price"
+            formControlName="price"
+            mode="currency"
+            currency="EUR"
+            locale="fr-FR"
+            [min]="0"
+            [attr.aria-label]="'services.form.priceAriaLabel' | transloco"
+            aria-required="true"
+            required
+            [attr.aria-invalid]="form.controls.price.invalid ? 'true' : 'false'"
+            [attr.aria-describedby]="
+              form.controls.price.invalid && form.controls.price.touched ? 'price-error' : null
+            "
+            class="w-full"
+          />
+          @if (form.controls.price.invalid && form.controls.price.touched) {
+          <p-message id="price-error" severity="error" variant="simple">
+            {{ 'services.form.priceRequired' | transloco }}
+          </p-message>
+          }
+        </div>
+      </fieldset>
+
+      <!-- Actions -->
+      <div class="flex justify-end gap-3 pt-4 border-t border-gray-200">
+        <p-button
+          type="submit"
+          [label]="'common.save' | transloco"
+          [loading]="uiState().loading"
+          [attr.aria-label]="'common.saveService' | transloco"
+        />
+      </div>
+
+      <!-- Global Error -->
+      @if (uiState().error) {
+      <p-message severity="error" class="w-full" variant="simple">
+        {{ uiState().error }}
+      </p-message>
+      }
+    </form>
+    }
+  </div>
+</section>

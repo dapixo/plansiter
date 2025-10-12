@@ -78,6 +78,8 @@
     "pricePerNight": "{{price}}€/notte",
     "priceNotSet": "-",
     "form": {
+      "createSubtitle": "Aggiungi un nuovo servizio al tuo catalogo",
+      "editSubtitle": "Modifica le informazioni del tuo servizio",
       "name": "Nome del servizio",
       "namePlaceholder": "Es: Pet sitting",
       "nameRequired": "Il nome è obbligatorio",

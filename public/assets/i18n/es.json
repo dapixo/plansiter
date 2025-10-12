@@ -78,6 +78,8 @@
     "pricePerNight": "{{price}}€/noche",
     "priceNotSet": "-",
     "form": {
+      "createSubtitle": "Añade un nuevo servicio a tu catálogo",
+      "editSubtitle": "Edita la información de tu servicio",
       "name": "Nombre del servicio",
       "namePlaceholder": "Ej: Cuidado de mascotas",
       "nameRequired": "El nombre es obligatorio",

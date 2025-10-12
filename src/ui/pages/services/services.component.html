@@ -9,11 +9,13 @@
       </h2>
       <p class="text-gray-500 mt-1">{{ 'services.subtitle' | transloco }}</p>
     </div>
-    <p-button
-      [label]="'services.addService' | transloco"
-      icon="pi pi-plus"
-      (onClick)="openCreateDialog()"
-    />
+    <a
+      routerLink="new"
+      class="inline-flex items-center gap-2 px-4 py-2.5 bg-blue-600 text-white font-medium text-sm rounded-lg hover:bg-blue-700 transition-colors shadow-sm hover:shadow-md"
+    >
+      <i class="pi pi-plus" aria-hidden="true"></i>
+      <span>{{ 'services.addService' | transloco }}</span>
+    </a>
   </header>
 
   <!-- Services list -->
@@ -44,14 +46,13 @@
       </div>
 
       <div class="border-t border-gray-100 bg-gray-50 px-4 py-3 flex gap-2">
-        <button
-          type="button"
-          (click)="openEditDialog(service)"
+        <a
+          [routerLink]="[service.id, 'edit']"
           class="flex-1 inline-flex items-center justify-center gap-2 px-3 py-2 text-sm font-medium text-gray-700 hover:text-blue-600 hover:bg-blue-50 rounded-lg transition-colors"
         >
           <i class="pi pi-pencil text-xs" aria-hidden="true"></i>
           {{ 'services.edit' | transloco }}
-        </button>
+        </a>
 
         <button
           type="button"

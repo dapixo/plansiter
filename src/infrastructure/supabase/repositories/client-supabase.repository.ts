@@ -11,7 +11,7 @@ type ClientRow = {
   name: string;
   address: string;
   city: string;
-  postal_code: string | null;
+  postal_code: string;
   state: string | null;
   country: string;
   notes: string | null;
@@ -98,7 +98,7 @@ export class ClientSupabaseRepository implements IClientRepository {
       name: row.name,
       address: row.address,
       city: row.city,
-      postalCode: row.postal_code ?? undefined,
+      postalCode: row.postal_code,
       state: row.state ?? undefined,
       country: row.country,
       notes: row.notes ?? undefined,
@@ -114,7 +114,7 @@ export class ClientSupabaseRepository implements IClientRepository {
     if (!partial || client.name !== undefined) payload.name = client.name!;
     if (!partial || client.address !== undefined) payload.address = client.address!;
     if (!partial || client.city !== undefined) payload.city = client.city!;
-    if (!partial || client.postalCode !== undefined) payload.postal_code = client.postalCode ?? null;
+    if (!partial || client.postalCode !== undefined) payload.postal_code = client.postalCode;
     if (!partial || client.state !== undefined) payload.state = client.state ?? null;
     if (!partial || client.country !== undefined) payload.country = client.country!;
     if (!partial || client.notes !== undefined) payload.notes = client.notes ?? null;
