@@ -20,7 +20,6 @@ registerLocaleData(localeIt);
 // Stores
 import { ClientStore } from '@application/stores/client.store';
 import { ServiceStore } from '@application/stores/service.store';
-import { SubjectStore } from '@application/stores/subject.store';
 
 // Supabase repositories
 import {
@@ -57,7 +56,6 @@ export const appConfig: ApplicationConfig = {
     // Global Stores
     ClientStore,
     ServiceStore,
-    SubjectStore,
     // Dependency Injection for repositories
     { provide: USER_REPOSITORY, useClass: UserSupabaseRepository },
     { provide: CLIENT_REPOSITORY, useClass: ClientSupabaseRepository },

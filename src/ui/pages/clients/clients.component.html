@@ -1,15 +1,20 @@
 <p-confirmDialog />
 
-<section class="p-8" aria-labelledby="clients-section-title">
+<section class="p-8 bg-gray-50 min-h-full" aria-labelledby="clients-section-title">
   <!-- Header -->
   <header class="flex justify-between items-center mb-8">
     <div>
-      <h2 id="clients-section-title" class="text-2xl font-bold text-gray-900">
-        {{ 'clients.title' | transloco }}
+      <h2 id="clients-section-title" class="text-4xl font-bold mb-2">
+        <span class="bg-gradient-to-r from-indigo-600 to-purple-600 bg-clip-text text-transparent">{{ 'clients.title' | transloco }}</span>
       </h2>
-      <p class="text-gray-500 mt-1">{{ 'clients.subtitle' | transloco }}</p>
+      <p class="text-gray-600 text-lg">{{ 'clients.subtitle' | transloco }}</p>
     </div>
-    <a routerLink="new" pButton icon="pi pi-plus" [attr.aria-label]="'clients.addClient' | transloco">
+    <a
+      routerLink="new"
+      class="inline-flex items-center gap-2 px-4 py-2.5 bg-gradient-to-r from-indigo-600 to-purple-600 hover:from-indigo-700 hover:to-purple-700 text-white font-semibold rounded-lg shadow-md hover:shadow-lg transition-all duration-200"
+      [attr.aria-label]="'clients.addClient' | transloco"
+    >
+      <i class="pi pi-plus" aria-hidden="true"></i>
       <span>{{ 'clients.addClient' | transloco }}</span>
     </a>
   </header>
@@ -17,53 +22,55 @@
   <!-- Clients list -->
   <ul class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6" role="list">
     @for (client of store.clients(); track client.id) {
-    <li
-      class="client-card group relative bg-white rounded-xl border border-gray-200 hover:border-blue-300 hover:shadow-lg transition-all duration-200 overflow-hidden"
-    >
-      <div class="p-6">
-        <h3 class="text-lg font-semibold text-gray-900 mb-2 pr-20">
-          {{ client.name }}
-        </h3>
-
-        <div class="flex flex-col gap-1 text-sm text-gray-500 mb-4">
-          <span class="flex items-start">
-            <i class="pi pi-map-marker text-xs mr-1.5 mt-0.5" aria-hidden="true"></i>
-            <span>
-              {{ client.address }}<br />
-              {{ client.city }}@if (client.postalCode) {<span>, {{ client.postalCode }}</span
-              >}@if (client.state) {<span>, {{ client.state }}</span
-              >}<br />
-              {{ client.country }}
-            </span>
-          </span>
+    <li class="relative group h-full">
+      <!-- Card cliquable -->
+      <a
+        [routerLink]="[client.id]"
+        class="flex flex-col h-full bg-white rounded-xl border border-gray-200 hover:shadow-lg hover:border-indigo-200 transition-all duration-200 p-6 cursor-pointer"
+      >
+        <!-- Infos client -->
+        <div class="flex items-center gap-3 mb-4">
+          <div class="w-10 h-10 bg-gray-100 rounded-full flex items-center justify-center flex-shrink-0">
+            <i class="pi pi-user text-gray-600" aria-hidden="true"></i>
+          </div>
+          <div class="flex-1 min-w-0">
+            <h3 class="text-lg font-semibold text-gray-900 truncate">
+              {{ client.name }}
+            </h3>
+            <p class="text-sm text-gray-500">
+              {{ client.city }}, {{ client.country }}
+            </p>
+          </div>
         </div>
 
         @if (client.notes) {
-        <p class="text-sm text-gray-500 mb-4 line-clamp-2 italic">
+        <p class="text-sm text-gray-600 line-clamp-2 mb-4">
           {{ client.notes }}
         </p>
         }
-      </div>
 
-      <div class="border-t border-gray-100 bg-gray-50 px-4 py-3 flex gap-2">
-        <a
-          [routerLink]="[client.id]"
-          class="flex-1 inline-flex items-center justify-center gap-2 px-3 py-2 text-sm font-medium text-gray-700 hover:text-blue-600 hover:bg-blue-50 rounded-lg transition-colors"
-          [attr.aria-label]="'clients.viewDetails' | transloco"
-        >
-          <i class="pi pi-eye text-xs" aria-hidden="true"></i>
-          {{ 'clients.viewDetails' | transloco }}
-        </a>
+        <!-- Subjects associés -->
+        @if (getClientSubjects(client.id).length > 0) {
+        <div class="flex flex-wrap gap-2 pt-3 border-t border-gray-100 mt-auto">
+          @for (subject of getClientSubjects(client.id); track subject.id) {
+          <span class="inline-flex items-center gap-1.5 px-2.5 py-1 bg-gray-50 text-gray-700 text-xs rounded-full">
+            <i [class]="'pi ' + getSubjectIcon(subject.type) + ' text-xs'" aria-hidden="true"></i>
+            <span>{{ subject.name }}</span>
+          </span>
+          }
+        </div>
+        }
+      </a>
 
-        <button
-          type="button"
-          [attr.aria-label]="'clients.delete' | transloco"
-          (click)="deleteClient(client)"
-          class="inline-flex items-center justify-center px-3 py-2 text-sm font-medium text-gray-700 hover:text-red-600 hover:bg-red-50 rounded-lg transition-colors"
-        >
-          <i class="pi pi-trash text-xs" aria-hidden="true"></i>
-        </button>
-      </div>
+      <!-- Bouton delete en coin -->
+      <button
+        type="button"
+        (click)="deleteClient($event, client)"
+        class="absolute top-4 right-4 p-2 rounded-lg text-gray-400 hover:text-red-600 focus:text-red-600 opacity-0 group-hover:opacity-100 focus:opacity-100 focus:outline-none focus:ring-2 focus:ring-red-500 focus:ring-offset-2 transition-all duration-200"
+        [attr.aria-label]="'clients.delete' | transloco"
+      >
+        <i class="pi pi-trash text-sm" aria-hidden="true"></i>
+      </button>
     </li>
     }
   </ul>
@@ -71,10 +78,17 @@
   <!-- Empty state -->
   @if (store.clients().length === 0 && !store.loading()) {
   <section class="text-center py-20" role="status" aria-live="polite">
-    <div class="inline-flex items-center justify-center w-16 h-16 rounded-full bg-gray-100 mb-4">
-      <i class="pi pi-users text-3xl text-gray-400" aria-hidden="true"></i>
+    <div class="inline-flex items-center justify-center w-16 h-16 rounded-full bg-gradient-to-br from-indigo-100 to-purple-100 mb-4">
+      <i class="pi pi-users text-3xl text-indigo-600" aria-hidden="true"></i>
     </div>
-    <p class="text-gray-500 text-lg">{{ 'clients.noClients' | transloco }}</p>
+    <p class="text-gray-600 text-lg font-medium mb-2">{{ 'clients.noClients' | transloco }}</p>
+    <a
+      routerLink="new"
+      class="inline-flex items-center gap-2 text-indigo-600 hover:text-indigo-700 font-medium"
+    >
+      <i class="pi pi-plus text-sm" aria-hidden="true"></i>
+      <span>{{ 'clients.addClient' | transloco }}</span>
+    </a>
   </section>
   }
 </section>

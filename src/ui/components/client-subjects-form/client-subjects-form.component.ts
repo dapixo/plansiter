@@ -4,8 +4,8 @@ import {
   input,
   output,
   signal,
-  computed,
   effect,
+  untracked,
   ChangeDetectionStrategy,
 } from '@angular/core';
 import { CommonModule } from '@angular/common';
@@ -17,9 +17,9 @@ import { TranslocoModule } from '@jsverse/transloco';
 import { SelectModule } from 'primeng/select';
 import { InputNumberModule } from 'primeng/inputnumber';
 import { TextareaModule } from 'primeng/textarea';
-import { SubjectStore } from '@application/stores/subject.store';
+import { ClientStore } from '@application/stores/client.store';
 import { TempSubject } from '@application/services/client-management.service';
-import { SubjectType } from '@domain/entities';
+import { Subject, SubjectType } from '@domain/entities';
 
 @Component({
   selector: 'app-client-subjects-form',
@@ -41,7 +41,7 @@ import { SubjectType } from '@domain/entities';
 })
 export class ClientSubjectsFormComponent {
   private readonly fb = inject(FormBuilder);
-  private readonly subjectStore = inject(SubjectStore);
+  private readonly store = inject(ClientStore);
 
   // Inputs
   readonly clientId = input<string | null>(null);
@@ -81,49 +81,58 @@ export class ClientSubjectsFormComponent {
     notes: this.fb.control('', { nonNullable: true }),
   });
 
-  // Computed pour filtrer les subjects par clientId actuel
-  private readonly currentClientSubjects = computed(() => {
-    const currentClientId = this.clientId();
-    if (!currentClientId) return [];
-    return this.subjectStore.subjects().filter(s => s.clientId === currentClientId);
+  // Effect pour synchroniser les subjects du store avec tempSubjects
+  private readonly _syncEffect = effect(() => {
+    const allSubjects = this.store.subjects();
+    const clientId = untracked(() => this.clientId());
+    const isEditMode = untracked(() => this.isEditMode());
+
+    if (!isEditMode || !clientId) return;
+
+    const existingSubjects = allSubjects
+      .filter(s => s.clientId === clientId)
+      .map(s => this.mapSubjectToTemp(s));
+
+    this.updateSubjects(existingSubjects);
   });
 
-  // Effect pour gérer le chargement et le patch des subjects
-  private readonly _subjectsEffect = effect(() => {
-    const clientId = this.clientId();
-    const isEditMode = this.isEditMode();
+  // ========== HELPER METHODS ==========
 
-    if (!isEditMode) {
-      this.updateSubjects([]);
-      return;
-    }
-
-    if (!clientId) return;
-
-    // Charger les subjects du client
-    this.subjectStore.loadByClientId(clientId);
-
-    // Convertir en TempSubjects
-    const existingSubjects = this.currentClientSubjects();
-    const temps: TempSubject[] = existingSubjects.map(s => ({
-      tempId: s.id,
-      id: s.id,
-      type: s.type,
-      name: s.name,
-      breed: s.breed,
-      age: s.age,
-      specialNeeds: s.specialNeeds,
-      notes: s.notes,
+  /** Convertit un Subject en TempSubject */
+  private mapSubjectToTemp(subject: Subject): TempSubject {
+    return {
+      tempId: subject.id,
+      id: subject.id,
+      type: subject.type,
+      name: subject.name,
+      breed: subject.breed,
+      age: subject.age,
+      specialNeeds: subject.specialNeeds,
+      notes: subject.notes,
       isExisting: true,
-    }));
+    };
+  }
 
-    this.updateSubjects(temps);
-  });
+  /** Extrait les données du formulaire pour créer un payload Subject */
+  private getSubjectPayloadFromForm(): Omit<TempSubject, 'tempId' | 'id' | 'isExisting'> {
+    const { type, name, breed, age, specialNeeds, notes } = this.subjectForm.value;
+    return {
+      type: type!,
+      name: name!,
+      breed: breed || undefined,
+      age: age || undefined,
+      specialNeeds: specialNeeds || undefined,
+      notes: notes || undefined,
+    };
+  }
 
-  // Méthode utilitaire pour mettre à jour et émettre
+  /** Met à jour la liste des subjects et émet l'événement en mode création */
   private updateSubjects(subjects: TempSubject[]): void {
     this.tempSubjects.set(subjects);
-    this.subjectsChange.emit(subjects);
+
+    if (!this.isEditMode()) {
+      this.subjectsChange.emit(subjects);
+    }
   }
 
   // Méthodes pour gérer les subjects
@@ -148,9 +157,17 @@ export class ClientSubjectsFormComponent {
   }
 
   protected onDeleteSubject(index: number): void {
-    const subjects = [...this.tempSubjects()];
-    subjects.splice(index, 1);
-    this.updateSubjects(subjects);
+    const subject = this.tempSubjects()[index];
+
+    // En mode édition, supprimer directement via le store
+    if (this.isEditMode() && subject.isExisting && subject.id) {
+      this.store.deleteSubject(subject.id);
+    } else {
+      // En mode création ou pour les subjects non persistés, juste retirer de la liste
+      const subjects = [...this.tempSubjects()];
+      subjects.splice(index, 1);
+      this.updateSubjects(subjects);
+    }
   }
 
   protected onCancelSubjectForm(): void {
@@ -163,35 +180,46 @@ export class ClientSubjectsFormComponent {
     this.subjectForm.markAllAsTouched();
     if (this.subjectForm.invalid) return;
 
-    const { type, name, breed, age, specialNeeds, notes } = this.subjectForm.value;
-    const newSubject: TempSubject = {
-      tempId: crypto.randomUUID(),
-      type: type!,
-      name: name!,
-      breed: breed || undefined,
-      age: age || undefined,
-      specialNeeds: specialNeeds || undefined,
-      notes: notes || undefined,
-    };
-
-    const subjects = [...this.tempSubjects()];
     const editingIndex = this.editingSubjectIndex();
+    const payload = this.getSubjectPayloadFromForm();
+
+    if (this.isEditMode()) {
+      this.saveInEditMode(editingIndex, payload);
+    } else {
+      this.saveInCreateMode(editingIndex, payload);
+    }
+
+    this.onCancelSubjectForm();
+  }
+
+  /** Sauvegarde en mode édition (persistance immédiate) */
+  private saveInEditMode(editingIndex: number | null, payload: Omit<TempSubject, 'tempId' | 'id' | 'isExisting'>): void {
+    const clientId = this.clientId();
+    if (!clientId) return;
 
     if (editingIndex !== null) {
-      // Modification : préserver l'id et isExisting
-      const existingSubject = subjects[editingIndex];
-      subjects[editingIndex] = {
-        ...newSubject,
-        tempId: existingSubject.tempId,
-        id: existingSubject.id,
-        isExisting: existingSubject.isExisting,
-      };
+      const existingSubject = this.tempSubjects()[editingIndex];
+      if (existingSubject.isExisting && existingSubject.id) {
+        this.store.updateSubject({
+          id: existingSubject.id,
+          data: { clientId, ...payload },
+        });
+      }
     } else {
-      // Ajout
-      subjects.push(newSubject);
+      this.store.createSubject({ clientId, ...payload });
+    }
+  }
+
+  /** Sauvegarde en mode création (gestion mémoire) */
+  private saveInCreateMode(editingIndex: number | null, payload: Omit<TempSubject, 'tempId' | 'id' | 'isExisting'>): void {
+    const subjects = [...this.tempSubjects()];
+
+    if (editingIndex !== null) {
+      subjects[editingIndex] = { ...subjects[editingIndex], ...payload };
+    } else {
+      subjects.push({ tempId: crypto.randomUUID(), ...payload });
     }
 
     this.updateSubjects(subjects);
-    this.onCancelSubjectForm();
   }
 }
