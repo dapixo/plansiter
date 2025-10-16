@@ -55,15 +55,19 @@ export class ClientFormPageComponent {
   private readonly transloco = inject(TranslocoService);
   protected readonly lang = inject(LanguageService);
 
-  protected readonly breadcrumbItems = computed<MenuItem[]>(() => [
-    {
-      label: this.transloco.translate('clients.title'),
-      routerLink: `/${this.lang.getCurrentLanguage()}/dashboard/clients`
-    },
-    {
-      label: this.transloco.translate('clients.createClient')
-    }
-  ]);
+  protected readonly breadcrumbItems = computed<MenuItem[]>(() => {
+    // Force reactivity to active language
+    const _ = this.transloco.getActiveLang();
+    return [
+      {
+        label: this.transloco.translate('clients.title'),
+        routerLink: `/${this.lang.getCurrentLanguage()}/dashboard/clients`
+      },
+      {
+        label: this.transloco.translate('clients.createClient')
+      }
+    ];
+  });
 
   protected readonly breadcrumbHome: MenuItem = {
     icon: 'pi pi-home',

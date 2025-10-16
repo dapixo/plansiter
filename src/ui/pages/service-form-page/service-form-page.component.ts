@@ -66,6 +66,8 @@ export class ServiceFormPageComponent {
   protected readonly isFormReady = computed(() => !this.isEditMode() || !!this.service());
 
   protected readonly breadcrumbItems = computed<MenuItem[]>(() => {
+    // Force reactivity to active language
+    const _ = this.transloco.getActiveLang();
     const lang = this.lang.getCurrentLanguage();
     const items: MenuItem[] = [
       {

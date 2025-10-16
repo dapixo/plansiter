@@ -71,7 +71,7 @@
             class="w-full"
             aria-required="true"
             required
-            [attr.aria-invalid]="form.controls.address.invalid ? 'true' : 'false'"
+            [attr.aria-invalid]="form.controls.address.invalid && form.controls.address.touched ? 'true' : 'false'"
             [invalid]="form.controls.address.invalid && form.controls.address.touched"
             [attr.aria-describedby]="
               form.controls.address.invalid && form.controls.address.touched
@@ -103,7 +103,7 @@
             class="w-full"
             aria-required="true"
             required
-            [attr.aria-invalid]="form.controls.city.invalid ? 'true' : 'false'"
+            [attr.aria-invalid]="form.controls.city.invalid && form.controls.city.touched ? 'true' : 'false'"
             [invalid]="form.controls.city.invalid && form.controls.city.touched"
             [attr.aria-describedby]="
               form.controls.city.invalid && form.controls.city.touched ? 'city-error' : null
@@ -130,7 +130,7 @@
             class="w-full"
             aria-required="true"
             required
-            [attr.aria-invalid]="form.controls.postalCode.invalid ? 'true' : 'false'"
+            [attr.aria-invalid]="form.controls.postalCode.invalid && form.controls.postalCode.touched ? 'true' : 'false'"
             [invalid]="form.controls.postalCode.invalid && form.controls.postalCode.touched"
             [attr.aria-describedby]="
               form.controls.postalCode.invalid && form.controls.postalCode.touched
@@ -175,7 +175,7 @@
             class="w-full"
             aria-required="true"
             required
-            [attr.aria-invalid]="form.controls.country.invalid ? 'true' : 'false'"
+            [attr.aria-invalid]="form.controls.country.invalid && form.controls.country.touched ? 'true' : 'false'"
             [invalid]="form.controls.country.invalid && form.controls.country.touched"
             [attr.aria-describedby]="
               form.controls.country.invalid && form.controls.country.touched
