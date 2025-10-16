@@ -1,147 +1,160 @@
-<div class="flex items-center justify-center min-h-screen bg-gray-100">
-  <p-card class="w-full max-w-md" role="main" aria-labelledby="login-title">
-    <!-- Header -->
-    <ng-template pTemplate="header">
-      <div class="text-center p-4">
-        <h1 id="login-title" class="text-2xl font-bold text-gray-800">{{ 'common.appName' | transloco }}</h1>
-        <p class="text-gray-600 mt-2">{{ 'auth.login.title' | transloco }}</p>
+<div class="flex items-center justify-center min-h-screen bg-gradient-to-br from-indigo-50 via-white to-purple-50">
+  <div class="w-full max-w-md px-4">
+    <!-- Card moderne avec ombre douce -->
+    <div class="bg-white rounded-2xl shadow-xl p-8 sm:p-10" role="main" aria-labelledby="login-title">
+
+      <!-- Header -->
+      <div class="text-center mb-8">
+        @if (!otpSent()) {
+          <!-- Logo texte stylisé -->
+          <h1 id="login-title" class="text-4xl font-bold mb-2">
+            <span class="bg-gradient-to-r from-indigo-600 to-purple-600 bg-clip-text text-transparent">Plan</span><span class="text-gray-900">Sitter</span>
+          </h1>
+          <p class="text-gray-600 text-base">
+            {{ 'auth.login.title' | transloco }}
+          </p>
+        } @else {
+          <h1 id="login-title" class="text-3xl font-bold text-gray-900 mb-2">
+            {{ 'auth.otp.codeSentTitle' | transloco }}
+          </h1>
+          <p class="text-gray-600 text-base">
+            {{ 'auth.otp.codeSentMessage' | transloco }}
+          </p>
+          <p class="text-gray-700 font-medium mt-2">{{ emailForm.value.email }}</p>
+        }
       </div>
-    </ng-template>
 
-    <!-- Étape 1 : Envoi du code OTP -->
-    @if (!otpSent()) {
-      <form [formGroup]="emailForm" (ngSubmit)="sendOtp()">
-        <div class="flex flex-col gap-4">
-          
-          <!-- Champ email -->
-          <div class="flex flex-col gap-2">
-            <label for="email" class="font-semibold text-gray-700">{{ 'auth.login.emailLabel' | transloco }}</label>
-            <input
-              pInputText
-              id="email"
-              type="email"
-              formControlName="email"
-              [placeholder]="'auth.login.emailPlaceholder' | transloco"
-              class="w-full"
-              autocomplete="email"
-              required
-              aria-required="true"
-              [attr.aria-disabled]="isLoading() ? 'true' : null"
-              [attr.aria-invalid]="errorMessage() ? 'true' : null"
-              [attr.aria-describedby]="errorMessage() ? 'email-hint email-error' : 'email-hint'"
-            />
-          </div>
+      <!-- Étape 1 : Envoi du code OTP -->
+      @if (!otpSent()) {
+        <form [formGroup]="emailForm" (ngSubmit)="sendOtp()">
+          <div class="flex flex-col gap-6">
 
-          <!-- Message d'erreur -->
-          @if (errorMessage()) {
-            <p-message
-              id="email-error"
-              severity="error"
-              role="alert"
-              aria-live="polite"
-              variant="simple"
-            >
-              {{ errorMessage() }}
-            </p-message>
-          }
-
-          <!-- Bouton principal -->
-          <p-button
-            [label]="'auth.login.sendCodeButton' | transloco"
-            icon="pi pi-envelope"
-            type="submit"
-            [loading]="isLoading()"
-            styleClass="w-full"
-          />
-
-          <!-- Indication -->
-          <span id="email-hint" class="text-sm text-gray-600 text-center mt-2">
-            {{ 'auth.login.emailHint' | transloco }}
-          </span>
-        </div>
-      </form>
-    }
-
-    <!-- Étape 2 : Vérification du code OTP -->
-    @else {
-      <form [formGroup]="otpForm" (ngSubmit)="verifyOtp()">
-        <div class="flex flex-col gap-4">
-
-          <!-- Informations -->
-          <div class="text-center">
-            <i class="pi pi-envelope text-4xl text-blue-500 mb-3" aria-hidden="true"></i>
-            <h2 class="text-lg font-semibold text-gray-800">{{ 'auth.otp.codeSentTitle' | transloco }}</h2>
-            <p class="text-gray-600 mt-2" id="otp-description">
-              {{ 'auth.otp.codeSentMessage' | transloco }}<br />
-              <strong>{{ emailForm.value.email }}</strong>
-            </p>
-          </div>
-
-          <!-- Champ OTP -->
-          <div class="flex flex-col gap-2">
-            <label for="otp-input" class="font-semibold text-gray-700 text-center">
-              {{ 'auth.otp.codeLabel' | transloco }}
-            </label>
-            <div class="flex justify-center">
-              <p-inputOtp
-                inputId="otp-input"
-                formControlName="otpCode"
-                [length]="6"
-                [integerOnly]="true"
-                [attr.aria-disabled]="isLoading() ? 'true' : null"
-                aria-describedby="otp-description otp-expiry"
+            <!-- Champ email -->
+            <div class="flex flex-col gap-2">
+              <label for="email" class="font-medium text-gray-900 text-sm">
+                {{ 'auth.login.emailLabel' | transloco }}
+              </label>
+              <input
+                pInputText
+                id="email"
+                type="email"
+                formControlName="email"
+                [placeholder]="'auth.login.emailPlaceholder' | transloco"
                 [invalid]="errorMessage() ? true : false"
+                class="w-full h-12 text-base"
+                autocomplete="email"
+                required
+                aria-required="true"
+                [attr.aria-disabled]="isLoading() ? 'true' : null"
+                [attr.aria-invalid]="errorMessage() ? 'true' : null"
+                [attr.aria-describedby]="errorMessage() ? 'email-hint email-error' : 'email-hint'"
               />
             </div>
-          </div>
 
-          <!-- Message d'erreur -->
-          @if (errorMessage()) {
-            <p-message
-              severity="error"
-              role="alert"
-              aria-live="polite"
-              variant="simple"
+            <!-- Message d'erreur -->
+            @if (errorMessage()) {
+              <div class="bg-red-50 border border-red-200 rounded-lg p-3">
+                <p id="email-error" class="text-red-600 text-sm" role="alert" aria-live="polite">
+                  {{ errorMessage() }}
+                </p>
+              </div>
+            }
+
+            <!-- Bouton principal moderne -->
+            <button
+              type="submit"
+              [disabled]="isLoading()"
+              class="w-full h-12 bg-gradient-to-r from-indigo-600 to-purple-600 hover:from-indigo-700 hover:to-purple-700 text-white font-semibold rounded-lg shadow-lg hover:shadow-xl transition-all duration-200 disabled:opacity-50 disabled:cursor-not-allowed flex items-center justify-center gap-2"
             >
-              {{ errorMessage() }}
-            </p-message>
-          }
+              @if (isLoading()) {
+                <i class="pi pi-spin pi-spinner" aria-hidden="true"></i>
+              } @else {
+                <i class="pi pi-envelope" aria-hidden="true"></i>
+              }
+              <span>{{ 'auth.login.sendCodeButton' | transloco }}</span>
+            </button>
 
-          <!-- Bouton principal -->
-          <p-button
-            [label]="'auth.otp.verifyButton' | transloco"
-            icon="pi pi-check"
-            type="submit"
-            [loading]="isLoading()"
-            styleClass="w-full"
-          />
-
-          <!-- Actions secondaires -->
-          <div class="flex flex-col gap-2 mt-2">
-            <p-button
-              [label]="'auth.otp.resendButton' | transloco"
-              severity="secondary"
-              [loading]="isLoading()"
-              (onClick)="sendOtp()"
-              styleClass="w-full"
-              [text]="true"
-            />
-
-            <p-button
-              [label]="'auth.otp.changeEmailButton' | transloco"
-              severity="secondary"
-              (onClick)="resetForm()"
-              styleClass="w-full"
-              [text]="true"
-            />
+            <!-- Indication -->
+            <p id="email-hint" class="text-sm text-gray-500 text-center">
+              {{ 'auth.login.emailHint' | transloco }}
+            </p>
           </div>
+        </form>
+      }
 
-          <!-- Information d'expiration -->
-          <span id="otp-expiry" class="text-xs text-gray-500 text-center mt-2">
-            {{ 'auth.otp.expiryInfo' | transloco }}
-          </span>
-        </div>
-      </form>
-    }
-  </p-card>
+      <!-- Étape 2 : Vérification du code OTP -->
+      @else {
+        <form [formGroup]="otpForm" (ngSubmit)="verifyOtp()">
+          <div class="flex flex-col gap-6">
+
+            <!-- Champ OTP -->
+            <div class="flex flex-col gap-3">
+              <label for="otp-input" class="font-medium text-gray-900 text-sm text-center">
+                {{ 'auth.otp.codeLabel' | transloco }}
+              </label>
+              <div class="flex justify-center">
+                <p-inputOtp
+                  inputId="otp-input"
+                  formControlName="otpCode"
+                  [length]="6"
+                  [integerOnly]="true"
+                  [attr.aria-disabled]="isLoading() ? 'true' : null"
+                  aria-describedby="otp-description otp-expiry"
+                  [invalid]="errorMessage() ? true : false"
+                />
+              </div>
+            </div>
+
+            <!-- Message d'erreur -->
+            @if (errorMessage()) {
+              <div class="bg-red-50 border border-red-200 rounded-lg p-3">
+                <p class="text-red-600 text-sm text-center" role="alert" aria-live="polite">
+                  {{ errorMessage() }}
+                </p>
+              </div>
+            }
+
+            <!-- Bouton principal -->
+            <button
+              type="submit"
+              [disabled]="isLoading()"
+              class="w-full h-12 bg-gradient-to-r from-indigo-600 to-purple-600 hover:from-indigo-700 hover:to-purple-700 text-white font-semibold rounded-lg shadow-lg hover:shadow-xl transition-all duration-200 disabled:opacity-50 disabled:cursor-not-allowed flex items-center justify-center gap-2"
+            >
+              @if (isLoading()) {
+                <i class="pi pi-spin pi-spinner" aria-hidden="true"></i>
+              } @else {
+                <i class="pi pi-check" aria-hidden="true"></i>
+              }
+              <span>{{ 'auth.otp.verifyButton' | transloco }}</span>
+            </button>
+
+            <!-- Actions secondaires -->
+            <div class="flex flex-col gap-2 pt-4 border-t border-gray-100">
+              <button
+                type="button"
+                (click)="sendOtp()"
+                [disabled]="isLoading()"
+                class="w-full h-10 text-indigo-600 hover:text-indigo-700 hover:bg-indigo-50 font-medium rounded-lg transition-colors disabled:opacity-50 disabled:cursor-not-allowed"
+              >
+                {{ 'auth.otp.resendButton' | transloco }}
+              </button>
+
+              <button
+                type="button"
+                (click)="resetForm()"
+                class="w-full h-10 text-gray-600 hover:text-gray-700 hover:bg-gray-50 font-medium rounded-lg transition-colors"
+              >
+                {{ 'auth.otp.changeEmailButton' | transloco }}
+              </button>
+            </div>
+
+            <!-- Information d'expiration -->
+            <p id="otp-expiry" class="text-xs text-gray-500 text-center">
+              {{ 'auth.otp.expiryInfo' | transloco }}
+            </p>
+          </div>
+        </form>
+      }
+    </div>
+  </div>
 </div>

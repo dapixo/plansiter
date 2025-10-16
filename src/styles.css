@@ -6,3 +6,79 @@
 @tailwind utilities;
 
 /* You can add global styles to this file, and also import other style files */
+
+/* ========================================
+   PrimeNG Custom Theme - Focus States
+   ======================================== */
+
+/* Override PrimeNG focus ring avec le thème indigo - État normal */
+.p-inputtext:enabled:focus {
+  outline: 0 none !important;
+  outline-offset: 0 !important;
+  box-shadow: 0 0 0 0.2rem rgba(99, 102, 241, 0.25) !important; /* indigo-500 */
+  border-color: #6366f1 !important; /* indigo-500 */
+}
+
+/* État invalide - Bordure rouge */
+.p-inputtext.p-invalid,
+.p-inputtext[aria-invalid="true"] {
+  border-color: #ef4444 !important; /* red-500 */
+}
+
+.p-inputtext.p-invalid:enabled:focus,
+.p-inputtext[aria-invalid="true"]:enabled:focus {
+  outline: 0 none !important;
+  outline-offset: 0 !important;
+  box-shadow: 0 0 0 0.2rem rgba(239, 68, 68, 0.25) !important; /* red-500 */
+  border-color: #ef4444 !important; /* red-500 */
+}
+
+/* Override pour p-inputOtp - État normal */
+.p-inputotp-input:enabled:focus {
+  outline: 0 none !important;
+  outline-offset: 0 !important;
+  box-shadow: 0 0 0 0.2rem rgba(99, 102, 241, 0.25) !important; /* indigo-500 */
+  border-color: #6366f1 !important; /* indigo-500 */
+}
+
+/* Override pour p-inputOtp - État invalide */
+.p-inputotp.p-invalid .p-inputotp-input {
+  border-color: #ef4444 !important; /* red-500 */
+}
+
+.p-inputotp.p-invalid .p-inputotp-input:enabled:focus {
+  outline: 0 none !important;
+  outline-offset: 0 !important;
+  box-shadow: 0 0 0 0.2rem rgba(239, 68, 68, 0.25) !important; /* red-500 */
+  border-color: #ef4444 !important; /* red-500 */
+}
+
+/* Textarea */
+.p-inputtextarea:enabled:focus {
+  outline: 0 none !important;
+  outline-offset: 0 !important;
+  box-shadow: 0 0 0 0.2rem rgba(99, 102, 241, 0.25) !important; /* indigo-500 */
+  border-color: #6366f1 !important; /* indigo-500 */
+}
+
+.p-inputtextarea.p-invalid:enabled:focus {
+  outline: 0 none !important;
+  outline-offset: 0 !important;
+  box-shadow: 0 0 0 0.2rem rgba(239, 68, 68, 0.25) !important; /* red-500 */
+  border-color: #ef4444 !important; /* red-500 */
+}
+
+/* Dropdown */
+.p-dropdown:not(.p-disabled).p-focus {
+  outline: 0 none !important;
+  outline-offset: 0 !important;
+  box-shadow: 0 0 0 0.2rem rgba(99, 102, 241, 0.25) !important; /* indigo-500 */
+  border-color: #6366f1 !important; /* indigo-500 */
+}
+
+.p-dropdown.p-invalid:not(.p-disabled).p-focus {
+  outline: 0 none !important;
+  outline-offset: 0 !important;
+  box-shadow: 0 0 0 0.2rem rgba(239, 68, 68, 0.25) !important; /* red-500 */
+  border-color: #ef4444 !important; /* red-500 */
+}
