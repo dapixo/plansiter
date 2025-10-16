@@ -1,31 +1,31 @@
-<section class="p-8 max-w-4xl mx-auto" aria-labelledby="service-form-title">
+<section class="p-8 bg-gray-50 min-h-full" aria-labelledby="service-form-title">
+  <!-- Breadcrumb -->
+  <nav aria-label="breadcrumb" class="mb-6">
+    <p-breadcrumb
+      [model]="breadcrumbItems()"
+      [home]="breadcrumbHome"
+      styleClass="bg-white border border-gray-200 rounded-lg"
+    />
+  </nav>
+
   <!-- Header -->
   <header class="mb-8">
-    <div class="flex items-center gap-4 mb-2">
-      <a
-        [routerLink]="['/' + lang.getCurrentLanguage(), 'dashboard', 'services']"
-        class="inline-flex items-center justify-center w-10 h-10 rounded-lg hover:bg-gray-100 transition-colors"
-        [attr.aria-label]="'common.back' | transloco"
-      >
-        <i class="pi pi-arrow-left text-gray-600" aria-hidden="true"></i>
-      </a>
-      <h1 id="service-form-title" class="text-3xl font-bold text-gray-900">
+    <h1 id="service-form-title" class="text-4xl font-bold mb-2">
+      <span class="bg-gradient-to-r from-indigo-600 to-purple-600 bg-clip-text text-transparent">
         {{ (isEditMode() ? 'services.editService' : 'services.createService') | transloco }}
-      </h1>
-    </div>
-    <p class="text-gray-500 ml-14">
-      {{
-        (isEditMode() ? 'services.form.editSubtitle' : 'services.form.createSubtitle') | transloco
-      }}
+      </span>
+    </h1>
+    <p class="text-gray-600 text-lg">
+      {{ (isEditMode() ? 'services.form.editSubtitle' : 'services.form.createSubtitle') | transloco }}
     </p>
   </header>
 
   <!-- Form Card -->
-  <div class="bg-white rounded-xl border border-gray-200 shadow-sm p-8">
+  <div class="bg-white rounded-xl border border-gray-200 shadow-sm p-8 max-w-4xl">
     @if (!isFormReady()) {
     <!-- Loader en mode édition -->
     <div class="flex items-center justify-center py-12" role="status" aria-live="polite">
-      <i class="pi pi-spin pi-spinner text-4xl text-blue-600" aria-hidden="true"></i>
+      <i class="pi pi-spin pi-spinner text-4xl text-indigo-600" aria-hidden="true"></i>
       <span class="sr-only">
         {{ 'common.loading' | transloco }}
       </span>
@@ -37,85 +37,93 @@
       class="flex flex-col gap-6"
       aria-labelledby="service-form-title"
     >
-      <!-- Nom du service -->
-      <div class="flex flex-col gap-2">
-        <label for="name" class="font-medium text-gray-700">
-          {{ 'services.form.name' | transloco }}
-          <span class="text-red-500" aria-hidden="true">*</span>
-        </label>
-        <input
-          pInputText
-          id="name"
-          formControlName="name"
-          [placeholder]="'services.form.namePlaceholder' | transloco"
-          class="w-full"
-          aria-required="true"
-          required
-          [attr.aria-invalid]="form.controls.name.invalid ? 'true' : 'false'"
-          [attr.aria-describedby]="
-            form.controls.name.invalid && form.controls.name.touched ? 'name-error' : null
-          "
-        />
-        @if (form.controls.name.invalid && form.controls.name.touched) {
-        <p-message id="name-error" severity="error" variant="simple">
-          {{ 'services.form.nameRequired' | transloco }}
-        </p-message>
-        }
-      </div>
+      <!-- Informations de base -->
+      <fieldset class="flex flex-col gap-6 border-0 p-0">
+        <legend class="text-sm font-semibold text-gray-700 mb-2">
+          {{ 'services.form.basicInfo' | transloco }}
+        </legend>
 
-      <!-- Type de service -->
-      <div class="flex flex-col gap-2">
-        <label for="type" class="font-medium text-gray-700">
-          {{ 'services.form.type' | transloco }}
-          <span class="text-red-500" aria-hidden="true">*</span>
-        </label>
-        <p-select
-          id="type"
-          formControlName="type"
-          [options]="serviceTypes"
-          optionLabel="label"
-          optionValue="value"
-          [placeholder]="'services.form.typePlaceholder' | transloco"
-          class="w-full"
-          aria-required="true"
-          required
-          [attr.aria-invalid]="form.controls.type.invalid ? 'true' : 'false'"
-          [attr.aria-describedby]="
-            form.controls.type.invalid && form.controls.type.touched ? 'type-error' : null
-          "
-        >
-          <ng-template pTemplate="selectedItem" let-selectedOption>
-            @if (selectedOption) {
-            {{ selectedOption.label | transloco }}
-            }
-          </ng-template>
-          <ng-template pTemplate="item" let-option>
-            {{ option.label | transloco }}
-          </ng-template>
-        </p-select>
-        @if (form.controls.type.invalid && form.controls.type.touched) {
-        <p-message id="type-error" severity="error" variant="simple">
-          {{ 'services.form.typeRequired' | transloco }}
-        </p-message>
-        }
-      </div>
+        <!-- Nom du service -->
+        <div class="flex flex-col gap-2">
+          <label for="name" class="font-medium text-gray-700">
+            {{ 'services.form.name' | transloco }}
+            <span class="text-red-500" aria-hidden="true">*</span>
+          </label>
+          <input
+            pInputText
+            id="name"
+            formControlName="name"
+            [placeholder]="'services.form.namePlaceholder' | transloco"
+            class="w-full"
+            aria-required="true"
+            required
+            [attr.aria-invalid]="form.controls.name.invalid ? 'true' : 'false'"
+            [invalid]="form.controls.name.invalid && form.controls.name.touched"
+            [attr.aria-describedby]="
+              form.controls.name.invalid && form.controls.name.touched ? 'name-error' : null
+            "
+          />
+          @if (form.controls.name.invalid && form.controls.name.touched) {
+          <p-message id="name-error" severity="error" variant="simple">
+            {{ 'services.form.nameRequired' | transloco }}
+          </p-message>
+          }
+        </div>
 
-      <!-- Description -->
-      <div class="flex flex-col gap-2">
-        <label for="description" class="font-medium text-gray-700">
-          {{ 'services.form.description' | transloco }}
-        </label>
-        <textarea
-          pTextarea
-          id="description"
-          formControlName="description"
-          [placeholder]="'services.form.descriptionPlaceholder' | transloco"
-          rows="3"
-          class="w-full"
-        ></textarea>
-      </div>
+        <!-- Type de service -->
+        <div class="flex flex-col gap-2">
+          <label for="type" class="font-medium text-gray-700">
+            {{ 'services.form.type' | transloco }}
+            <span class="text-red-500" aria-hidden="true">*</span>
+          </label>
+          <p-select
+            id="type"
+            formControlName="type"
+            [options]="serviceTypes"
+            optionLabel="label"
+            optionValue="value"
+            [placeholder]="'services.form.typePlaceholder' | transloco"
+            class="w-full"
+            aria-required="true"
+            required
+            [attr.aria-invalid]="form.controls.type.invalid ? 'true' : 'false'"
+            [attr.aria-describedby]="
+              form.controls.type.invalid && form.controls.type.touched ? 'type-error' : null
+            "
+          >
+            <ng-template pTemplate="selectedItem" let-selectedOption>
+              @if (selectedOption) {
+              {{ selectedOption.label | transloco }}
+              }
+            </ng-template>
+            <ng-template pTemplate="item" let-option>
+              {{ option.label | transloco }}
+            </ng-template>
+          </p-select>
+          @if (form.controls.type.invalid && form.controls.type.touched) {
+          <p-message id="type-error" severity="error" variant="simple">
+            {{ 'services.form.typeRequired' | transloco }}
+          </p-message>
+          }
+        </div>
 
-      <!-- Groupe Prix -->
+        <!-- Description -->
+        <div class="flex flex-col gap-2">
+          <label for="description" class="font-medium text-gray-700">
+            {{ 'services.form.description' | transloco }}
+          </label>
+          <textarea
+            pTextarea
+            id="description"
+            formControlName="description"
+            [placeholder]="'services.form.descriptionPlaceholder' | transloco"
+            rows="4"
+            class="w-full"
+          ></textarea>
+        </div>
+      </fieldset>
+
+      <!-- Tarification -->
       <fieldset class="grid grid-cols-1 md:grid-cols-2 gap-4 border-0 p-0">
         <legend class="text-sm font-semibold text-gray-700 mb-2 col-span-full">
           {{ 'services.form.priceGroup' | transloco }}

@@ -15,8 +15,10 @@ import { InputNumberModule } from 'primeng/inputnumber';
 import { SelectModule } from 'primeng/select';
 import { ButtonModule } from 'primeng/button';
 import { MessageModule } from 'primeng/message';
-import { TranslocoModule } from '@jsverse/transloco';
+import { BreadcrumbModule } from 'primeng/breadcrumb';
+import { TranslocoModule, TranslocoService } from '@jsverse/transloco';
 import { TextareaModule } from 'primeng/textarea';
+import { MenuItem } from 'primeng/api';
 import { Service, ServiceType } from '@domain/entities';
 import { ServiceStore } from '@application/stores/service.store';
 import { AuthService } from '@application/services';
@@ -37,6 +39,7 @@ type PriceType = 'hour' | 'day' | 'night';
     SelectModule,
     ButtonModule,
     MessageModule,
+    BreadcrumbModule,
     TranslocoModule,
   ],
   templateUrl: './service-form-page.component.html',
@@ -49,6 +52,7 @@ export class ServiceFormPageComponent {
   private readonly router = inject(Router);
   private readonly store = inject(ServiceStore);
   private readonly auth = inject(AuthService);
+  private readonly transloco = inject(TranslocoService);
   protected readonly lang = inject(LanguageService);
 
   private readonly paramMap = toSignal(this.route.paramMap);
@@ -60,6 +64,33 @@ export class ServiceFormPageComponent {
 
   protected readonly isEditMode = computed(() => !!this.serviceId());
   protected readonly isFormReady = computed(() => !this.isEditMode() || !!this.service());
+
+  protected readonly breadcrumbItems = computed<MenuItem[]>(() => {
+    const lang = this.lang.getCurrentLanguage();
+    const items: MenuItem[] = [
+      {
+        label: this.transloco.translate('services.title'),
+        routerLink: `/${lang}/dashboard/services`
+      }
+    ];
+
+    if (this.isEditMode()) {
+      items.push({
+        label: this.service()?.name || this.transloco.translate('services.editService')
+      });
+    } else {
+      items.push({
+        label: this.transloco.translate('services.createService')
+      });
+    }
+
+    return items;
+  });
+
+  protected readonly breadcrumbHome: MenuItem = {
+    icon: 'pi pi-home',
+    routerLink: `/${this.lang.getCurrentLanguage()}/dashboard`
+  };
   protected readonly serviceTypes: { label: string; value: ServiceType }[] = [
     { label: 'services.types.petSitting', value: 'pet-sitting' },
     { label: 'services.types.plantSitting', value: 'plant-sitting' },
