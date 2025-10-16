@@ -68,7 +68,7 @@
   border-color: #ef4444 !important; /* red-500 */
 }
 
-/* Dropdown */
+/* Dropdown (legacy) */
 .p-dropdown:not(.p-disabled).p-focus {
   outline: 0 none !important;
   outline-offset: 0 !important;
@@ -77,6 +77,31 @@
 }
 
 .p-dropdown.p-invalid:not(.p-disabled).p-focus {
+  outline: 0 none !important;
+  outline-offset: 0 !important;
+  box-shadow: 0 0 0 0.2rem rgba(239, 68, 68, 0.25) !important; /* red-500 */
+  border-color: #ef4444 !important; /* red-500 */
+}
+
+/* Select (PrimeNG v18+) - État normal */
+.p-select:not(.p-disabled).p-focus {
+  outline: 0 none !important;
+  outline-offset: 0 !important;
+  box-shadow: 0 0 0 0.2rem rgba(99, 102, 241, 0.25) !important; /* indigo-500 */
+  border-color: #6366f1 !important; /* indigo-500 */
+}
+
+/* Select - État invalide */
+.p-select.p-invalid:not(.p-disabled).p-focus,
+.p-select[aria-invalid="true"]:not(.p-disabled).p-focus {
+  outline: 0 none !important;
+  outline-offset: 0 !important;
+  box-shadow: 0 0 0 0.2rem rgba(239, 68, 68, 0.25) !important; /* red-500 */
+  border-color: #ef4444 !important; /* red-500 */
+}
+
+/* Textarea - Ajout état invalide avec aria-invalid */
+.p-inputtextarea[aria-invalid="true"]:enabled:focus {
   outline: 0 none !important;
   outline-offset: 0 !important;
   box-shadow: 0 0 0 0.2rem rgba(239, 68, 68, 0.25) !important; /* red-500 */
