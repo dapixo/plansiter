@@ -9,14 +9,14 @@
       </h2>
       <p class="text-gray-600 text-lg">{{ 'clients.subtitle' | transloco }}</p>
     </div>
-    <a
-      routerLink="new"
-      class="inline-flex items-center gap-2 px-4 py-2.5 bg-gradient-to-r from-indigo-600 to-purple-600 hover:from-indigo-700 hover:to-purple-700 text-white font-semibold rounded-lg shadow-md hover:shadow-lg transition-all duration-200"
-      [attr.aria-label]="'clients.addClient' | transloco"
-    >
-      <i class="pi pi-plus" aria-hidden="true"></i>
-      <span>{{ 'clients.addClient' | transloco }}</span>
-    </a>
+    @if (store.clients().length > 0) {
+    <app-action-button
+      route="new"
+      labelKey="clients.addClient"
+      icon="pi-plus"
+      ariaLabelKey="clients.addClient"
+    />
+    }
   </header>
 
   <!-- Clients list -->
@@ -77,18 +77,12 @@
 
   <!-- Empty state -->
   @if (store.clients().length === 0 && !store.loading()) {
-  <section class="text-center py-20" role="status" aria-live="polite">
-    <div class="inline-flex items-center justify-center w-16 h-16 rounded-full bg-gradient-to-br from-indigo-100 to-purple-100 mb-4">
-      <i class="pi pi-users text-3xl text-indigo-600" aria-hidden="true"></i>
-    </div>
-    <p class="text-gray-600 text-lg font-medium mb-2">{{ 'clients.noClients' | transloco }}</p>
-    <a
-      routerLink="new"
-      class="inline-flex items-center gap-2 text-indigo-600 hover:text-indigo-700 font-medium"
-    >
-      <i class="pi pi-plus text-sm" aria-hidden="true"></i>
-      <span>{{ 'clients.addClient' | transloco }}</span>
-    </a>
-  </section>
+  <app-empty-state
+    icon="pi-users"
+    messageKey="clients.noClients"
+    actionLabelKey="clients.addClient"
+    actionRoute="new"
+    actionAriaLabelKey="clients.addClient"
+  />
   }
 </section>

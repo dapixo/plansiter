@@ -7,6 +7,8 @@ import { ConfirmationService } from 'primeng/api';
 import { TranslocoModule, TranslocoService } from '@jsverse/transloco';
 import { Client, SubjectType } from '@domain/entities';
 import { ClientStore } from '@application/stores/client.store';
+import { EmptyStateComponent } from '@ui/components/empty-state/empty-state.component';
+import { ActionButtonComponent } from '@ui/components/action-button/action-button.component';
 
 @Component({
   selector: 'app-clients',
@@ -16,7 +18,9 @@ import { ClientStore } from '@application/stores/client.store';
     RouterModule,
     ButtonModule,
     ConfirmDialogModule,
-    TranslocoModule
+    TranslocoModule,
+    EmptyStateComponent,
+    ActionButtonComponent
   ],
   providers: [ConfirmationService],
   templateUrl: './clients.component.html',

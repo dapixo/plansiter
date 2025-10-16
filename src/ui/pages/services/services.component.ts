@@ -6,6 +6,8 @@ import { ConfirmationService } from 'primeng/api';
 import { TranslocoModule, TranslocoService } from '@jsverse/transloco';
 import { Service, ServiceType } from '@domain/entities';
 import { ServiceStore } from '@application/stores/service.store';
+import { EmptyStateComponent } from '@ui/components/empty-state/empty-state.component';
+import { ActionButtonComponent } from '@ui/components/action-button/action-button.component';
 
 @Component({
   selector: 'app-services',
@@ -14,7 +16,9 @@ import { ServiceStore } from '@application/stores/service.store';
     CommonModule,
     RouterModule,
     ConfirmDialogModule,
-    TranslocoModule
+    TranslocoModule,
+    EmptyStateComponent,
+    ActionButtonComponent
   ],
   providers: [ConfirmationService],
   templateUrl: './services.component.html',
@@ -34,7 +38,11 @@ export class ServicesComponent {
     'other': 'services.types.other'
   };
 
-  protected deleteService(service: Service): void {
+  protected deleteService(event: Event, service: Service): void {
+    // Empêcher la navigation vers la page d'édition
+    event.preventDefault();
+    event.stopPropagation();
+
     this.confirmationService.confirm({
       message: this.transloco.translate('services.deleteConfirm', { name: service.name }),
       header: this.transloco.translate('services.deleteTitle'),
@@ -50,18 +58,5 @@ export class ServicesComponent {
 
   protected getServiceTypeLabel(type: ServiceType): string {
     return this.SERVICE_TYPE_LABELS[type] || type;
-  }
-
-  protected getPriceDisplay(service: Service): string {
-    if (service.pricePerHour) {
-      return this.transloco.translate('services.pricePerHour', { price: service.pricePerHour });
-    }
-    if (service.pricePerDay) {
-      return this.transloco.translate('services.pricePerDay', { price: service.pricePerDay });
-    }
-    if (service.pricePerNight) {
-      return this.transloco.translate('services.pricePerNight', { price: service.pricePerNight });
-    }
-    return this.transloco.translate('services.priceNotSet');
   }
 }

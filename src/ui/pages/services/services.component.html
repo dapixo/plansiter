@@ -1,79 +1,77 @@
 <p-confirmDialog />
 
-<section class="p-8" aria-labelledby="services-section-title">
+<section class="p-8 bg-gray-50 min-h-full" aria-labelledby="services-section-title">
   <!-- Header -->
   <header class="flex justify-between items-center mb-8">
     <div>
-      <h2 id="services-section-title" class="text-2xl font-bold text-gray-900">
-        {{ 'services.title' | transloco }}
+      <h2 id="services-section-title" class="text-4xl font-bold mb-2">
+        <span class="bg-gradient-to-r from-indigo-600 to-purple-600 bg-clip-text text-transparent">{{ 'services.title' | transloco }}</span>
       </h2>
-      <p class="text-gray-500 mt-1">{{ 'services.subtitle' | transloco }}</p>
+      <p class="text-gray-600 text-lg">{{ 'services.subtitle' | transloco }}</p>
     </div>
-    <a
-      routerLink="new"
-      class="inline-flex items-center gap-2 px-4 py-2.5 bg-blue-600 text-white font-medium text-sm rounded-lg hover:bg-blue-700 transition-colors shadow-sm hover:shadow-md"
-    >
-      <i class="pi pi-plus" aria-hidden="true"></i>
-      <span>{{ 'services.addService' | transloco }}</span>
-    </a>
+    @if (store.services().length > 0) {
+    <app-action-button
+      route="new"
+      labelKey="services.addService"
+      icon="pi-plus"
+      ariaLabelKey="services.addService"
+    />
+    }
   </header>
 
   <!-- Services list -->
   <ul class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6" role="list">
     @for (service of store.services(); track service.id) {
-    <li
-      class="service-card group relative bg-white rounded-xl border border-gray-200 hover:border-blue-300 hover:shadow-lg transition-all duration-200 overflow-hidden"
-    >
-      <div class="p-6">
-        <h3 class="text-lg font-semibold text-gray-900 mb-2 pr-20">
-          {{ service.name }}
-        </h3>
-
-        <span class="inline-flex items-center text-sm text-gray-600 mb-4">
-          <i class="pi pi-tag text-xs mr-1.5" aria-hidden="true"></i>
-          {{ getServiceTypeLabel(service.type) | transloco }}
-        </span>
+    <li class="relative group">
+      <!-- Card cliquable -->
+      <a
+        [routerLink]="[service.id, 'edit']"
+        class="block bg-white rounded-xl border border-gray-200 hover:shadow-lg hover:border-indigo-200 transition-all duration-200 p-6 cursor-pointer"
+      >
+        <!-- Infos service -->
+        <div class="flex items-center gap-3 mb-4">
+          <div class="w-10 h-10 bg-gray-100 rounded-full flex items-center justify-center flex-shrink-0">
+            <i class="pi pi-briefcase text-gray-600" aria-hidden="true"></i>
+          </div>
+          <div class="flex-1 min-w-0">
+            <h3 class="text-lg font-semibold text-gray-900 truncate">
+              {{ service.name }}
+            </h3>
+            <span class="inline-flex items-center text-sm text-gray-500">
+              <i class="pi pi-tag text-xs mr-1.5" aria-hidden="true"></i>
+              {{ getServiceTypeLabel(service.type) | transloco }}
+            </span>
+          </div>
+        </div>
 
         @if (service.description) {
-        <p class="text-sm text-gray-500 mb-4 line-clamp-2">
+        <p class="text-sm text-gray-600 line-clamp-2 mb-4">
           {{ service.description }}
         </p>
         }
+      </a>
 
-        <div class="mt-auto text-lg font-semibold text-blue-600">
-          {{ getPriceDisplay(service) }}
-        </div>
-      </div>
-
-      <div class="border-t border-gray-100 bg-gray-50 px-4 py-3 flex gap-2">
-        <a
-          [routerLink]="[service.id, 'edit']"
-          class="flex-1 inline-flex items-center justify-center gap-2 px-3 py-2 text-sm font-medium text-gray-700 hover:text-blue-600 hover:bg-blue-50 rounded-lg transition-colors"
-        >
-          <i class="pi pi-pencil text-xs" aria-hidden="true"></i>
-          {{ 'services.edit' | transloco }}
-        </a>
-
-        <button
-          type="button"
-          aria-label="{{ 'services.delete' | transloco }}"
-          (click)="deleteService(service)"
-          class="inline-flex items-center justify-center px-3 py-2 text-sm font-medium text-gray-700 hover:text-red-600 hover:bg-red-50 rounded-lg transition-colors"
-        >
-          <i class="pi pi-trash text-xs" aria-hidden="true"></i>
-        </button>
-      </div>
+      <!-- Bouton delete en coin -->
+      <button
+        type="button"
+        (click)="deleteService($event, service)"
+        class="absolute top-4 right-4 p-2 rounded-lg text-gray-400 hover:text-red-600 focus:text-red-600 opacity-0 group-hover:opacity-100 focus:opacity-100 focus:outline-none focus:ring-2 focus:ring-red-500 focus:ring-offset-2 transition-all duration-200"
+        [attr.aria-label]="'services.delete' | transloco"
+      >
+        <i class="pi pi-trash text-sm" aria-hidden="true"></i>
+      </button>
     </li>
     }
   </ul>
 
   <!-- Empty state -->
   @if (store.services().length === 0 && !store.loading()) {
-  <section class="text-center py-20" role="status" aria-live="polite">
-    <div class="inline-flex items-center justify-center w-16 h-16 rounded-full bg-gray-100 mb-4">
-      <i class="pi pi-briefcase text-3xl text-gray-400" aria-hidden="true"></i>
-    </div>
-    <p class="text-gray-500 text-lg">{{ 'services.noServices' | transloco }}</p>
-  </section>
+  <app-empty-state
+    icon="pi-briefcase"
+    messageKey="services.noServices"
+    actionLabelKey="services.addService"
+    actionRoute="new"
+    actionAriaLabelKey="services.addService"
+  />
   }
 </section>
