@@ -111,6 +111,7 @@
     "title": "Clients",
     "subtitle": "Gérez vos clients",
     "addClient": "Ajouter un client",
+    "viewDetails": "Voir les détails",
     "edit": "Modifier",
     "delete": "Supprimer",
     "deleteTitle": "Confirmer la suppression",
@@ -118,7 +119,11 @@
     "deleteAccept": "Supprimer",
     "editClient": "Modifier le client",
     "createClient": "Créer un client",
+    "detailClient": "Détails du client",
     "noClients": "Aucun client enregistré",
+    "detail": {
+      "subtitle": "Consultez et modifiez les informations de votre client"
+    },
     "form": {
       "createSubtitle": "Ajoutez un nouveau client à votre liste",
       "editSubtitle": "Modifiez les informations de votre client",
@@ -143,7 +148,38 @@
       "personalInfo": "Informations personnelles",
       "addressInfo": "Adresse",
       "location": "Localisation",
-      "additionalInfo": "Informations complémentaires"
+      "additionalInfo": "Informations complémentaires",
+      "postalCodeRequired": "Le code postal est obligatoire"
+    }
+  },
+  "subjects": {
+    "title": "Sujets à garder",
+    "addSubject": "Ajouter un sujet",
+    "editSubject": "Modifier le sujet",
+    "edit": "Modifier",
+    "delete": "Supprimer",
+    "types": {
+      "pet": "Animal de compagnie",
+      "plant": "Plante",
+      "child": "Enfant",
+      "house": "Maison",
+      "other": "Autre"
+    },
+    "form": {
+      "type": "Type",
+      "typePlaceholder": "Sélectionnez un type",
+      "typeRequired": "Le type est obligatoire",
+      "name": "Nom",
+      "namePlaceholder": "Ex: Max, Ficus, Sophie...",
+      "nameRequired": "Le nom est obligatoire",
+      "breed": "Race/Espèce",
+      "breedPlaceholder": "Ex: Labrador, Ficus benjamina...",
+      "age": "Âge",
+      "agePlaceholder": "Ex: 3, 5...",
+      "specialNeeds": "Besoins spécifiques",
+      "specialNeedsPlaceholder": "Allergies, médicaments, régime spécial...",
+      "notes": "Notes",
+      "notesPlaceholder": "Informations complémentaires..."
     }
   }
 }

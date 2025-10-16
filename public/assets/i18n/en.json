@@ -111,6 +111,7 @@
     "title": "Clients",
     "subtitle": "Manage your clients",
     "addClient": "Add client",
+    "viewDetails": "View details",
     "edit": "Edit",
     "delete": "Delete",
     "deleteTitle": "Confirm deletion",
@@ -118,7 +119,11 @@
     "deleteAccept": "Delete",
     "editClient": "Edit client",
     "createClient": "Create client",
+    "detailClient": "Client details",
     "noClients": "No clients registered",
+    "detail": {
+      "subtitle": "View and edit your client information"
+    },
     "form": {
       "createSubtitle": "Add a new client to your list",
       "editSubtitle": "Edit your client information",
@@ -143,7 +148,38 @@
       "personalInfo": "Personal information",
       "addressInfo": "Address",
       "location": "Location",
-      "additionalInfo": "Additional information"
+      "additionalInfo": "Additional information",
+      "postalCodeRequired": "Postal code is required"
+    }
+  },
+  "subjects": {
+    "title": "Care subjects",
+    "addSubject": "Add subject",
+    "editSubject": "Edit subject",
+    "edit": "Edit",
+    "delete": "Delete",
+    "types": {
+      "pet": "Pet",
+      "plant": "Plant",
+      "child": "Child",
+      "house": "House",
+      "other": "Other"
+    },
+    "form": {
+      "type": "Type",
+      "typePlaceholder": "Select a type",
+      "typeRequired": "Type is required",
+      "name": "Name",
+      "namePlaceholder": "Ex: Max, Ficus, Sophie...",
+      "nameRequired": "Name is required",
+      "breed": "Breed/Species",
+      "breedPlaceholder": "Ex: Labrador, Ficus benjamina...",
+      "age": "Age",
+      "agePlaceholder": "Ex: 3, 5...",
+      "specialNeeds": "Special needs",
+      "specialNeedsPlaceholder": "Allergies, medications, special diet...",
+      "notes": "Notes",
+      "notesPlaceholder": "Additional information..."
     }
   }
 }

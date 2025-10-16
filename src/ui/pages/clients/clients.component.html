@@ -47,12 +47,12 @@
 
       <div class="border-t border-gray-100 bg-gray-50 px-4 py-3 flex gap-2">
         <a
-          [routerLink]="[client.id, 'edit']"
+          [routerLink]="[client.id]"
           class="flex-1 inline-flex items-center justify-center gap-2 px-3 py-2 text-sm font-medium text-gray-700 hover:text-blue-600 hover:bg-blue-50 rounded-lg transition-colors"
-          [attr.aria-label]="'clients.edit' | transloco"
+          [attr.aria-label]="'clients.viewDetails' | transloco"
         >
-          <i class="pi pi-pencil text-xs" aria-hidden="true"></i>
-          {{ 'clients.edit' | transloco }}
+          <i class="pi pi-eye text-xs" aria-hidden="true"></i>
+          {{ 'clients.viewDetails' | transloco }}
         </a>
 
         <button

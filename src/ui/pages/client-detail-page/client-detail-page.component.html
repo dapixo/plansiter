@@ -1,0 +1,317 @@
+<section class="p-8 max-w-4xl mx-auto" aria-labelledby="client-detail-title">
+  <!-- Header -->
+  <header class="mb-8">
+    <div class="flex items-center gap-4 mb-2">
+      <a
+        [routerLink]="['/' + lang.getCurrentLanguage(), 'dashboard', 'clients']"
+        class="inline-flex items-center justify-center w-10 h-10 rounded-lg hover:bg-gray-100 transition-colors"
+        [attr.aria-label]="'common.back' | transloco"
+      >
+        <i class="pi pi-arrow-left text-gray-600" aria-hidden="true"></i>
+      </a>
+      <div class="flex-1">
+        <h1 id="client-detail-title" class="text-3xl font-bold text-gray-900">
+          {{ client()?.name || ('common.loading' | transloco) }}
+        </h1>
+        <p class="text-gray-500">
+          {{ 'clients.detail.subtitle' | transloco }}
+        </p>
+      </div>
+    </div>
+  </header>
+
+  @if (!isReady()) {
+  <!-- Loader -->
+  <div class="flex items-center justify-center py-12" role="status" aria-live="polite">
+    <i class="pi pi-spin pi-spinner text-4xl text-blue-600" aria-hidden="true"></i>
+    <span class="sr-only">
+      {{ 'common.loading' | transloco }}
+    </span>
+  </div>
+  } @else {
+  <div class="flex flex-col gap-6">
+    <!-- Section Informations personnelles -->
+    <section class="bg-white rounded-xl border border-gray-200 shadow-sm overflow-hidden">
+      <div class="px-6 py-4 border-b border-gray-200 bg-gray-50 flex items-center justify-between">
+        <h2 class="text-lg font-semibold text-gray-900">
+          {{ 'clients.form.personalInfo' | transloco }}
+        </h2>
+        @if (!editingName()) {
+        <button
+          type="button"
+          (click)="onEditName()"
+          class="inline-flex items-center gap-2 px-3 py-1.5 text-sm text-blue-600 hover:bg-blue-50 rounded-lg transition-colors"
+          [attr.aria-label]="'clients.edit' | transloco"
+        >
+          <i class="pi pi-pencil text-xs" aria-hidden="true"></i>
+          <span>{{ 'clients.edit' | transloco }}</span>
+        </button>
+        }
+      </div>
+
+      <div class="p-6">
+        @if (!editingName()) {
+        <!-- Mode lecture -->
+        <div class="flex flex-col gap-1">
+          <span class="text-sm text-gray-500">{{ 'clients.form.name' | transloco }}</span>
+          <span class="text-lg text-gray-900">{{ client()?.name }}</span>
+        </div>
+        } @else {
+        <!-- Mode édition -->
+        <form [formGroup]="nameForm" class="flex flex-col gap-4">
+          <div class="flex flex-col gap-2">
+            <label for="edit-name" class="font-medium text-gray-700">
+              {{ 'clients.form.name' | transloco }}
+              <span class="text-red-500" aria-hidden="true">*</span>
+            </label>
+            <input
+              pInputText
+              id="edit-name"
+              formControlName="name"
+              class="w-full"
+              [invalid]="nameForm.controls.name.invalid && nameForm.controls.name.touched"
+            />
+            @if (nameForm.controls.name.invalid && nameForm.controls.name.touched) {
+            <p-message severity="error" variant="simple">
+              {{ 'clients.form.nameRequired' | transloco }}
+            </p-message>
+            }
+          </div>
+
+          <div class="flex gap-2">
+            <p-button
+              type="button"
+              [label]="'common.cancel' | transloco"
+              severity="secondary"
+              [outlined]="true"
+              (onClick)="onCancelName()"
+            />
+            <p-button
+              type="button"
+              [label]="'common.save' | transloco"
+              (onClick)="onSaveName()"
+              [disabled]="nameForm.invalid"
+              [loading]="loading()"
+            />
+          </div>
+        </form>
+        }
+      </div>
+    </section>
+
+    <!-- Section Adresse -->
+    <section class="bg-white rounded-xl border border-gray-200 shadow-sm overflow-hidden">
+      <div class="px-6 py-4 border-b border-gray-200 bg-gray-50 flex items-center justify-between">
+        <h2 class="text-lg font-semibold text-gray-900">
+          {{ 'clients.form.addressInfo' | transloco }}
+        </h2>
+        @if (!editingAddress()) {
+        <button
+          type="button"
+          (click)="onEditAddress()"
+          class="inline-flex items-center gap-2 px-3 py-1.5 text-sm text-blue-600 hover:bg-blue-50 rounded-lg transition-colors"
+          [attr.aria-label]="'clients.edit' | transloco"
+        >
+          <i class="pi pi-pencil text-xs" aria-hidden="true"></i>
+          <span>{{ 'clients.edit' | transloco }}</span>
+        </button>
+        }
+      </div>
+
+      <div class="p-6">
+        @if (!editingAddress()) {
+        <!-- Mode lecture -->
+        <div class="flex items-start gap-2">
+          <i class="pi pi-map-marker text-gray-400 mt-1" aria-hidden="true"></i>
+          <div class="flex-1 text-gray-900 leading-relaxed">
+            <div>{{ client()?.address }}</div>
+            <div>
+              {{ client()?.city }}@if (client()?.postalCode) {<span>, {{ client()?.postalCode }}</span
+              >}
+            </div>
+            @if (client()?.state) {
+            <div>{{ client()?.state }}</div>
+            }
+            <div>{{ client()?.country }}</div>
+          </div>
+        </div>
+        } @else {
+        <!-- Mode édition -->
+        <form [formGroup]="addressForm" class="flex flex-col gap-4">
+          <div class="flex flex-col gap-2">
+            <label for="edit-address" class="font-medium text-gray-700">
+              {{ 'clients.form.address' | transloco }}
+              <span class="text-red-500" aria-hidden="true">*</span>
+            </label>
+            <input
+              pInputText
+              id="edit-address"
+              formControlName="address"
+              class="w-full"
+              [invalid]="addressForm.controls.address.invalid && addressForm.controls.address.touched"
+            />
+          </div>
+
+          <div class="grid grid-cols-1 md:grid-cols-2 gap-4">
+            <div class="flex flex-col gap-2">
+              <label for="edit-city" class="font-medium text-gray-700">
+                {{ 'clients.form.city' | transloco }}
+                <span class="text-red-500" aria-hidden="true">*</span>
+              </label>
+              <input
+                pInputText
+                id="edit-city"
+                formControlName="city"
+                class="w-full"
+                [invalid]="addressForm.controls.city.invalid && addressForm.controls.city.touched"
+              />
+            </div>
+
+            <div class="flex flex-col gap-2">
+              <label for="edit-postalCode" class="font-medium text-gray-700">
+                {{ 'clients.form.postalCode' | transloco }}
+                <span class="text-red-500" aria-hidden="true">*</span>
+              </label>
+              <input
+                pInputText
+                id="edit-postalCode"
+                formControlName="postalCode"
+                class="w-full"
+                [invalid]="
+                  addressForm.controls.postalCode.invalid && addressForm.controls.postalCode.touched
+                "
+              />
+            </div>
+          </div>
+
+          <div class="grid grid-cols-1 md:grid-cols-2 gap-4">
+            <div class="flex flex-col gap-2">
+              <label for="edit-state" class="font-medium text-gray-700">
+                {{ 'clients.form.state' | transloco }}
+              </label>
+              <input pInputText id="edit-state" formControlName="state" class="w-full" />
+            </div>
+
+            <div class="flex flex-col gap-2">
+              <label for="edit-country" class="font-medium text-gray-700">
+                {{ 'clients.form.country' | transloco }}
+                <span class="text-red-500" aria-hidden="true">*</span>
+              </label>
+              <input
+                pInputText
+                id="edit-country"
+                formControlName="country"
+                class="w-full"
+                [invalid]="
+                  addressForm.controls.country.invalid && addressForm.controls.country.touched
+                "
+              />
+            </div>
+          </div>
+
+          <div class="flex gap-2">
+            <p-button
+              type="button"
+              [label]="'common.cancel' | transloco"
+              severity="secondary"
+              [outlined]="true"
+              (onClick)="onCancelAddress()"
+            />
+            <p-button
+              type="button"
+              [label]="'common.save' | transloco"
+              (onClick)="onSaveAddress()"
+              [disabled]="addressForm.invalid"
+              [loading]="loading()"
+            />
+          </div>
+        </form>
+        }
+      </div>
+    </section>
+
+    <!-- Section Notes -->
+    <section class="bg-white rounded-xl border border-gray-200 shadow-sm overflow-hidden">
+      <div class="px-6 py-4 border-b border-gray-200 bg-gray-50 flex items-center justify-between">
+        <h2 class="text-lg font-semibold text-gray-900">
+          {{ 'clients.form.notes' | transloco }}
+        </h2>
+        @if (!editingNotes()) {
+        <button
+          type="button"
+          (click)="onEditNotes()"
+          class="inline-flex items-center gap-2 px-3 py-1.5 text-sm text-blue-600 hover:bg-blue-50 rounded-lg transition-colors"
+          [attr.aria-label]="'clients.edit' | transloco"
+        >
+          <i class="pi pi-pencil text-xs" aria-hidden="true"></i>
+          <span>{{ 'clients.edit' | transloco }}</span>
+        </button>
+        }
+      </div>
+
+      <div class="p-6">
+        @if (!editingNotes()) {
+        <!-- Mode lecture -->
+        @if (client()?.notes) {
+        <p class="text-gray-900 whitespace-pre-line">{{ client()?.notes }}</p>
+        } @else {
+        <p class="text-gray-400 italic">{{ 'clients.form.notesPlaceholder' | transloco }}</p>
+        }
+        } @else {
+        <!-- Mode édition -->
+        <form [formGroup]="notesForm" class="flex flex-col gap-4">
+          <textarea
+            pTextarea
+            id="edit-notes"
+            formControlName="notes"
+            [placeholder]="'clients.form.notesPlaceholder' | transloco"
+            rows="4"
+            class="w-full"
+          ></textarea>
+
+          <div class="flex gap-2">
+            <p-button
+              type="button"
+              [label]="'common.cancel' | transloco"
+              severity="secondary"
+              [outlined]="true"
+              (onClick)="onCancelNotes()"
+            />
+            <p-button
+              type="button"
+              [label]="'common.save' | transloco"
+              (onClick)="onSaveNotes()"
+              [loading]="loading()"
+            />
+          </div>
+        </form>
+        }
+      </div>
+    </section>
+
+    <!-- Section Subjects -->
+    <section class="bg-white rounded-xl border border-gray-200 shadow-sm overflow-hidden">
+      <div class="px-6 py-4 border-b border-gray-200 bg-gray-50">
+        <h2 class="text-lg font-semibold text-gray-900">
+          {{ 'subjects.title' | transloco }}
+        </h2>
+      </div>
+
+      <div class="p-6">
+        <app-client-subjects-form
+          [clientId]="clientId()"
+          [isEditMode]="true"
+          (subjectsChange)="onSubjectsChange($event)"
+        />
+      </div>
+    </section>
+
+    <!-- Global Error -->
+    @if (error()) {
+    <p-message severity="error" class="w-full" variant="simple">
+      {{ error() }}
+    </p-message>
+    }
+  </div>
+  }
+</section>

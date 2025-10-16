@@ -1,0 +1,209 @@
+<!-- Subjects Section -->
+<div class="flex flex-col gap-4">
+  <!-- Liste des subjects -->
+  @if (tempSubjects().length > 0) {
+  <div class="grid grid-cols-1 md:grid-cols-2 gap-3">
+    @for (subject of tempSubjects(); track subject.tempId; let i = $index) {
+    <div class="bg-gray-50 rounded-lg p-4 border border-gray-200 flex flex-col gap-2">
+      <div class="flex items-start justify-between">
+        <div class="flex-1">
+          <h3 class="font-semibold text-gray-900">{{ subject.name }}</h3>
+          <p class="text-sm text-gray-600">
+            {{ 'subjects.types.' + subject.type | transloco }}
+          </p>
+        </div>
+        <div class="flex gap-1">
+          <button
+            type="button"
+            (click)="onEditSubject(i)"
+            class="p-1.5 text-gray-500 hover:text-blue-600 hover:bg-blue-50 rounded transition-colors"
+            [attr.aria-label]="'subjects.edit' | transloco"
+          >
+            <i class="pi pi-pencil text-xs"></i>
+          </button>
+          <button
+            type="button"
+            (click)="onDeleteSubject(i)"
+            class="p-1.5 text-gray-500 hover:text-red-600 hover:bg-red-50 rounded transition-colors"
+            [attr.aria-label]="'subjects.delete' | transloco"
+          >
+            <i class="pi pi-trash text-xs"></i>
+          </button>
+        </div>
+      </div>
+      @if (subject.breed || subject.age) {
+      <div class="flex gap-3 text-sm text-gray-600">
+        @if (subject.breed) {
+        <span>{{ 'subjects.form.breed' | transloco }}: {{ subject.breed }}</span>
+        } @if (subject.age) {
+        <span>{{ 'subjects.form.age' | transloco }}: {{ subject.age }}</span>
+        }
+      </div>
+      } @if (subject.specialNeeds) {
+      <p class="text-sm text-gray-600">
+        <strong>{{ 'subjects.form.specialNeeds' | transloco }}:</strong>
+        {{ subject.specialNeeds }}
+      </p>
+      }
+    </div>
+    }
+  </div>
+  }
+
+  <!-- Bouton ajouter -->
+  @if (!showSubjectForm()) {
+  <button
+    type="button"
+    (click)="onAddSubject()"
+    class="inline-flex items-center justify-center gap-2 px-4 py-2.5 bg-blue-50 text-blue-600 font-medium text-sm rounded-lg hover:bg-blue-100 transition-colors border border-blue-200"
+  >
+    <i class="pi pi-plus text-sm" aria-hidden="true"></i>
+    <span>{{ 'subjects.addSubject' | transloco }}</span>
+  </button>
+  }
+
+  <!-- Formulaire subject -->
+  @if (showSubjectForm()) {
+  <div class="bg-blue-50 rounded-lg p-6 border border-blue-200">
+    <h3 class="text-sm font-semibold text-gray-900 mb-4">
+      {{
+        (editingSubjectIndex() !== null ? 'subjects.editSubject' : 'subjects.addSubject')
+          | transloco
+      }}
+    </h3>
+
+    <div class="flex flex-col gap-4" [formGroup]="subjectForm">
+      <!-- Type -->
+      <div class="flex flex-col gap-2">
+        <label for="subject-type" class="font-medium text-gray-700 text-sm">
+          {{ 'subjects.form.type' | transloco }}
+          <span class="text-red-500" aria-hidden="true">*</span>
+        </label>
+        <p-select
+          id="subject-type"
+          formControlName="type"
+          [options]="subjectTypes"
+          optionLabel="label"
+          optionValue="value"
+          [placeholder]="'subjects.form.typePlaceholder' | transloco"
+          class="w-full"
+          aria-required="true"
+          required
+        >
+          <ng-template pTemplate="selectedItem" let-selectedOption>
+            @if (selectedOption) {
+            {{ selectedOption.label | transloco }}
+            }
+          </ng-template>
+          <ng-template pTemplate="item" let-option>
+            {{ option.label | transloco }}
+          </ng-template>
+        </p-select>
+        @if (subjectForm.controls.type.invalid && subjectForm.controls.type.touched) {
+        <p-message severity="error" variant="simple">
+          {{ 'subjects.form.typeRequired' | transloco }}
+        </p-message>
+        }
+      </div>
+
+      <!-- Name -->
+      <div class="flex flex-col gap-2">
+        <label for="subject-name" class="font-medium text-gray-700 text-sm">
+          {{ 'subjects.form.name' | transloco }}
+          <span class="text-red-500" aria-hidden="true">*</span>
+        </label>
+        <input
+          pInputText
+          id="subject-name"
+          formControlName="name"
+          [placeholder]="'subjects.form.namePlaceholder' | transloco"
+          class="w-full"
+          aria-required="true"
+          required
+        />
+        @if (subjectForm.controls.name.invalid && subjectForm.controls.name.touched) {
+        <p-message severity="error" variant="simple">
+          {{ 'subjects.form.nameRequired' | transloco }}
+        </p-message>
+        }
+      </div>
+
+      <!-- Breed & Age -->
+      <div class="grid grid-cols-1 md:grid-cols-2 gap-4">
+        <div class="flex flex-col gap-2">
+          <label for="subject-breed" class="font-medium text-gray-700 text-sm">
+            {{ 'subjects.form.breed' | transloco }}
+          </label>
+          <input
+            pInputText
+            id="subject-breed"
+            formControlName="breed"
+            [placeholder]="'subjects.form.breedPlaceholder' | transloco"
+            class="w-full"
+          />
+        </div>
+
+        <div class="flex flex-col gap-2">
+          <label for="subject-age" class="font-medium text-gray-700 text-sm">
+            {{ 'subjects.form.age' | transloco }}
+          </label>
+          <p-inputNumber
+            id="subject-age"
+            formControlName="age"
+            [min]="0"
+            [placeholder]="'subjects.form.agePlaceholder' | transloco"
+            class="w-full"
+          />
+        </div>
+      </div>
+
+      <!-- Special Needs -->
+      <div class="flex flex-col gap-2">
+        <label for="subject-specialNeeds" class="font-medium text-gray-700 text-sm">
+          {{ 'subjects.form.specialNeeds' | transloco }}
+        </label>
+        <textarea
+          pTextarea
+          id="subject-specialNeeds"
+          formControlName="specialNeeds"
+          [placeholder]="'subjects.form.specialNeedsPlaceholder' | transloco"
+          rows="2"
+          class="w-full"
+        ></textarea>
+      </div>
+
+      <!-- Notes -->
+      <div class="flex flex-col gap-2">
+        <label for="subject-notes" class="font-medium text-gray-700 text-sm">
+          {{ 'subjects.form.notes' | transloco }}
+        </label>
+        <textarea
+          pTextarea
+          id="subject-notes"
+          formControlName="notes"
+          [placeholder]="'subjects.form.notesPlaceholder' | transloco"
+          rows="2"
+          class="w-full"
+        ></textarea>
+      </div>
+
+      <!-- Actions formulaire subject -->
+      <div class="flex justify-end gap-2 pt-2">
+        <p-button
+          type="button"
+          [label]="'common.cancel' | transloco"
+          severity="secondary"
+          [outlined]="true"
+          (onClick)="onCancelSubjectForm()"
+        />
+        <p-button
+          type="button"
+          [label]="'common.save' | transloco"
+          (onClick)="onSaveSubject()"
+          [disabled]="subjectForm.invalid"
+        />
+      </div>
+    </div>
+  </div>
+  }
+</div>

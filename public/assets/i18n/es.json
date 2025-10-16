@@ -111,6 +111,7 @@
     "title": "Clientes",
     "subtitle": "Gestiona tus clientes",
     "addClient": "Añadir cliente",
+    "viewDetails": "Ver detalles",
     "edit": "Editar",
     "delete": "Eliminar",
     "deleteTitle": "Confirmar eliminación",
@@ -118,7 +119,11 @@
     "deleteAccept": "Eliminar",
     "editClient": "Editar cliente",
     "createClient": "Crear cliente",
+    "detailClient": "Detalles del cliente",
     "noClients": "No hay clientes registrados",
+    "detail": {
+      "subtitle": "Consulta y edita la información de tu cliente"
+    },
     "form": {
       "createSubtitle": "Añade un nuevo cliente a tu lista",
       "editSubtitle": "Edita la información de tu cliente",
@@ -143,7 +148,38 @@
       "personalInfo": "Información personal",
       "addressInfo": "Dirección",
       "location": "Ubicación",
-      "additionalInfo": "Información adicional"
+      "additionalInfo": "Información adicional",
+      "postalCodeRequired": "El código postal es obligatorio"
+    }
+  },
+  "subjects": {
+    "title": "Sujetos de cuidado",
+    "addSubject": "Agregar sujeto",
+    "editSubject": "Editar sujeto",
+    "edit": "Editar",
+    "delete": "Eliminar",
+    "types": {
+      "pet": "Mascota",
+      "plant": "Planta",
+      "child": "Niño",
+      "house": "Casa",
+      "other": "Otro"
+    },
+    "form": {
+      "type": "Tipo",
+      "typePlaceholder": "Seleccione un tipo",
+      "typeRequired": "El tipo es obligatorio",
+      "name": "Nombre",
+      "namePlaceholder": "Ej: Max, Ficus, Sofía...",
+      "nameRequired": "El nombre es obligatorio",
+      "breed": "Raza/Especie",
+      "breedPlaceholder": "Ej: Labrador, Ficus benjamina...",
+      "age": "Edad",
+      "agePlaceholder": "Ej: 3, 5...",
+      "specialNeeds": "Necesidades especiales",
+      "specialNeedsPlaceholder": "Alergias, medicamentos, dieta especial...",
+      "notes": "Notas",
+      "notesPlaceholder": "Información adicional..."
     }
   }
 }

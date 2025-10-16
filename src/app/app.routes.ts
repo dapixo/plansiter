@@ -53,9 +53,9 @@ export const routes: Routes = [
                   import('../ui/pages/client-form-page/client-form-page.component').then(m => m.ClientFormPageComponent)
               },
               {
-                path: ':id/edit',
+                path: ':id',
                 loadComponent: () =>
-                  import('../ui/pages/client-form-page/client-form-page.component').then(m => m.ClientFormPageComponent)
+                  import('../ui/pages/client-detail-page/client-detail-page.component').then(m => m.ClientDetailPageComponent)
               }
             ]
           },
