@@ -4,25 +4,18 @@
     [class]="isCollapsed() ? 'w-20' : 'w-64'"
     class="bg-white border-r border-gray-200 flex flex-col transition-all duration-300"
   >
-    <!-- Header avec logo et nom de l'app + bouton toggle -->
-    <div class="p-6 border-b border-gray-200 flex items-center justify-between">
-      @if (!isCollapsed()) {
-      <h1 class="text-2xl font-bold text-blue-600">{{ 'common.appName' | transloco }}</h1>
-      }
-      <button
-        type="button"
-        (click)="toggleSidebar()"
-        class="p-2 hover:bg-gray-100 rounded-lg transition-colors"
-        [class.mx-auto]="isCollapsed()"
-        [attr.aria-label]="isCollapsed() ? ('sidebar.expandMenu' | transloco) : ('sidebar.collapseMenu' | transloco)"
-        [attr.aria-expanded]="!isCollapsed()"
-        aria-controls="main-navigation"
-      >
-        <i
-          [class]="isCollapsed() ? 'pi pi-angle-right' : 'pi pi-angle-left'"
-          aria-hidden="true"
-        ></i>
-      </button>
+    <!-- Header avec logo -->
+    <div class="p-6 flex items-center">
+      <a routerLink="." class="flex items-center gap-3 group">
+        <div class="w-10 h-10 bg-gradient-to-br from-indigo-500 to-purple-600 rounded-xl flex items-center justify-center shadow-md group-hover:shadow-lg transition-shadow">
+          <i class="pi pi-home text-xl text-white" aria-hidden="true"></i>
+        </div>
+        @if (!isCollapsed()) {
+        <h1 class="text-xl font-bold">
+          <span class="bg-gradient-to-r from-indigo-600 to-purple-600 bg-clip-text text-transparent">Plan</span><span class="text-gray-900">Sitter</span>
+        </h1>
+        }
+      </a>
     </div>
 
     <!-- Navigation principale -->
@@ -30,64 +23,93 @@
       @for (item of menuItems; track item.route) {
       <a
         [routerLink]="item.route"
-        routerLinkActive="bg-blue-50 text-blue-600 border-blue-600"
+        routerLinkActive="bg-indigo-50 text-indigo-600"
         [class]="isCollapsed() ? 'justify-center' : 'gap-3'"
-        class="flex items-center px-4 py-3 rounded-lg text-gray-700 hover:bg-gray-50 transition-colors border-l-4 border-transparent"
+        class="flex items-center px-4 py-3 rounded-lg text-gray-700 hover:bg-gray-50 transition-colors font-medium"
         [pTooltip]="isCollapsed() ? (item.label | transloco) : ''"
         tooltipPosition="right"
       >
         <i [class]="item.icon + ' text-xl'" aria-hidden="true"></i>
         @if (!isCollapsed()) {
-        <span class="font-medium">{{ item.label | transloco }}</span>
+        <span>{{ item.label | transloco }}</span>
         }
       </a>
       }
     </nav>
 
-    <!-- Zone inférieure avec compte et déconnexion -->
+    <!-- Zone inférieure avec langue et déconnexion -->
     <div class="p-4 border-t border-gray-200 space-y-3">
       <!-- Sélecteur de langue -->
       @if (!isCollapsed()) {
       <app-language-switcher class="px-2" />
       }
 
-      <!-- Mon compte -->
-      <a
-        routerLink="account"
-        routerLinkActive="bg-gray-50"
-        [class]="isCollapsed() ? 'justify-center px-2' : 'gap-3 px-4'"
-        class="flex items-center py-3 rounded-lg text-gray-700 hover:bg-gray-50 transition-colors"
-        [pTooltip]="isCollapsed() ? ('sidebar.myAccount' | transloco) : ''"
-        tooltipPosition="right"
-      >
-        <p-avatar [label]="getUserInitials()" shape="circle" class="bg-blue-600 text-white" />
-        @if (!isCollapsed()) {
-        <div class="flex-1 min-w-0">
-          <div class="text-sm font-medium truncate">
-            {{ getUserDisplayName() }}
-          </div>
-          <div class="text-xs text-gray-500">{{ 'sidebar.myAccount' | transloco }}</div>
-        </div>
-        }
-      </a>
-
       <!-- Bouton de déconnexion -->
-      <p-button
-        [label]="isCollapsed() ? '' : ('auth.signOut' | transloco)"
-        icon="pi pi-sign-out"
-        severity="secondary"
-        (onClick)="signOut()"
-        class="w-full"
-        [outlined]="true"
+      <button
+        type="button"
+        (click)="signOut()"
+        [class]="isCollapsed() ? 'justify-center px-2' : 'gap-3 px-4'"
+        class="flex items-center w-full py-3 rounded-lg text-red-600 hover:bg-red-50 transition-colors font-medium"
         [pTooltip]="isCollapsed() ? ('auth.signOut' | transloco) : ''"
         tooltipPosition="right"
         [attr.aria-label]="'auth.signOut' | transloco"
-      />
+      >
+        <i class="pi pi-sign-out text-xl" aria-hidden="true"></i>
+        @if (!isCollapsed()) {
+        <span>{{ 'auth.signOut' | transloco }}</span>
+        }
+      </button>
     </div>
   </aside>
 
-  <!-- Contenu principal -->
-  <main role="main" class="flex-1 overflow-auto">
-    <router-outlet />
-  </main>
+  <!-- Zone principale (topbar + contenu) -->
+  <div class="flex flex-col flex-1 overflow-hidden">
+    <!-- Topbar -->
+    <header class="bg-white border-b border-gray-200">
+      <div class="flex items-center justify-between px-6 h-16">
+        <!-- Bouton toggle sidebar à gauche -->
+        <button
+          type="button"
+          (click)="toggleSidebar()"
+          class="p-2 hover:bg-gray-100 rounded-lg transition-colors"
+          [attr.aria-label]="isCollapsed() ? ('sidebar.expandMenu' | transloco) : ('sidebar.collapseMenu' | transloco)"
+          [attr.aria-expanded]="!isCollapsed()"
+          aria-controls="main-navigation"
+        >
+          <i class="pi pi-bars text-gray-600 text-xl" aria-hidden="true"></i>
+        </button>
+
+        <!-- Actions à droite -->
+        <div class="flex items-center gap-3">
+          <!-- Notifications -->
+          <button
+            type="button"
+            class="p-2 rounded-lg hover:bg-gray-50 transition-colors relative"
+            aria-label="Notifications"
+          >
+            <i class="pi pi-bell text-gray-600 text-xl" aria-hidden="true"></i>
+          </button>
+
+          <div
+            class="flex items-center gap-2 px-2 py-1.5 rounded-lg hover:bg-gray-50 transition-colors"
+          >
+            <p-avatar
+              [label]="getUserInitials()"
+              shape="circle"
+              class="bg-gradient-to-br from-indigo-600 to-purple-600 text-white text-sm"
+              size="normal"
+            />
+            <span class="hidden sm:block text-sm font-medium text-gray-900 max-w-[100px] truncate">
+              {{ getUserDisplayName() }}
+            </span>
+          </div>
+        </div>
+      </div>
+    </header>
+
+    <!-- Contenu principal -->
+    <main role="main" class="flex-1 overflow-auto bg-gray-50">
+      <router-outlet />
+    </main>
+  </div>
 </div>
