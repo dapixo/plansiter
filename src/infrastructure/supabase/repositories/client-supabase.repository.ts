@@ -1,7 +1,7 @@
 import { Injectable, inject } from '@angular/core';
 import { Observable } from 'rxjs';
 import { map } from 'rxjs/operators';
-import { Client } from '@domain/entities';
+import { Client, Subject, SubjectType } from '@domain/entities';
 import { IClientRepository } from '@domain/repositories';
 import { SupabaseService } from '../supabase.client';
 
@@ -19,6 +19,28 @@ type ClientRow = {
   updated_at: string;
 };
 
+type SubjectRow = {
+  id: string;
+  client_id: string;
+  type: SubjectType;
+  name: string;
+  breed: string | null;
+  age: number | null;
+  special_needs: string | null;
+  notes: string | null;
+  created_at: string;
+  updated_at: string;
+};
+
+type ClientWithSubjectsRow = ClientRow & {
+  subjects: SubjectRow[];
+};
+
+export type ClientWithSubjects = {
+  client: Client;
+  subjects: Subject[];
+};
+
 @Injectable()
 export class ClientSupabaseRepository implements IClientRepository {
   private supabase = inject(SupabaseService);
@@ -31,6 +53,21 @@ export class ClientSupabaseRepository implements IClientRepository {
 
   getByUserId(userId: string): Observable<Client[]> {
     return this.queryMany(q => q.eq('user_id', userId).order('created_at', { ascending: false }));
+  }
+
+  /**
+   * Récupère tous les clients avec leurs subjects en une seule requête.
+   * Optimisé pour la liste des clients avec pagination future.
+   */
+  getByUserIdWithSubjects(userId: string): Observable<ClientWithSubjects[]> {
+    return this.supabase.from$('clients', q =>
+      q.select('*, subjects(*)')
+        .eq('user_id', userId)
+        .order('created_at', { ascending: false })
+    ).pipe(
+      map(res => this.extractData<ClientWithSubjectsRow[]>(res, false)),
+      map(rows => rows.map(row => this.mapToClientWithSubjects(row)))
+    );
   }
 
   create(client: Omit<Client, 'id' | 'createdAt' | 'updatedAt'>): Observable<Client> {
@@ -101,6 +138,29 @@ export class ClientSupabaseRepository implements IClientRepository {
       postalCode: row.postal_code,
       state: row.state ?? undefined,
       country: row.country,
+      notes: row.notes ?? undefined,
+      createdAt: new Date(row.created_at),
+      updatedAt: new Date(row.updated_at)
+    };
+  }
+
+  /** Map Supabase row with subjects → client + subjects */
+  private mapToClientWithSubjects(row: ClientWithSubjectsRow): ClientWithSubjects {
+    const client = this.mapToEntity(row);
+    const subjects = (row.subjects || []).map(subjectRow => this.mapSubjectToEntity(subjectRow));
+    return { client, subjects };
+  }
+
+  /** Map Supabase subject row → domain entity */
+  private mapSubjectToEntity(row: SubjectRow): Subject {
+    return {
+      id: row.id,
+      clientId: row.client_id,
+      type: row.type,
+      name: row.name,
+      breed: row.breed ?? undefined,
+      age: row.age ?? undefined,
+      specialNeeds: row.special_needs ?? undefined,
       notes: row.notes ?? undefined,
       createdAt: new Date(row.created_at),
       updatedAt: new Date(row.updated_at)

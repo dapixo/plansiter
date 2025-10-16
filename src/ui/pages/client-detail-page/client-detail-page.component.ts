@@ -15,11 +15,8 @@ import { ButtonModule } from 'primeng/button';
 import { MessageModule } from 'primeng/message';
 import { TranslocoModule } from '@jsverse/transloco';
 import { TextareaModule } from 'primeng/textarea';
-import { Subject } from '@domain/entities';
 import { ClientStore } from '@application/stores/client.store';
-import { SubjectStore } from '@application/stores/subject.store';
 import { LanguageService } from '@application/services/language.service';
-import { TempSubject } from '@application/services/client-management.service';
 import { ClientSubjectsFormComponent } from '@ui/components/client-subjects-form/client-subjects-form.component';
 
 @Component({
@@ -45,7 +42,6 @@ export class ClientDetailPageComponent {
   private readonly route = inject(ActivatedRoute);
   private readonly router = inject(Router);
   private readonly store = inject(ClientStore);
-  private readonly subjectStore = inject(SubjectStore);
   protected readonly lang = inject(LanguageService);
 
   /** Router params */
@@ -82,9 +78,6 @@ export class ClientDetailPageComponent {
   protected readonly notesForm = this.fb.group({
     notes: this.fb.control('', { nonNullable: true }),
   });
-
-  /** Subjects state */
-  private readonly currentSubjects = signal<TempSubject[]>([]);
 
   /** Effect pour patcher les formulaires avec les données du client */
   private readonly _patchEffect = effect(() => {
@@ -197,51 +190,5 @@ export class ClientDetailPageComponent {
     });
 
     this.editingNotes.set(false);
-  }
-
-  /** Handler pour l'output du composant enfant subjects */
-  protected onSubjectsChange(subjects: TempSubject[]): void {
-    this.currentSubjects.set(subjects);
-  }
-
-  /** Conversion TempSubject → Subject payload */
-  private toSubjectPayload(temp: TempSubject, clientId: string): Omit<Subject, 'id' | 'createdAt' | 'updatedAt'> {
-    return {
-      clientId,
-      type: temp.type,
-      name: temp.name,
-      breed: temp.breed,
-      age: temp.age,
-      specialNeeds: temp.specialNeeds,
-      notes: temp.notes,
-    };
-  }
-
-  /** Callback appelé par le composant subjects quand il fait des changements */
-  protected onSubjectsUpdate(): void {
-    const clientId = this.clientId();
-    if (!clientId) return;
-
-    const temps = this.currentSubjects();
-    const existingSubjects = this.subjectStore.subjects().filter(s => s.clientId === clientId);
-
-    // Créer les nouveaux
-    temps
-      .filter(s => !s.isExisting)
-      .forEach(s => this.subjectStore.create(this.toSubjectPayload(s, clientId)));
-
-    // Mettre à jour les existants
-    temps
-      .filter(s => s.isExisting && s.id)
-      .forEach(s => this.subjectStore.update({
-        id: s.id!,
-        data: this.toSubjectPayload(s, clientId),
-      }));
-
-    // Supprimer ceux qui ont été retirés
-    const tempIds = new Set(temps.filter(s => s.id).map(s => s.id));
-    existingSubjects
-      .filter(s => !tempIds.has(s.id))
-      .forEach(s => this.subjectStore.delete(s.id));
   }
 }

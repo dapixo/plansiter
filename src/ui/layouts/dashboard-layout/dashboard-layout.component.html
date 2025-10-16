@@ -38,10 +38,10 @@
     </nav>
 
     <!-- Zone inférieure avec langue et déconnexion -->
-    <div class="p-4 border-t border-gray-200 space-y-3">
+    <div class="p-4 border-t border-gray-200 space-y-3 flex flex-col">
       <!-- Sélecteur de langue -->
       @if (!isCollapsed()) {
-      <app-language-switcher class="px-2" />
+      <app-language-switcher/>
       }
 
       <!-- Bouton de déconnexion -->
