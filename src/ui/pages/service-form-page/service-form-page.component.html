@@ -4,7 +4,6 @@
     <p-breadcrumb
       [model]="breadcrumbItems()"
       [home]="breadcrumbHome"
-      styleClass="bg-white border border-gray-200 rounded-lg"
     />
   </nav>
 
@@ -38,7 +37,7 @@
       aria-labelledby="service-form-title"
     >
       <!-- Informations de base -->
-      <fieldset class="flex flex-col gap-6 border-0 p-0">
+      <fieldset class="flex flex-col gap-4 border-0 p-0">
         <legend class="text-sm font-semibold text-gray-700 mb-2">
           {{ 'services.form.basicInfo' | transloco }}
         </legend>
@@ -58,7 +57,6 @@
             aria-required="true"
             required
             [attr.aria-invalid]="form.controls.name.invalid ? 'true' : 'false'"
-            [invalid]="form.controls.name.invalid && form.controls.name.touched"
             [attr.aria-describedby]="
               form.controls.name.invalid && form.controls.name.touched ? 'name-error' : null
             "
@@ -85,7 +83,6 @@
             [placeholder]="'services.form.typePlaceholder' | transloco"
             class="w-full"
             aria-required="true"
-            required
             [attr.aria-invalid]="form.controls.type.invalid ? 'true' : 'false'"
             [attr.aria-describedby]="
               form.controls.type.invalid && form.controls.type.touched ? 'type-error' : null
@@ -144,7 +141,6 @@
             [placeholder]="'services.form.priceTypePlaceholder' | transloco"
             class="w-full"
             aria-required="true"
-            required
             [attr.aria-invalid]="form.controls.priceType.invalid ? 'true' : 'false'"
             [attr.aria-describedby]="
               form.controls.priceType.invalid && form.controls.priceType.touched
@@ -183,7 +179,6 @@
             [min]="0"
             [attr.aria-label]="'services.form.priceAriaLabel' | transloco"
             aria-required="true"
-            required
             [attr.aria-invalid]="form.controls.price.invalid ? 'true' : 'false'"
             [attr.aria-describedby]="
               form.controls.price.invalid && form.controls.price.touched ? 'price-error' : null
@@ -200,11 +195,13 @@
 
       <!-- Actions -->
       <div class="flex justify-end gap-3 pt-4 border-t border-gray-200">
-        <p-button
+        <app-action-button
+          [route]="null"
           type="submit"
-          [label]="'common.save' | transloco"
+          labelKey="common.save"
+          icon="pi-check"
           [loading]="uiState().loading"
-          [attr.aria-label]="'common.saveService' | transloco"
+          ariaLabelKey="common.saveService"
         />
       </div>
 

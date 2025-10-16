@@ -13,7 +13,6 @@ import { ActivatedRoute, Router, RouterModule } from '@angular/router';
 import { InputTextModule } from 'primeng/inputtext';
 import { InputNumberModule } from 'primeng/inputnumber';
 import { SelectModule } from 'primeng/select';
-import { ButtonModule } from 'primeng/button';
 import { MessageModule } from 'primeng/message';
 import { BreadcrumbModule } from 'primeng/breadcrumb';
 import { TranslocoModule, TranslocoService } from '@jsverse/transloco';
@@ -23,6 +22,7 @@ import { Service, ServiceType } from '@domain/entities';
 import { ServiceStore } from '@application/stores/service.store';
 import { AuthService } from '@application/services';
 import { LanguageService } from '@application/services/language.service';
+import { ActionButtonComponent } from '@ui/components/action-button/action-button.component';
 
 type PriceType = 'hour' | 'day' | 'night';
 
@@ -37,10 +37,10 @@ type PriceType = 'hour' | 'day' | 'night';
     TextareaModule,
     InputNumberModule,
     SelectModule,
-    ButtonModule,
     MessageModule,
     BreadcrumbModule,
     TranslocoModule,
+    ActionButtonComponent,
   ],
   templateUrl: './service-form-page.component.html',
   styleUrls: ['./service-form-page.component.css'],

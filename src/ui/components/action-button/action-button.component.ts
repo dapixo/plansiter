@@ -36,6 +36,15 @@ export class ActionButtonComponent {
   /** Clé de traduction pour l'aria-label (optionnel) */
   readonly ariaLabelKey = input<string | null>(null);
 
+  /** Type de bouton (submit, button) - ignoré si route est fourni */
+  readonly type = input<'button' | 'submit'>('button');
+
+  /** État de chargement */
+  readonly loading = input<boolean>(false);
+
+  /** État désactivé */
+  readonly disabled = input<boolean>(false);
+
   /** Classes CSS calculées selon la variante */
   protected get variantClasses(): string {
     const baseClasses = 'inline-flex items-center gap-2 font-semibold rounded-lg transition-all duration-200';

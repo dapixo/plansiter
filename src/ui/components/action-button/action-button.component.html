@@ -4,27 +4,33 @@
     [routerLink]="route()"
     [class]="variantClasses"
     [attr.aria-label]="ariaLabelKey() ? (ariaLabelKey() | transloco) : null"
+    [attr.aria-disabled]="disabled() ? 'true' : null"
   >
-    @if (icon() && iconPosition() === 'left') {
+    @if (loading()) {
+      <i class="pi pi-spin pi-spinner" aria-hidden="true"></i>
+    } @else if (icon() && iconPosition() === 'left') {
       <i [class]="'pi ' + icon()" aria-hidden="true"></i>
     }
     <span>{{ labelKey() | transloco }}</span>
-    @if (icon() && iconPosition() === 'right') {
+    @if (icon() && iconPosition() === 'right' && !loading()) {
       <i [class]="'pi ' + icon()" aria-hidden="true"></i>
     }
   </a>
 } @else {
-  <!-- Bouton standard (pour émission d'événements futurs) -->
+  <!-- Bouton standard -->
   <button
-    type="button"
+    [type]="type()"
     [class]="variantClasses"
+    [disabled]="disabled() || loading()"
     [attr.aria-label]="ariaLabelKey() ? (ariaLabelKey() | transloco) : null"
   >
-    @if (icon() && iconPosition() === 'left') {
+    @if (loading()) {
+      <i class="pi pi-spin pi-spinner" aria-hidden="true"></i>
+    } @else if (icon() && iconPosition() === 'left') {
       <i [class]="'pi ' + icon()" aria-hidden="true"></i>
     }
     <span>{{ labelKey() | transloco }}</span>
-    @if (icon() && iconPosition() === 'right') {
+    @if (icon() && iconPosition() === 'right' && !loading()) {
       <i [class]="'pi ' + icon()" aria-hidden="true"></i>
     }
   </button>
