@@ -97,7 +97,6 @@
       "pricePerNight": "Per night",
       "price": "Amount",
       "priceRequired": "Amount is required",
-      "priceGroup": "Service pricing",
       "priceAriaLabel": "Service amount in euros"
     },
     "types": {
@@ -146,10 +145,6 @@
       "countryRequired": "Country is required",
       "notes": "Notes",
       "notesPlaceholder": "Additional information...",
-      "personalInfo": "Personal information",
-      "addressInfo": "Address",
-      "location": "Location",
-      "additionalInfo": "Additional information",
       "postalCodeRequired": "Postal code is required"
     }
   },

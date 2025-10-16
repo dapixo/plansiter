@@ -97,7 +97,6 @@
       "pricePerNight": "A notte",
       "price": "Importo",
       "priceRequired": "L'importo è obbligatorio",
-      "priceGroup": "Tariffazione del servizio",
       "priceAriaLabel": "Importo del servizio in euro"
     },
     "types": {
@@ -146,10 +145,6 @@
       "countryRequired": "Il paese è obbligatorio",
       "notes": "Note",
       "notesPlaceholder": "Informazioni aggiuntive...",
-      "personalInfo": "Informazioni personali",
-      "addressInfo": "Indirizzo",
-      "location": "Posizione",
-      "additionalInfo": "Informazioni aggiuntive",
       "postalCodeRequired": "Il codice postale è obbligatorio"
     }
   },

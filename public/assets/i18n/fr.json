@@ -97,7 +97,6 @@
       "pricePerNight": "Par nuit",
       "price": "Montant",
       "priceRequired": "Le montant est obligatoire",
-      "priceGroup": "Tarification du service",
       "priceAriaLabel": "Montant du service en euros"
     },
     "types": {
@@ -146,10 +145,6 @@
       "countryRequired": "Le pays est obligatoire",
       "notes": "Notes",
       "notesPlaceholder": "Informations complémentaires...",
-      "personalInfo": "Informations personnelles",
-      "addressInfo": "Adresse",
-      "location": "Localisation",
-      "additionalInfo": "Informations complémentaires",
       "postalCodeRequired": "Le code postal est obligatoire"
     }
   },

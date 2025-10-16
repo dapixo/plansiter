@@ -1,25 +1,26 @@
-<section class="p-8 max-w-4xl mx-auto" aria-labelledby="client-form-title">
+<section class="p-8 bg-gray-50 min-h-full" aria-labelledby="client-form-title">
+  <!-- Breadcrumb -->
+  <nav aria-label="breadcrumb" class="mb-6">
+    <p-breadcrumb
+      [model]="breadcrumbItems()"
+      [home]="breadcrumbHome"
+    />
+  </nav>
+
   <!-- Header -->
   <header class="mb-8">
-    <div class="flex items-center gap-4 mb-2">
-      <a
-        [routerLink]="['/' + lang.getCurrentLanguage(), 'dashboard', 'clients']"
-        class="inline-flex items-center justify-center w-10 h-10 rounded-lg hover:bg-gray-100 transition-colors"
-        [attr.aria-label]="'common.back' | transloco"
-      >
-        <i class="pi pi-arrow-left text-gray-600" aria-hidden="true"></i>
-      </a>
-      <h1 id="client-form-title" class="text-3xl font-bold text-gray-900">
+    <h1 id="client-form-title" class="text-4xl font-bold mb-2">
+      <span class="bg-gradient-to-r from-indigo-600 to-purple-600 bg-clip-text text-transparent">
         {{ 'clients.createClient' | transloco }}
-      </h1>
-    </div>
-    <p class="text-gray-500 ml-14">
+      </span>
+    </h1>
+    <p class="text-gray-600 text-lg">
       {{ 'clients.form.createSubtitle' | transloco }}
     </p>
   </header>
 
   <!-- Form Card -->
-  <div class="bg-white rounded-xl border border-gray-200 shadow-sm p-8">
+  <div class="bg-white rounded-xl border border-gray-200 shadow-sm p-8 max-w-4xl">
     <form
       [formGroup]="form"
       (ngSubmit)="onSubmit()"
@@ -27,10 +28,6 @@
       aria-labelledby="client-form-title"
     >
       <fieldset class="flex flex-col gap-6 border-0 p-0">
-        <legend class="sr-only">
-          {{ 'clients.form.personalInfo' | transloco }}
-        </legend>
-
         <!-- Client Name -->
         <div class="flex flex-col gap-2">
           <label for="name" class="font-medium text-gray-700">
@@ -46,7 +43,7 @@
             class="w-full"
             aria-required="true"
             required
-            [attr.aria-invalid]="form.controls.name.invalid ? 'true' : 'false'"
+            [attr.aria-invalid]="form.controls.name.invalid && form.controls.name.touched ? 'true' : 'false'"
             [invalid]="form.controls.name.invalid && form.controls.name.touched"
             [attr.aria-describedby]="
               form.controls.name.invalid && form.controls.name.touched ? 'name-error' : null
@@ -92,10 +89,6 @@
 
       <!-- Address Details -->
       <fieldset class="grid grid-cols-1 md:grid-cols-2 gap-4 border-0 p-0">
-        <legend class="text-sm font-semibold text-gray-700 mb-2 col-span-full">
-          {{ 'clients.form.addressInfo' | transloco }}
-        </legend>
-
         <div class="flex flex-col gap-2">
           <label for="city" class="font-medium text-gray-700">
             {{ 'clients.form.city' | transloco }}
@@ -155,10 +148,6 @@
 
       <!-- State & Country -->
       <fieldset class="grid grid-cols-1 md:grid-cols-2 gap-4 border-0 p-0">
-        <legend class="text-sm font-semibold text-gray-700 mb-2 col-span-full">
-          {{ 'clients.form.location' | transloco }}
-        </legend>
-
         <div class="flex flex-col gap-2">
           <label for="state" class="font-medium text-gray-700">
             {{ 'clients.form.state' | transloco }}
@@ -204,9 +193,6 @@
 
       <!-- Notes -->
       <fieldset class="flex flex-col gap-2 border-0 p-0">
-        <legend class="text-sm font-semibold text-gray-700 mb-2">
-          {{ 'clients.form.additionalInfo' | transloco }}
-        </legend>
         <label for="notes" class="font-medium text-gray-700">
           {{ 'clients.form.notes' | transloco }}
         </label>
@@ -222,9 +208,6 @@
 
       <!-- Subjects Section (composant enfant) -->
       <fieldset class="flex flex-col gap-4 border-0 p-0">
-        <legend class="text-sm font-semibold text-gray-700 mb-2">
-          {{ 'subjects.title' | transloco }}
-        </legend>
         <app-client-subjects-form
           [clientId]="null"
           [isEditMode]="false"
@@ -234,11 +217,13 @@
 
       <!-- Actions -->
       <div class="flex justify-end gap-3 pt-4 border-t border-gray-200">
-        <p-button
+        <app-action-button
+          [route]="null"
           type="submit"
-          [label]="'common.save' | transloco"
+          labelKey="common.save"
+          icon="pi-check"
           [loading]="clientStore.loading()"
-          [attr.aria-label]="'common.saveClient' | transloco"
+          ariaLabelKey="common.saveClient"
         />
       </div>
 
