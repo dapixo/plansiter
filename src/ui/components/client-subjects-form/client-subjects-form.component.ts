@@ -12,6 +12,7 @@ import { CommonModule } from '@angular/common';
 import { FormBuilder, FormControl, FormGroup, ReactiveFormsModule, Validators } from '@angular/forms';
 import { InputTextModule } from 'primeng/inputtext';
 import { ButtonModule } from 'primeng/button';
+import { DialogModule } from 'primeng/dialog';
 import { MessageModule } from 'primeng/message';
 import { TranslocoModule } from '@jsverse/transloco';
 import { SelectModule } from 'primeng/select';
@@ -20,6 +21,7 @@ import { TextareaModule } from 'primeng/textarea';
 import { ClientStore } from '@application/stores/client.store';
 import { TempSubject } from '@application/services/client-management.service';
 import { Subject, SubjectType } from '@domain/entities';
+import { ActionButtonComponent } from '@ui/components/action-button/action-button.component';
 
 @Component({
   selector: 'app-client-subjects-form',
@@ -29,11 +31,13 @@ import { Subject, SubjectType } from '@domain/entities';
     ReactiveFormsModule,
     InputTextModule,
     ButtonModule,
+    DialogModule,
     MessageModule,
     TranslocoModule,
     SelectModule,
     InputNumberModule,
     TextareaModule,
+    ActionButtonComponent,
   ],
   templateUrl: './client-subjects-form.component.html',
   styleUrls: ['./client-subjects-form.component.css'],
