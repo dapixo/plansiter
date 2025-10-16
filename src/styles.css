@@ -19,6 +19,20 @@
   border-color: #6366f1 !important; /* indigo-500 */
 }
 
+/* Supprimer le background bleu de l'autofill */
+.p-inputtext:-webkit-autofill,
+.p-inputtext:-webkit-autofill:hover,
+.p-inputtext:-webkit-autofill:focus,
+.p-inputtext:-webkit-autofill:active,
+.p-inputnumber input:-webkit-autofill,
+.p-inputnumber input:-webkit-autofill:hover,
+.p-inputnumber input:-webkit-autofill:focus,
+.p-inputnumber input:-webkit-autofill:active {
+  -webkit-box-shadow: 0 0 0 1000px white inset !important;
+  box-shadow: 0 0 0 1000px white inset !important;
+  -webkit-text-fill-color: inherit !important;
+}
+
 /* État invalide - Bordure rouge */
 .p-inputtext.p-invalid,
 .p-inputtext[aria-invalid="true"] {
@@ -54,14 +68,16 @@
 }
 
 /* Textarea */
-.p-inputtextarea:enabled:focus {
+.p-inputtextarea:enabled:focus,
+.p-textarea:enabled:focus {
   outline: 0 none !important;
   outline-offset: 0 !important;
   box-shadow: 0 0 0 0.2rem rgba(99, 102, 241, 0.25) !important; /* indigo-500 */
   border-color: #6366f1 !important; /* indigo-500 */
 }
 
-.p-inputtextarea.p-invalid:enabled:focus {
+.p-inputtextarea.p-invalid:enabled:focus,
+.p-textarea.p-invalid:enabled:focus {
   outline: 0 none !important;
   outline-offset: 0 !important;
   box-shadow: 0 0 0 0.2rem rgba(239, 68, 68, 0.25) !important; /* red-500 */
@@ -91,7 +107,13 @@
   border-color: #6366f1 !important; /* indigo-500 */
 }
 
-/* Select - État invalide */
+/* Select - Bordure rouge en état invalide (sans focus) */
+.p-select.p-invalid,
+.p-select[aria-invalid="true"] {
+  border-color: #ef4444 !important; /* red-500 */
+}
+
+/* Select - État invalide au focus */
 .p-select.p-invalid:not(.p-disabled).p-focus,
 .p-select[aria-invalid="true"]:not(.p-disabled).p-focus {
   outline: 0 none !important;
@@ -100,8 +122,43 @@
   border-color: #ef4444 !important; /* red-500 */
 }
 
+/* Select - Option sélectionnée dans le dropdown (override du vert par défaut) */
+.p-select-option.p-select-option-selected {
+  background: rgba(99, 102, 241, 0.12) !important; /* indigo-500 avec opacity */
+  color: #4338ca !important; /* indigo-700 */
+}
+
+/* Select - Option au hover */
+.p-select-option:not(.p-select-option-selected):hover {
+  background: rgba(99, 102, 241, 0.04) !important; /* indigo-500 très léger */
+}
+
 /* Textarea - Ajout état invalide avec aria-invalid */
-.p-inputtextarea[aria-invalid="true"]:enabled:focus {
+.p-inputtextarea[aria-invalid="true"]:enabled:focus,
+.p-textarea[aria-invalid="true"]:enabled:focus {
+  outline: 0 none !important;
+  outline-offset: 0 !important;
+  box-shadow: 0 0 0 0.2rem rgba(239, 68, 68, 0.25) !important; /* red-500 */
+  border-color: #ef4444 !important; /* red-500 */
+}
+
+/* InputNumber - État normal */
+.p-inputnumber input:enabled:focus {
+  outline: 0 none !important;
+  outline-offset: 0 !important;
+  box-shadow: 0 0 0 0.2rem rgba(99, 102, 241, 0.25) !important; /* indigo-500 */
+  border-color: #6366f1 !important; /* indigo-500 */
+}
+
+/* InputNumber - Bordure rouge en état invalide (sans focus) */
+.p-inputnumber.p-invalid input,
+.p-inputnumber[aria-invalid="true"] input {
+  border-color: #ef4444 !important; /* red-500 */
+}
+
+/* InputNumber - État invalide au focus */
+.p-inputnumber.p-invalid input:enabled:focus,
+.p-inputnumber[aria-invalid="true"] input:enabled:focus {
   outline: 0 none !important;
   outline-offset: 0 !important;
   box-shadow: 0 0 0 0.2rem rgba(239, 68, 68, 0.25) !important; /* red-500 */
