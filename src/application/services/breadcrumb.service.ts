@@ -31,17 +31,17 @@ export class BreadcrumbService {
   /**
    * Crée les items du breadcrumb avec un label dynamique
    * @param config Configuration du breadcrumb
-   * @param dynamicLabel Signal ou fonction retournant le label dynamique
+   * @param dynamicLabel Fonction retournant le label dynamique
    * @param fallbackLabelKey Clé de traduction de fallback si le label dynamique est null
    * @returns Signal des items du breadcrumb
    */
   createBreadcrumbItemsWithDynamicLabel(
     config: Omit<BreadcrumbConfig, 'currentLabel'>,
-    dynamicLabel: Signal<string | null | undefined> | (() => string | null | undefined),
+    dynamicLabel: () => string | null | undefined,
     fallbackLabelKey?: string
   ): Signal<MenuItem[]> {
     return this.buildBreadcrumb(config, () => {
-      const label = typeof dynamicLabel === 'function' ? dynamicLabel() : dynamicLabel();
+      const label = dynamicLabel();
       return label || (fallbackLabelKey ? this.transloco.translate(fallbackLabelKey) : '...');
     });
   }
