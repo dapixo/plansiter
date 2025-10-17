@@ -15,12 +15,11 @@ import { InputNumberModule } from 'primeng/inputnumber';
 import { SelectModule } from 'primeng/select';
 import { MessageModule } from 'primeng/message';
 import { BreadcrumbModule } from 'primeng/breadcrumb';
-import { TranslocoModule, TranslocoService } from '@jsverse/transloco';
+import { TranslocoModule } from '@jsverse/transloco';
 import { TextareaModule } from 'primeng/textarea';
-import { MenuItem } from 'primeng/api';
 import { Service, ServiceType } from '@domain/entities';
 import { ServiceStore } from '@application/stores/service.store';
-import { AuthService } from '@application/services';
+import { AuthService, BreadcrumbService } from '@application/services';
 import { LanguageService } from '@application/services/language.service';
 import { ActionButtonComponent } from '@ui/components/action-button/action-button.component';
 
@@ -52,7 +51,7 @@ export class ServiceFormPageComponent {
   private readonly router = inject(Router);
   private readonly store = inject(ServiceStore);
   private readonly auth = inject(AuthService);
-  private readonly transloco = inject(TranslocoService);
+  private readonly breadcrumbService = inject(BreadcrumbService);
   protected readonly lang = inject(LanguageService);
 
   private readonly paramMap = toSignal(this.route.paramMap);
@@ -65,34 +64,16 @@ export class ServiceFormPageComponent {
   protected readonly isEditMode = computed(() => !!this.serviceId());
   protected readonly isFormReady = computed(() => !this.isEditMode() || !!this.service());
 
-  protected readonly breadcrumbItems = computed<MenuItem[]>(() => {
-    // Force reactivity to active language
-    const _ = this.transloco.getActiveLang();
-    const lang = this.lang.getCurrentLanguage();
-    const items: MenuItem[] = [
-      {
-        label: this.transloco.translate('services.title'),
-        routerLink: `/${lang}/dashboard/services`
-      }
-    ];
+  protected readonly breadcrumbItems = this.breadcrumbService.createBreadcrumbItemsWithDynamicLabel(
+    {
+      parentLabel: 'services.title',
+      parentRoute: '/dashboard/services'
+    },
+    () => this.service()?.name,
+    this.isEditMode() ? 'services.editService' : 'services.createService'
+  );
 
-    if (this.isEditMode()) {
-      items.push({
-        label: this.service()?.name || this.transloco.translate('services.editService')
-      });
-    } else {
-      items.push({
-        label: this.transloco.translate('services.createService')
-      });
-    }
-
-    return items;
-  });
-
-  protected readonly breadcrumbHome: MenuItem = {
-    icon: 'pi pi-home',
-    routerLink: `/${this.lang.getCurrentLanguage()}/dashboard`
-  };
+  protected readonly breadcrumbHome = this.breadcrumbService.createBreadcrumbHome();
   protected readonly serviceTypes: { label: string; value: ServiceType }[] = [
     { label: 'services.types.petSitting', value: 'pet-sitting' },
     { label: 'services.types.plantSitting', value: 'plant-sitting' },

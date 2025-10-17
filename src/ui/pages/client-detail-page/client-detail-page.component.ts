@@ -13,11 +13,11 @@ import { ActivatedRoute, RouterModule } from '@angular/router';
 import { InputTextModule } from 'primeng/inputtext';
 import { BreadcrumbModule } from 'primeng/breadcrumb';
 import { MessageModule } from 'primeng/message';
-import { TranslocoModule, TranslocoService } from '@jsverse/transloco';
+import { TranslocoModule } from '@jsverse/transloco';
 import { TextareaModule } from 'primeng/textarea';
-import { MenuItem } from 'primeng/api';
 import { ClientStore } from '@application/stores/client.store';
 import { LanguageService } from '@application/services/language.service';
+import { BreadcrumbService } from '@application/services';
 import { ClientSubjectsFormComponent } from '@ui/components/client-subjects-form/client-subjects-form.component';
 import { ActionButtonComponent } from '@ui/components/action-button/action-button.component';
 
@@ -44,28 +44,19 @@ export class ClientDetailPageComponent {
   private readonly fb = inject(FormBuilder);
   private readonly route = inject(ActivatedRoute);
   private readonly store = inject(ClientStore);
-  private readonly transloco = inject(TranslocoService);
+  private readonly breadcrumbService = inject(BreadcrumbService);
   protected readonly lang = inject(LanguageService);
 
-  protected readonly breadcrumbItems = computed<MenuItem[]>(() => {
-    // Force reactivity to active language
-    const _ = this.transloco.getActiveLang();
-    const lang = this.lang.getCurrentLanguage();
-    return [
-      {
-        label: this.transloco.translate('clients.title'),
-        routerLink: `/${lang}/dashboard/clients`
-      },
-      {
-        label: this.client()?.name || this.transloco.translate('clients.detailClient')
-      }
-    ];
-  });
+  protected readonly breadcrumbItems = this.breadcrumbService.createBreadcrumbItemsWithDynamicLabel(
+    {
+      parentLabel: 'clients.title',
+      parentRoute: '/dashboard/clients'
+    },
+    () => this.client()?.name,
+    'clients.detailClient'
+  );
 
-  protected readonly breadcrumbHome: MenuItem = {
-    icon: 'pi pi-home',
-    routerLink: `/${this.lang.getCurrentLanguage()}/dashboard`
-  };
+  protected readonly breadcrumbHome = this.breadcrumbService.createBreadcrumbHome();
 
   /** Router params */
   private readonly paramMap = toSignal(this.route.paramMap);

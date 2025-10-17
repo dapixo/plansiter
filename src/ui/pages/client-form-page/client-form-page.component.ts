@@ -13,14 +13,13 @@ import { Router, RouterModule } from '@angular/router';
 import { InputTextModule } from 'primeng/inputtext';
 import { MessageModule } from 'primeng/message';
 import { BreadcrumbModule } from 'primeng/breadcrumb';
-import { TranslocoModule, TranslocoService } from '@jsverse/transloco';
+import { TranslocoModule } from '@jsverse/transloco';
 import { TextareaModule } from 'primeng/textarea';
-import { MenuItem } from 'primeng/api';
 import { tap, catchError } from 'rxjs/operators';
 import { EMPTY } from 'rxjs';
 import { Client } from '@domain/entities';
 import { ClientStore } from '@application/stores/client.store';
-import { AuthService } from '@application/services';
+import { AuthService, BreadcrumbService } from '@application/services';
 import { LanguageService } from '@application/services/language.service';
 import { ClientManagementService, TempSubject } from '@application/services/client-management.service';
 import { ClientSubjectsFormComponent } from '@ui/components/client-subjects-form/client-subjects-form.component';
@@ -52,27 +51,16 @@ export class ClientFormPageComponent {
   private readonly clientManagement = inject(ClientManagementService);
   private readonly store = inject(ClientStore);
   private readonly auth = inject(AuthService);
-  private readonly transloco = inject(TranslocoService);
+  private readonly breadcrumbService = inject(BreadcrumbService);
   protected readonly lang = inject(LanguageService);
 
-  protected readonly breadcrumbItems = computed<MenuItem[]>(() => {
-    // Force reactivity to active language
-    const _ = this.transloco.getActiveLang();
-    return [
-      {
-        label: this.transloco.translate('clients.title'),
-        routerLink: `/${this.lang.getCurrentLanguage()}/dashboard/clients`
-      },
-      {
-        label: this.transloco.translate('clients.createClient')
-      }
-    ];
+  protected readonly breadcrumbItems = this.breadcrumbService.createBreadcrumbItems({
+    parentLabel: 'clients.title',
+    parentRoute: '/dashboard/clients',
+    currentLabel: 'clients.createClient'
   });
 
-  protected readonly breadcrumbHome: MenuItem = {
-    icon: 'pi pi-home',
-    routerLink: `/${this.lang.getCurrentLanguage()}/dashboard`
-  };
+  protected readonly breadcrumbHome = this.breadcrumbService.createBreadcrumbHome();
 
   protected readonly form = this.fb.group<{
     name: FormControl<string>;
