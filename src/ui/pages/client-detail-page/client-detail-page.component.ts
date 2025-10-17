@@ -8,16 +8,18 @@ import {
 } from '@angular/core';
 import { toSignal } from '@angular/core/rxjs-interop';
 import { CommonModule } from '@angular/common';
-import { FormBuilder, FormControl, ReactiveFormsModule, Validators } from '@angular/forms';
-import { ActivatedRoute, Router, RouterModule } from '@angular/router';
+import { FormBuilder, ReactiveFormsModule, Validators } from '@angular/forms';
+import { ActivatedRoute, RouterModule } from '@angular/router';
 import { InputTextModule } from 'primeng/inputtext';
-import { ButtonModule } from 'primeng/button';
+import { BreadcrumbModule } from 'primeng/breadcrumb';
 import { MessageModule } from 'primeng/message';
-import { TranslocoModule } from '@jsverse/transloco';
+import { TranslocoModule, TranslocoService } from '@jsverse/transloco';
 import { TextareaModule } from 'primeng/textarea';
+import { MenuItem } from 'primeng/api';
 import { ClientStore } from '@application/stores/client.store';
 import { LanguageService } from '@application/services/language.service';
 import { ClientSubjectsFormComponent } from '@ui/components/client-subjects-form/client-subjects-form.component';
+import { ActionButtonComponent } from '@ui/components/action-button/action-button.component';
 
 @Component({
   selector: 'app-client-detail-page',
@@ -28,10 +30,11 @@ import { ClientSubjectsFormComponent } from '@ui/components/client-subjects-form
     RouterModule,
     InputTextModule,
     TextareaModule,
-    ButtonModule,
+    BreadcrumbModule,
     MessageModule,
     TranslocoModule,
     ClientSubjectsFormComponent,
+    ActionButtonComponent,
   ],
   templateUrl: './client-detail-page.component.html',
   styleUrls: ['./client-detail-page.component.css'],
@@ -40,9 +43,29 @@ import { ClientSubjectsFormComponent } from '@ui/components/client-subjects-form
 export class ClientDetailPageComponent {
   private readonly fb = inject(FormBuilder);
   private readonly route = inject(ActivatedRoute);
-  private readonly router = inject(Router);
   private readonly store = inject(ClientStore);
+  private readonly transloco = inject(TranslocoService);
   protected readonly lang = inject(LanguageService);
+
+  protected readonly breadcrumbItems = computed<MenuItem[]>(() => {
+    // Force reactivity to active language
+    const _ = this.transloco.getActiveLang();
+    const lang = this.lang.getCurrentLanguage();
+    return [
+      {
+        label: this.transloco.translate('clients.title'),
+        routerLink: `/${lang}/dashboard/clients`
+      },
+      {
+        label: this.client()?.name || this.transloco.translate('clients.detailClient')
+      }
+    ];
+  });
+
+  protected readonly breadcrumbHome: MenuItem = {
+    icon: 'pi pi-home',
+    routerLink: `/${this.lang.getCurrentLanguage()}/dashboard`
+  };
 
   /** Router params */
   private readonly paramMap = toSignal(this.route.paramMap);
@@ -58,16 +81,12 @@ export class ClientDetailPageComponent {
   protected readonly error = computed(() => this.store.error());
 
   /** Edition states per section */
-  protected readonly editingName = signal(false);
-  protected readonly editingAddress = signal(false);
+  protected readonly editingInfo = signal(false);
   protected readonly editingNotes = signal(false);
 
   /** Forms per section */
-  protected readonly nameForm = this.fb.group({
+  protected readonly infoForm = this.fb.group({
     name: this.fb.control('', { validators: Validators.required, nonNullable: true }),
-  });
-
-  protected readonly addressForm = this.fb.group({
     address: this.fb.control('', { validators: Validators.required, nonNullable: true }),
     city: this.fb.control('', { validators: Validators.required, nonNullable: true }),
     postalCode: this.fb.control('', { validators: Validators.required, nonNullable: true }),
@@ -84,8 +103,8 @@ export class ClientDetailPageComponent {
     const client = this.client();
     if (!client) return;
 
-    this.nameForm.patchValue({ name: client.name });
-    this.addressForm.patchValue({
+    this.infoForm.patchValue({
+      name: client.name,
       address: client.address,
       city: client.city,
       postalCode: client.postalCode ?? '',
@@ -95,43 +114,28 @@ export class ClientDetailPageComponent {
     this.notesForm.patchValue({ notes: client.notes ?? '' });
   });
 
-  /** Édition du nom */
-  protected onEditName(): void {
-    this.editingName.set(true);
+  /** Obtenir les initiales du client */
+  protected getInitials(): string {
+    const name = this.client()?.name;
+    if (!name) return '';
+
+    return name
+      .split(' ')
+      .map(word => word.charAt(0).toUpperCase())
+      .slice(0, 2)
+      .join('');
   }
 
-  protected onCancelName(): void {
+  /** Édition des informations (nom + adresse) */
+  protected onEditInfo(): void {
+    this.editingInfo.set(true);
+  }
+
+  protected onCancelInfo(): void {
     const client = this.client();
     if (client) {
-      this.nameForm.patchValue({ name: client.name });
-    }
-    this.editingName.set(false);
-  }
-
-  protected onSaveName(): void {
-    this.nameForm.markAllAsTouched();
-    if (this.nameForm.invalid || this.loading()) return;
-
-    const client = this.client();
-    if (!client) return;
-
-    this.store.update({
-      id: client.id,
-      data: { name: this.nameForm.value.name! },
-    });
-
-    this.editingName.set(false);
-  }
-
-  /** Édition de l'adresse */
-  protected onEditAddress(): void {
-    this.editingAddress.set(true);
-  }
-
-  protected onCancelAddress(): void {
-    const client = this.client();
-    if (client) {
-      this.addressForm.patchValue({
+      this.infoForm.patchValue({
+        name: client.name,
         address: client.address,
         city: client.city,
         postalCode: client.postalCode ?? '',
@@ -139,20 +143,21 @@ export class ClientDetailPageComponent {
         country: client.country,
       });
     }
-    this.editingAddress.set(false);
+    this.editingInfo.set(false);
   }
 
-  protected onSaveAddress(): void {
-    this.addressForm.markAllAsTouched();
-    if (this.addressForm.invalid || this.loading()) return;
+  protected onSaveInfo(): void {
+    this.infoForm.markAllAsTouched();
+    if (this.infoForm.invalid || this.loading()) return;
 
     const client = this.client();
     if (!client) return;
 
-    const { address, city, postalCode, state, country } = this.addressForm.value;
+    const { name, address, city, postalCode, state, country } = this.infoForm.value;
     this.store.update({
       id: client.id,
       data: {
+        name: name!,
         address: address!,
         city: city!,
         postalCode: postalCode || undefined,
@@ -161,7 +166,7 @@ export class ClientDetailPageComponent {
       },
     });
 
-    this.editingAddress.set(false);
+    this.editingInfo.set(false);
   }
 
   /** Édition des notes */
