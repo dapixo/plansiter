@@ -208,9 +208,8 @@
 
       <!-- Subjects Section (composant enfant) -->
       <fieldset class="flex flex-col gap-4 border-0 p-0">
-        <app-client-subjects-form
+        <app-subjects-manager
           [clientId]="null"
-          [isEditMode]="false"
           (subjectsChange)="onSubjectsChange($event)"
         />
       </fieldset>

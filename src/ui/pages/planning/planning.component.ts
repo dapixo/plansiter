@@ -1,5 +1,6 @@
-import { Component, inject, ChangeDetectionStrategy, signal, computed, DestroyRef } from '@angular/core';
+import { Component, inject, ChangeDetectionStrategy, signal, computed, DestroyRef, effect } from '@angular/core';
 import { CommonModule } from '@angular/common';
+import { FormsModule } from '@angular/forms';
 import {
   DateAdapter,
   CalendarEvent,
@@ -7,32 +8,40 @@ import {
   CalendarUtils,
   CalendarA11y,
   CalendarDateFormatter,
+  CalendarEventTitleFormatter,
   CalendarMonthViewComponent,
   CalendarWeekViewComponent,
   CalendarDayViewComponent
 } from 'angular-calendar';
 import { adapterFactory } from 'angular-calendar/date-adapters/date-fns';
 import { ButtonModule } from 'primeng/button';
+import { SelectModule } from 'primeng/select';
 import { TranslocoModule, TranslocoService } from '@jsverse/transloco';
-import { startOfWeek, endOfWeek, format } from 'date-fns';
-import { fr, enUS, es, it } from 'date-fns/locale';
+import { startOfWeek, endOfWeek, format, addMonths, addDays, addWeeks } from 'date-fns';
 import { AuthService } from '@application/services';
 import { Booking } from '@domain/entities';
 import { IBookingRepository, BOOKING_REPOSITORY } from '@domain/repositories';
 import { tap, catchError, finalize } from 'rxjs/operators';
 import { takeUntilDestroyed } from '@angular/core/rxjs-interop';
 import { EMPTY } from 'rxjs';
+import { BookingFormDialogComponent } from '@ui/components/booking-form-dialog/booking-form-dialog.component';
+import { BOOKING_STATUS_COLORS } from '@ui/constants/booking-status-colors.constant';
+import { LOCALE_MAP, LocaleKey } from '@ui/constants/locale-map.constant';
+import { CALENDAR_VIEW_OPTIONS } from '@ui/constants/calendar-view-options.constant';
 
 @Component({
   selector: 'app-planning',
   standalone: true,
   imports: [
     CommonModule,
+    FormsModule,
     CalendarMonthViewComponent,
     CalendarWeekViewComponent,
     CalendarDayViewComponent,
     ButtonModule,
-    TranslocoModule
+    SelectModule,
+    TranslocoModule,
+    BookingFormDialogComponent
   ],
   providers: [
     {
@@ -41,27 +50,29 @@ import { EMPTY } from 'rxjs';
     },
     CalendarUtils,
     CalendarA11y,
-    CalendarDateFormatter
+    CalendarDateFormatter,
+    CalendarEventTitleFormatter
   ],
   templateUrl: './planning.component.html',
   styleUrls: ['./planning.component.css'],
   changeDetection: ChangeDetectionStrategy.OnPush,
 })
 export class PlanningComponent {
-  private destroyRef = inject(DestroyRef);
-  private bookingRepo = inject<IBookingRepository>(BOOKING_REPOSITORY);
-  private authService = inject(AuthService);
-  private transloco = inject(TranslocoService);
+  private readonly destroyRef = inject(DestroyRef);
+  private readonly bookingRepo = inject<IBookingRepository>(BOOKING_REPOSITORY);
+  private readonly authService = inject(AuthService);
+  private readonly transloco = inject(TranslocoService);
 
   // State
-  viewDate = signal(new Date());
-  view = signal<CalendarView>(CalendarView.Week);
-  bookings = signal<Booking[]>([]);
-  loading = signal(false);
-  error = signal<string | null>(null);
+  protected readonly viewDate = signal(new Date());
+  protected readonly view = signal<CalendarView>(CalendarView.Week);
+  protected readonly bookings = signal<Booking[]>([]);
+  protected readonly loading = signal(false);
+  protected readonly error = signal<string | null>(null);
+  protected readonly bookingDialogVisible = signal(false);
 
   // Computed
-  events = computed<CalendarEvent[]>(() => {
+  protected readonly events = computed<CalendarEvent[]>(() => {
     return this.bookings().map(booking => ({
       id: booking.id,
       start: new Date(booking.startDate),
@@ -72,29 +83,40 @@ export class PlanningComponent {
     }));
   });
 
-  private readonly localeMap = {
-    fr: { code: 'fr', locale: fr },
-    es: { code: 'es', locale: es },
-    it: { code: 'it', locale: it },
-    en: { code: 'en', locale: enUS }
-  } as const;
-
-  private currentLocale = computed(() => {
+  private readonly currentLocale = computed(() => {
     const lang = this.transloco.getActiveLang();
-    return this.localeMap[lang as keyof typeof this.localeMap] || this.localeMap.en;
+    return LOCALE_MAP[lang as LocaleKey] || LOCALE_MAP.en;
   });
 
-  locale = computed(() => this.currentLocale().code);
-  dateFnsLocale = computed(() => this.currentLocale().locale);
+  protected readonly locale = computed(() => this.currentLocale().code);
+  protected readonly dateFnsLocale = computed(() => this.currentLocale().locale);
+
+  protected readonly periodLabel = computed(() => {
+    const date = this.viewDate();
+    const currentView = this.view();
+    const dateLocale = this.dateFnsLocale();
+
+    switch (currentView) {
+      case CalendarView.Month:
+        return format(date, 'MMMM yyyy', { locale: dateLocale });
+      case CalendarView.Week: {
+        const start = startOfWeek(date, { locale: dateLocale });
+        const end = endOfWeek(date, { locale: dateLocale });
+        return `${format(start, 'd MMM', { locale: dateLocale })} - ${format(end, 'd MMM yyyy', { locale: dateLocale })}`;
+      }
+      case CalendarView.Day:
+        return format(date, 'EEEE d MMMM yyyy', { locale: dateLocale });
+      default:
+        return '';
+    }
+  });
 
   // View enum for template
-  CalendarView = CalendarView;
+  protected readonly CalendarView = CalendarView;
+  protected readonly viewOptions = CALENDAR_VIEW_OPTIONS;
 
-  constructor() {
-    this.loadBookings();
-  }
-
-  private loadBookings(): void {
+  // Effect to load bookings on init
+  private readonly loadBookingsEffect_ = effect(() => {
     const userId = this.authService.currentUser()?.id;
     if (!userId) {
       this.error.set('No user logged in');
@@ -113,22 +135,45 @@ export class PlanningComponent {
       finalize(() => this.loading.set(false)),
       takeUntilDestroyed(this.destroyRef)
     ).subscribe();
+  });
+
+  protected setView(view: CalendarView): void {
+    this.view.set(view);
   }
 
-  private getBookingTitle(booking: Booking): string {
-    // TODO: récupérer le nom du client/service depuis les stores
-    return `Garde #${booking.id.slice(0, 8)}`;
+  protected navigatePeriod(direction: 'prev' | 'next'): void {
+    const currentView = this.view();
+    const currentDate = this.viewDate();
+    const multiplier = direction === 'prev' ? -1 : 1;
+
+    let newDate: Date;
+    switch (currentView) {
+      case CalendarView.Month:
+        newDate = addMonths(currentDate, multiplier);
+        break;
+      case CalendarView.Week:
+        newDate = addWeeks(currentDate, multiplier);
+        break;
+      case CalendarView.Day:
+        newDate = addDays(currentDate, multiplier);
+        break;
+      default:
+        return;
+    }
+
+    this.viewDate.set(newDate);
   }
 
-  private getBookingColor(status: Booking['status']): { primary: string; secondary: string } {
-    const colors = {
-      pending: { primary: '#f59e0b', secondary: '#fef3c7' },      // amber-500 / amber-100
-      confirmed: { primary: '#6366f1', secondary: '#e0e7ff' },    // indigo-500 / indigo-100
-      'in-progress': { primary: '#a855f7', secondary: '#f3e8ff' }, // purple-500 / purple-100
-      completed: { primary: '#10b981', secondary: '#d1fae5' },    // emerald-500 / emerald-100
-      cancelled: { primary: '#ef4444', secondary: '#fee2e2' }     // red-500 / red-100
-    };
-    return colors[status] || colors.pending;
+  protected previousPeriod(): void {
+    this.navigatePeriod('prev');
+  }
+
+  protected nextPeriod(): void {
+    this.navigatePeriod('next');
+  }
+
+  protected today(): void {
+    this.viewDate.set(new Date());
   }
 
   protected onEventClick(event: CalendarEvent): void {
@@ -139,57 +184,20 @@ export class PlanningComponent {
     }
   }
 
-  protected setView(view: CalendarView): void {
-    this.view.set(view);
+  protected onBookingCreated(booking: Booking): void {
+    this.bookings.update(bookings => [...bookings, booking]);
   }
 
-  protected previousPeriod(): void {
-    const currentView = this.view();
-    const currentDate = new Date(this.viewDate());
-
-    if (currentView === CalendarView.Month) {
-      this.viewDate.set(new Date(currentDate.getFullYear(), currentDate.getMonth() - 1, 1));
-    } else if (currentView === CalendarView.Week) {
-      currentDate.setDate(currentDate.getDate() - 7);
-      this.viewDate.set(currentDate);
-    } else if (currentView === CalendarView.Day) {
-      currentDate.setDate(currentDate.getDate() - 1);
-      this.viewDate.set(currentDate);
-    }
+  protected openBookingDialog(): void {
+    this.bookingDialogVisible.set(true);
   }
 
-  protected nextPeriod(): void {
-    const currentView = this.view();
-    const currentDate = new Date(this.viewDate());
-
-    if (currentView === CalendarView.Month) {
-      this.viewDate.set(new Date(currentDate.getFullYear(), currentDate.getMonth() + 1, 1));
-    } else if (currentView === CalendarView.Week) {
-      currentDate.setDate(currentDate.getDate() + 7);
-      this.viewDate.set(currentDate);
-    } else if (currentView === CalendarView.Day) {
-      currentDate.setDate(currentDate.getDate() + 1);
-      this.viewDate.set(currentDate);
-    }
+  private getBookingTitle(booking: Booking): string {
+    // TODO: récupérer le nom du client/service depuis les stores
+    return `Garde #${booking.id.slice(0, 8)}`;
   }
 
-  protected today(): void {
-    this.viewDate.set(new Date());
-  }
-
-  protected getPeriodLabel(): string {
-    const date = this.viewDate();
-    const currentView = this.view();
-    const dateLocale = this.dateFnsLocale();
-
-    if (currentView === CalendarView.Month) {
-      return format(date, 'MMMM yyyy', { locale: dateLocale });
-    } else if (currentView === CalendarView.Week) {
-      const start = startOfWeek(date, { locale: dateLocale });
-      const end = endOfWeek(date, { locale: dateLocale });
-      return `${format(start, 'd MMM', { locale: dateLocale })} - ${format(end, 'd MMM yyyy', { locale: dateLocale })}`;
-    } else {
-      return format(date, 'EEEE d MMMM yyyy', { locale: dateLocale });
-    }
+  private getBookingColor(status: Booking['status']): { primary: string; secondary: string } {
+    return BOOKING_STATUS_COLORS[status] || BOOKING_STATUS_COLORS.pending;
   }
 }

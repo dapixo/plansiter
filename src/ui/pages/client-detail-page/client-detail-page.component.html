@@ -5,10 +5,7 @@
 >
   <!-- Breadcrumb -->
   <nav aria-label="breadcrumb" class="mb-6">
-    <p-breadcrumb
-      [model]="breadcrumbItems()"
-      [home]="breadcrumbHome"
-    />
+    <p-breadcrumb [model]="breadcrumbItems()" [home]="breadcrumbHome" />
   </nav>
 
   <!-- Header -->
@@ -19,351 +16,402 @@
   </header>
 
   <!-- Loader -->
-  <ng-container *ngIf="!isReady(); else contentTpl">
-    <div class="flex items-center justify-center py-12" role="status" aria-live="polite">
-      <i class="pi pi-spin pi-spinner text-4xl text-indigo-600" aria-hidden="true"></i>
-      <span class="sr-only">{{ 'common.loading' | transloco }}</span>
-    </div>
-  </ng-container>
+  @if (!isReady()) {
+  <div class="flex items-center justify-center py-12" role="status" aria-live="polite">
+    <i class="pi pi-spin pi-spinner text-4xl text-indigo-600" aria-hidden="true"></i>
+    <span class="sr-only">{{ 'common.loading' | transloco }}</span>
+  </div>
+  } @else {
+  <div class="flex flex-col gap-6 max-w-5xl">
+    <!-- Section Information client -->
+    <section
+      aria-labelledby="client-info-title"
+      class="bg-white rounded-xl border border-gray-200 shadow-sm overflow-hidden"
+    >
+      <h2 id="client-info-title" class="sr-only">
+        {{ 'clients.detail.clientInfo' | transloco }}
+      </h2>
 
-  <ng-template #contentTpl>
-    <div class="flex flex-col gap-6 max-w-5xl">
-      <!-- Section Information client -->
-      <section aria-labelledby="client-info-title" class="bg-white rounded-xl border border-gray-200 shadow-sm overflow-hidden">
-        <h2 id="client-info-title" class="sr-only">{{ 'clients.detail.clientInfo' | transloco }}</h2>
-
-        <!-- Mode lecture -->
-        <ng-container *ngIf="!editingInfo(); else editInfoTpl">
-          <div class="p-6">
-            <div class="flex items-start gap-6">
-              <!-- Avatar -->
-              <div class="flex-shrink-0">
-                <div
-                  class="w-24 h-24 rounded-full bg-gradient-to-br from-indigo-500 to-purple-500 flex items-center justify-center text-white text-3xl font-bold shadow-lg"
-                  aria-hidden="true"
-                >
-                  {{ getInitials() }}
-                </div>
-              </div>
-
-              <!-- Info texte -->
-              <div class="flex-1 min-w-0">
-                <div class="flex items-start justify-between mb-4">
-                  <div>
-                    <h3 class="text-2xl font-bold text-gray-900 mb-1">{{ client()?.name }}</h3>
-                    <p class="text-sm text-gray-500">{{ 'clients.detailClient' | transloco }}</p>
-                  </div>
-                  <button
-                    type="button"
-                    (click)="onEditInfo()"
-                    class="p-2 text-gray-400 hover:text-indigo-600 hover:bg-indigo-50 rounded-lg transition-colors focus:outline-none focus:ring-2 focus:ring-indigo-500 focus:ring-offset-2"
-                    [attr.aria-label]="'clients.editInfo' | transloco"
-                  >
-                    <i class="pi pi-pencil text-sm" aria-hidden="true"></i>
-                  </button>
-                </div>
-
-                <!-- Adresse -->
-                <div class="flex items-start gap-3 text-gray-700">
-                  <i class="pi pi-map-marker text-indigo-500 mt-0.5 flex-shrink-0" aria-hidden="true"></i>
-                  <div class="leading-relaxed">
-                    <span>{{ client()?.address }}, </span>
-                    <span>{{ client()?.city }} {{ client()?.postalCode }}</span>
-                    <ng-container *ngIf="client()?.state">
-                      <span>, {{ client()?.state }}</span>
-                    </ng-container>
-                    <span>, {{ client()?.country }}</span>
-                  </div>
-                </div>
-              </div>
-            </div>
-          </div>
-        </ng-container>
-
-        <!-- Mode édition -->
-        <ng-template #editInfoTpl>
-          <div class="p-6">
-            <form [formGroup]="infoForm" (ngSubmit)="onSaveInfo()" class="flex flex-col gap-4" novalidate>
-              <!-- Name -->
-              <div class="flex flex-col gap-2">
-                <label for="edit-name" class="font-medium text-gray-700">
-                  {{ 'clients.form.name' | transloco }}
-                  <span class="text-red-500" aria-hidden="true">*</span>
-                </label>
-                <input
-                  pInputText
-                  id="edit-name"
-                  formControlName="name"
-                  class="w-full"
-                  aria-required="true"
-                  [attr.aria-invalid]="(infoForm.controls.name.invalid && infoForm.controls.name.touched) ? 'true' : 'false'"
-                  [attr.aria-describedby]="
-                    (infoForm.controls.name.invalid && infoForm.controls.name.touched) ? 'edit-name-error' : null
-                  "
-                />
-                <ng-container *ngIf="infoForm.controls.name.invalid && infoForm.controls.name.touched">
-                  <p-message
-                    id="edit-name-error"
-                    severity="error"
-                    variant="simple"
-                    role="alert"
-                    aria-live="assertive"
-                    tabindex="-1"
-                  >
-                    {{ 'clients.form.nameRequired' | transloco }}
-                  </p-message>
-                </ng-container>
-              </div>
-
-              <!-- Address -->
-              <div class="flex flex-col gap-2">
-                <label for="edit-address" class="font-medium text-gray-700">
-                  {{ 'clients.form.address' | transloco }}
-                  <span class="text-red-500" aria-hidden="true">*</span>
-                </label>
-                <input
-                  pInputText
-                  id="edit-address"
-                  formControlName="address"
-                  class="w-full"
-                  aria-required="true"
-                  [attr.aria-invalid]="(infoForm.controls.address.invalid && infoForm.controls.address.touched) ? 'true' : 'false'"
-                  [attr.aria-describedby]="
-                    (infoForm.controls.address.invalid && infoForm.controls.address.touched) ? 'edit-address-error' : null
-                  "
-                />
-                <ng-container *ngIf="infoForm.controls.address.invalid && infoForm.controls.address.touched">
-                  <p-message
-                    id="edit-address-error"
-                    severity="error"
-                    variant="simple"
-                    role="alert"
-                    aria-live="assertive"
-                    tabindex="-1"
-                  >
-                    {{ 'clients.form.addressRequired' | transloco }}
-                  </p-message>
-                </ng-container>
-              </div>
-
-              <!-- Ville / Code postal / State -->
-              <div class="grid grid-cols-1 md:grid-cols-3 gap-4">
-                <div class="flex flex-col gap-2">
-                  <label for="edit-city" class="font-medium text-gray-700">
-                    {{ 'clients.form.city' | transloco }}
-                    <span class="text-red-500" aria-hidden="true">*</span>
-                  </label>
-                  <input
-                    pInputText
-                    id="edit-city"
-                    formControlName="city"
-                    class="w-full"
-                    aria-required="true"
-                    [attr.aria-invalid]="(infoForm.controls.city.invalid && infoForm.controls.city.touched) ? 'true' : 'false'"
-                    [attr.aria-describedby]="
-                      (infoForm.controls.city.invalid && infoForm.controls.city.touched) ? 'edit-city-error' : null
-                    "
-                  />
-                  <ng-container *ngIf="infoForm.controls.city.invalid && infoForm.controls.city.touched">
-                    <p-message
-                      id="edit-city-error"
-                      severity="error"
-                      variant="simple"
-                      role="alert"
-                      aria-live="assertive"
-                      tabindex="-1"
-                    >
-                      {{ 'clients.form.cityRequired' | transloco }}
-                    </p-message>
-                  </ng-container>
-                </div>
-
-                <div class="flex flex-col gap-2">
-                  <label for="edit-postalCode" class="font-medium text-gray-700">
-                    {{ 'clients.form.postalCode' | transloco }}
-                    <span class="text-red-500" aria-hidden="true">*</span>
-                  </label>
-                  <input
-                    pInputText
-                    id="edit-postalCode"
-                    formControlName="postalCode"
-                    class="w-full"
-                    aria-required="true"
-                    [attr.aria-invalid]="
-                      (infoForm.controls.postalCode.invalid && infoForm.controls.postalCode.touched)
-                        ? 'true'
-                        : 'false'
-                    "
-                    [attr.aria-describedby]="
-                      (infoForm.controls.postalCode.invalid && infoForm.controls.postalCode.touched)
-                        ? 'edit-postalCode-error'
-                        : null
-                    "
-                  />
-                  <ng-container *ngIf="infoForm.controls.postalCode.invalid && infoForm.controls.postalCode.touched">
-                    <p-message
-                      id="edit-postalCode-error"
-                      severity="error"
-                      variant="simple"
-                      role="alert"
-                      aria-live="assertive"
-                      tabindex="-1"
-                    >
-                      {{ 'clients.form.postalCodeRequired' | transloco }}
-                    </p-message>
-                  </ng-container>
-                </div>
-
-                <div class="flex flex-col gap-2">
-                  <label for="edit-state" class="font-medium text-gray-700">
-                    {{ 'clients.form.state' | transloco }}
-                  </label>
-                  <input pInputText id="edit-state" formControlName="state" class="w-full" />
-                </div>
-              </div>
-
-              <!-- Country -->
-              <div class="flex flex-col gap-2">
-                <label for="edit-country" class="font-medium text-gray-700">
-                  {{ 'clients.form.country' | transloco }}
-                  <span class="text-red-500" aria-hidden="true">*</span>
-                </label>
-                <input
-                  pInputText
-                  id="edit-country"
-                  formControlName="country"
-                  class="w-full"
-                  aria-required="true"
-                  [attr.aria-invalid]="(infoForm.controls.country.invalid && infoForm.controls.country.touched) ? 'true' : 'false'"
-                  [attr.aria-describedby]="
-                    (infoForm.controls.country.invalid && infoForm.controls.country.touched) ? 'edit-country-error' : null
-                  "
-                />
-                <ng-container *ngIf="infoForm.controls.country.invalid && infoForm.controls.country.touched">
-                  <p-message
-                    id="edit-country-error"
-                    severity="error"
-                    variant="simple"
-                    role="alert"
-                    aria-live="assertive"
-                    tabindex="-1"
-                  >
-                    {{ 'clients.form.countryRequired' | transloco }}
-                  </p-message>
-                </ng-container>
-              </div>
-
-              <!-- Action buttons -->
-              <div class="flex gap-3 pt-2">
-                <button
-                  type="button"
-                  (click)="onCancelInfo()"
-                  class="px-4 py-2 bg-gray-200 text-gray-700 rounded hover:bg-gray-300 focus:outline-none focus:ring-2 focus:ring-indigo-500 focus:ring-offset-2"
-                >
-                  {{ 'common.cancel' | transloco }}
-                </button>
-                <button
-                  type="submit"
-                  [disabled]="infoForm.invalid"
-                  class="px-4 py-2 bg-indigo-600 text-white rounded hover:bg-indigo-700 focus:outline-none focus:ring-2 focus:ring-indigo-500 focus:ring-offset-2"
-                >
-                  {{ 'common.save' | transloco }}
-                </button>
-              </div>
-            </form>
-          </div>
-        </ng-template>
-      </section>
-
-      <!-- Section Notes -->
-      <section aria-labelledby="client-notes-title" class="bg-white rounded-xl border border-gray-200 shadow-sm p-6">
-        <h2 id="client-notes-title" class="sr-only">{{ 'clients.detail.notes' | transloco }}</h2>
-
-        <ng-container *ngIf="!editingNotes(); else editNotesTpl">
-          <div class="flex items-start justify-between gap-4">
-            <div class="flex-1">
-              <h3 class="text-sm font-medium text-gray-500 mb-2">{{ 'clients.form.notes' | transloco }}</h3>
-              <ng-container *ngIf="client()?.notes; else noNotesTpl">
-                <p class="text-gray-900 whitespace-pre-line">{{ client()?.notes }}</p>
-              </ng-container>
-              <ng-template #noNotesTpl>
-                <p class="text-gray-400 italic">{{ 'clients.form.notesPlaceholder' | transloco }}</p>
-              </ng-template>
-            </div>
-            <button
-              type="button"
-              (click)="onEditNotes()"
-              class="p-2 text-gray-400 hover:text-indigo-600 hover:bg-indigo-50 rounded-lg transition-colors focus:outline-none focus:ring-2 focus:ring-indigo-500 focus:ring-offset-2"
-              [attr.aria-label]="'clients.editNotes' | transloco"
+      <!-- Mode lecture -->
+      @if (!editingInfo()) {
+      <div class="p-6">
+        <div class="flex items-start gap-6">
+          <!-- Avatar -->
+          <div class="flex-shrink-0">
+            <div
+              class="w-24 h-24 rounded-full bg-gradient-to-br from-indigo-500 to-purple-500 flex items-center justify-center text-white text-3xl font-bold shadow-lg"
+              aria-hidden="true"
             >
-              <i class="pi pi-pencil text-sm" aria-hidden="true"></i>
-            </button>
-          </div>
-        </ng-container>
-
-        <ng-template #editNotesTpl>
-          <form [formGroup]="notesForm" (ngSubmit)="onSaveNotes()" class="flex flex-col gap-4" novalidate>
-            <textarea
-              pTextarea
-              id="edit-notes"
-              formControlName="notes"
-              rows="4"
-              class="w-full"
-              aria-describedby="edit-notes-help"
-            ></textarea>
-            <div id="edit-notes-help" class="sr-only">
-              {{ 'clients.form.notesPlaceholder' | transloco }}
+              {{ getInitials() }}
             </div>
-            <div class="flex gap-3">
+          </div>
+
+          <!-- Info texte -->
+          <div class="flex-1 min-w-0">
+            <div class="flex items-start justify-between mb-4">
+              <div>
+                <h3 class="text-2xl font-bold text-gray-900 mb-1">{{ client()?.name }}</h3>
+                <p class="text-sm text-gray-500">{{ 'clients.detailClient' | transloco }}</p>
+              </div>
               <button
                 type="button"
-                (click)="onCancelNotes()"
-                class="px-4 py-2 bg-gray-200 text-gray-700 rounded hover:bg-gray-300 focus:outline-none focus:ring-2 focus:ring-indigo-500 focus:ring-offset-2"
+                (click)="onEditInfo()"
+                class="p-2 text-gray-400 hover:text-indigo-600 hover:bg-indigo-50 rounded-lg transition-colors focus:outline-none focus:ring-2 focus:ring-indigo-500 focus:ring-offset-2"
+                [attr.aria-label]="'clients.editInfo' | transloco"
               >
-                {{ 'common.cancel' | transloco }}
-              </button>
-              <button
-                type="submit"
-                class="px-4 py-2 bg-indigo-600 text-white rounded hover:bg-indigo-700 focus:outline-none focus:ring-2 focus:ring-indigo-500 focus:ring-offset-2"
-              >
-                {{ 'common.save' | transloco }}
+                <i class="pi pi-pencil text-sm" aria-hidden="true"></i>
               </button>
             </div>
-          </form>
-        </ng-template>
-      </section>
 
-      <!-- Section Subjects -->
-      <section aria-labelledby="client-subjects-title" class="bg-white rounded-xl border border-gray-200 shadow-sm p-6">
-        <h2 id="client-subjects-title" class="text-sm font-medium text-gray-500 mb-4">{{ 'subjects.title' | transloco }}</h2>
-        <app-client-subjects-form
-          [clientId]="clientId()"
-          [isEditMode]="true"
-        />
-      </section>
-
-      <!-- Section Historique -->
-      <section aria-labelledby="client-history-title" class="bg-white rounded-xl border border-gray-200 shadow-sm p-6">
-        <h2 id="client-history-title" class="text-sm font-medium text-gray-500 mb-4">Historique des gardes</h2>
-        <div class="text-center py-8">
-          <i class="pi pi-calendar text-4xl text-gray-300 mb-3" aria-hidden="true"></i>
-          <p class="text-gray-400 italic">Aucune garde enregistrée pour le moment</p>
+            <!-- Adresse -->
+            <div class="flex items-start gap-3 text-gray-700">
+              <i
+                class="pi pi-map-marker text-indigo-500 mt-0.5 flex-shrink-0"
+                aria-hidden="true"
+              ></i>
+              <div class="leading-relaxed">
+                <span>{{ client()?.address }}, </span>
+                <span>{{ client()?.city }} {{ client()?.postalCode }}</span>
+                @if (client()?.state) {
+                <span>, {{ client()?.state }}</span>
+                }
+                <span>, {{ client()?.country }}</span>
+              </div>
+            </div>
+          </div>
         </div>
-      </section>
-
-      <!-- Global Error -->
-      <ng-container *ngIf="error()">
-        <p-message
-          severity="error"
-          class="w-full"
-          variant="simple"
-          role="alert"
-          aria-live="assertive"
-          tabindex="-1"
+      </div>
+      } @else {
+      <!-- Mode édition -->
+      <div class="p-6">
+        <form
+          [formGroup]="infoForm"
+          (ngSubmit)="onSaveInfo()"
+          class="flex flex-col gap-4"
+          novalidate
         >
-          {{ error() }}
-        </p-message>
-      </ng-container>
-    </div>
-  </ng-template>
+          <!-- Name -->
+          <div class="flex flex-col gap-2">
+            <label for="edit-name" class="font-medium text-gray-700">
+              {{ 'clients.form.name' | transloco }}
+              <span class="text-red-500" aria-hidden="true">*</span>
+            </label>
+            <input
+              pInputText
+              id="edit-name"
+              formControlName="name"
+              class="w-full"
+              aria-required="true"
+              [attr.aria-invalid]="
+                infoForm.controls.name.invalid && infoForm.controls.name.touched
+                  ? 'true'
+                  : 'false'
+              "
+              [attr.aria-describedby]="
+                infoForm.controls.name.invalid && infoForm.controls.name.touched
+                  ? 'edit-name-error'
+                  : null
+              "
+            />
+            @if (infoForm.controls.name.invalid && infoForm.controls.name.touched) {
+            <p-message
+              id="edit-name-error"
+              severity="error"
+              variant="simple"
+              role="alert"
+              aria-live="assertive"
+              tabindex="-1"
+            >
+              {{ 'clients.form.nameRequired' | transloco }}
+            </p-message>
+            }
+          </div>
+
+          <!-- Address -->
+          <div class="flex flex-col gap-2">
+            <label for="edit-address" class="font-medium text-gray-700">
+              {{ 'clients.form.address' | transloco }}
+              <span class="text-red-500" aria-hidden="true">*</span>
+            </label>
+            <input
+              pInputText
+              id="edit-address"
+              formControlName="address"
+              class="w-full"
+              aria-required="true"
+              [attr.aria-invalid]="
+                infoForm.controls.address.invalid && infoForm.controls.address.touched
+                  ? 'true'
+                  : 'false'
+              "
+              [attr.aria-describedby]="
+                infoForm.controls.address.invalid && infoForm.controls.address.touched
+                  ? 'edit-address-error'
+                  : null
+              "
+            />
+            @if (infoForm.controls.address.invalid && infoForm.controls.address.touched) {
+            <p-message
+              id="edit-address-error"
+              severity="error"
+              variant="simple"
+              role="alert"
+              aria-live="assertive"
+              tabindex="-1"
+            >
+              {{ 'clients.form.addressRequired' | transloco }}
+            </p-message>
+            }
+          </div>
+
+          <!-- Ville / Code postal / State -->
+          <div class="grid grid-cols-1 md:grid-cols-3 gap-4">
+            <div class="flex flex-col gap-2">
+              <label for="edit-city" class="font-medium text-gray-700">
+                {{ 'clients.form.city' | transloco }}
+                <span class="text-red-500" aria-hidden="true">*</span>
+              </label>
+              <input
+                pInputText
+                id="edit-city"
+                formControlName="city"
+                class="w-full"
+                aria-required="true"
+                [attr.aria-invalid]="
+                  infoForm.controls.city.invalid && infoForm.controls.city.touched
+                    ? 'true'
+                    : 'false'
+                "
+                [attr.aria-describedby]="
+                  infoForm.controls.city.invalid && infoForm.controls.city.touched
+                    ? 'edit-city-error'
+                    : null
+                "
+              />
+              @if (infoForm.controls.city.invalid && infoForm.controls.city.touched) {
+              <p-message
+                id="edit-city-error"
+                severity="error"
+                variant="simple"
+                role="alert"
+                aria-live="assertive"
+                tabindex="-1"
+              >
+                {{ 'clients.form.cityRequired' | transloco }}
+              </p-message>
+              }
+            </div>
+
+            <div class="flex flex-col gap-2">
+              <label for="edit-postalCode" class="font-medium text-gray-700">
+                {{ 'clients.form.postalCode' | transloco }}
+                <span class="text-red-500" aria-hidden="true">*</span>
+              </label>
+              <input
+                pInputText
+                id="edit-postalCode"
+                formControlName="postalCode"
+                class="w-full"
+                aria-required="true"
+                [attr.aria-invalid]="
+                  infoForm.controls.postalCode.invalid && infoForm.controls.postalCode.touched
+                    ? 'true'
+                    : 'false'
+                "
+                [attr.aria-describedby]="
+                  infoForm.controls.postalCode.invalid && infoForm.controls.postalCode.touched
+                    ? 'edit-postalCode-error'
+                    : null
+                "
+              />
+              @if (infoForm.controls.postalCode.invalid && infoForm.controls.postalCode.touched) {
+              <p-message
+                id="edit-postalCode-error"
+                severity="error"
+                variant="simple"
+                role="alert"
+                aria-live="assertive"
+                tabindex="-1"
+              >
+                {{ 'clients.form.postalCodeRequired' | transloco }}
+              </p-message>
+              }
+            </div>
+
+            <div class="flex flex-col gap-2">
+              <label for="edit-state" class="font-medium text-gray-700">
+                {{ 'clients.form.state' | transloco }}
+              </label>
+              <input pInputText id="edit-state" formControlName="state" class="w-full" />
+            </div>
+          </div>
+
+          <!-- Country -->
+          <div class="flex flex-col gap-2">
+            <label for="edit-country" class="font-medium text-gray-700">
+              {{ 'clients.form.country' | transloco }}
+              <span class="text-red-500" aria-hidden="true">*</span>
+            </label>
+            <input
+              pInputText
+              id="edit-country"
+              formControlName="country"
+              class="w-full"
+              aria-required="true"
+              [attr.aria-invalid]="
+                infoForm.controls.country.invalid && infoForm.controls.country.touched
+                  ? 'true'
+                  : 'false'
+              "
+              [attr.aria-describedby]="
+                infoForm.controls.country.invalid && infoForm.controls.country.touched
+                  ? 'edit-country-error'
+                  : null
+              "
+            />
+            @if (infoForm.controls.country.invalid && infoForm.controls.country.touched) {
+            <p-message
+              id="edit-country-error"
+              severity="error"
+              variant="simple"
+              role="alert"
+              aria-live="assertive"
+              tabindex="-1"
+            >
+              {{ 'clients.form.countryRequired' | transloco }}
+            </p-message>
+            }
+          </div>
+
+          <!-- Action buttons -->
+          <div class="flex gap-3 pt-2">
+            <button
+              type="button"
+              (click)="onCancelInfo()"
+              class="px-4 py-2 bg-gray-200 text-gray-700 rounded hover:bg-gray-300 focus:outline-none focus:ring-2 focus:ring-indigo-500 focus:ring-offset-2"
+            >
+              {{ 'common.cancel' | transloco }}
+            </button>
+            <button
+              type="submit"
+              [disabled]="infoForm.invalid"
+              class="px-4 py-2 bg-indigo-600 text-white rounded hover:bg-indigo-700 focus:outline-none focus:ring-2 focus:ring-indigo-500 focus:ring-offset-2"
+            >
+              {{ 'common.save' | transloco }}
+            </button>
+          </div>
+        </form>
+      </div>
+      }
+    </section>
+
+    <!-- Section Notes -->
+    <section
+      aria-labelledby="client-notes-title"
+      class="bg-white rounded-xl border border-gray-200 shadow-sm p-6"
+    >
+      <h2 id="client-notes-title" class="sr-only">{{ 'clients.detail.notes' | transloco }}</h2>
+
+      @if (!editingNotes()) {
+      <div class="flex items-start justify-between gap-4">
+        <div class="flex-1">
+          <h3 class="text-sm font-medium text-gray-500 mb-2">
+            {{ 'clients.form.notes' | transloco }}
+          </h3>
+          @if (client()?.notes) {
+          <p class="text-gray-900 whitespace-pre-line">{{ client()?.notes }}</p>
+          } @else {
+          <p class="text-gray-400 italic">
+            {{ 'clients.form.notesPlaceholder' | transloco }}
+          </p>
+          }
+        </div>
+        <button
+          type="button"
+          (click)="onEditNotes()"
+          class="p-2 text-gray-400 hover:text-indigo-600 hover:bg-indigo-50 rounded-lg transition-colors focus:outline-none focus:ring-2 focus:ring-indigo-500 focus:ring-offset-2"
+          [attr.aria-label]="'clients.editNotes' | transloco"
+        >
+          <i class="pi pi-pencil text-sm" aria-hidden="true"></i>
+        </button>
+      </div>
+      } @else {
+      <form
+        [formGroup]="notesForm"
+        (ngSubmit)="onSaveNotes()"
+        class="flex flex-col gap-4"
+        novalidate
+      >
+        <textarea
+          pTextarea
+          id="edit-notes"
+          formControlName="notes"
+          rows="4"
+          class="w-full"
+          aria-describedby="edit-notes-help"
+        ></textarea>
+        <div id="edit-notes-help" class="sr-only">
+          {{ 'clients.form.notesPlaceholder' | transloco }}
+        </div>
+        <div class="flex gap-3">
+          <button
+            type="button"
+            (click)="onCancelNotes()"
+            class="px-4 py-2 bg-gray-200 text-gray-700 rounded hover:bg-gray-300 focus:outline-none focus:ring-2 focus:ring-indigo-500 focus:ring-offset-2"
+          >
+            {{ 'common.cancel' | transloco }}
+          </button>
+          <button
+            type="submit"
+            class="px-4 py-2 bg-indigo-600 text-white rounded hover:bg-indigo-700 focus:outline-none focus:ring-2 focus:ring-indigo-500 focus:ring-offset-2"
+          >
+            {{ 'common.save' | transloco }}
+          </button>
+        </div>
+      </form>
+      }
+    </section>
+
+    <!-- Section Subjects -->
+    @if (clientId(); as clientId) {
+    <section
+      aria-labelledby="client-subjects-title"
+      class="bg-white rounded-xl border border-gray-200 shadow-sm p-6"
+    >
+      <h2 id="client-subjects-title" class="text-sm font-medium text-gray-500 mb-4">
+        {{ 'subjects.title' | transloco }}
+      </h2>
+      <app-subjects-manager [clientId]="clientId" />
+    </section>
+    }
+
+    <!-- Section Historique -->
+    <section
+      aria-labelledby="client-history-title"
+      class="bg-white rounded-xl border border-gray-200 shadow-sm p-6"
+    >
+      <h2 id="client-history-title" class="text-sm font-medium text-gray-500 mb-4">
+        Historique des gardes
+      </h2>
+      <div class="text-center py-8">
+        <i class="pi pi-calendar text-4xl text-gray-300 mb-3" aria-hidden="true"></i>
+        <p class="text-gray-400 italic">Aucune garde enregistrée pour le moment</p>
+      </div>
+    </section>
+
+    <!-- Global Error -->
+    @if (error()) {
+    <p-message
+      severity="error"
+      class="w-full"
+      variant="simple"
+      role="alert"
+      aria-live="assertive"
+      tabindex="-1"
+    >
+      {{ error() }}
+    </p-message>
+    }
+  </div>
+  }
 </section>

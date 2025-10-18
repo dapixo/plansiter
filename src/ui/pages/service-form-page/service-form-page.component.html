@@ -74,7 +74,6 @@
             id="type"
             formControlName="type"
             [options]="serviceTypes"
-            optionLabel="label"
             optionValue="value"
             [placeholder]="'services.form.typePlaceholder' | transloco"
             class="w-full"
@@ -86,11 +85,11 @@
           >
             <ng-template pTemplate="selectedItem" let-selectedOption>
               @if (selectedOption) {
-              {{ selectedOption.label | transloco }}
+              {{ selectedOption.labelKey | transloco }}
               }
             </ng-template>
             <ng-template pTemplate="item" let-option>
-              {{ option.label | transloco }}
+              {{ option.labelKey | transloco }}
             </ng-template>
           </p-select>
           @if (form.controls.type.invalid && form.controls.type.touched) {
@@ -128,7 +127,6 @@
             id="priceType"
             formControlName="priceType"
             [options]="priceTypes"
-            optionLabel="label"
             optionValue="value"
             [placeholder]="'services.form.priceTypePlaceholder' | transloco"
             class="w-full"
@@ -142,11 +140,11 @@
           >
             <ng-template pTemplate="selectedItem" let-selectedOption>
               @if (selectedOption) {
-              {{ selectedOption.label | transloco }}
+              {{ selectedOption.labelKey | transloco }}
               }
             </ng-template>
             <ng-template pTemplate="item" let-option>
-              {{ option.label | transloco }}
+              {{ option.labelKey | transloco }}
             </ng-template>
           </p-select>
           @if (form.controls.priceType.invalid && form.controls.priceType.touched) {

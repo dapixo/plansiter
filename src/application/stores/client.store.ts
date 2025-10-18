@@ -13,6 +13,9 @@ interface ClientState {
   subjects: Subject[];
   loading: boolean;
   error: string | null;
+  success: boolean;
+  lastCreated: Client | null;
+  lastCreatedSubject: Subject | null;
 }
 
 const initialState: ClientState = {
@@ -20,6 +23,9 @@ const initialState: ClientState = {
   subjects: [],
   loading: false,
   error: null,
+  success: false,
+  lastCreated: null,
+  lastCreatedSubject: null
 };
 
 const updateClientInList = (list: Client[], updated: Client) =>
@@ -44,10 +50,10 @@ export const ClientStore = signalStore(
 
   withMethods((store, repo = inject<IClientRepository>(CLIENT_REPOSITORY), subjectRepo = inject<ISubjectRepository>(SUBJECT_REPOSITORY), authService = inject(AuthService)) => {
     // ========== HELPERS ==========
-    const setLoading = () => patchState(store, { loading: true, error: null });
+    const setLoading = () => patchState(store, { loading: true, error: null, success: false, lastCreated: null, lastCreatedSubject: null });
     const setError = (error: unknown) =>
-      patchState(store, { error: error instanceof Error ? error.message : String(error), loading: false });
-    const setSuccess = () => patchState(store, { loading: false, error: null });
+      patchState(store, { error: error instanceof Error ? error.message : String(error), loading: false, success: false });
+    const setSuccess = () => patchState(store, { loading: false, error: null, success: true });
 
     const getUserId = (): string | null => authService.currentUser()?.id ?? null;
 
@@ -99,7 +105,7 @@ export const ClientStore = signalStore(
           switchMap((data) =>
             repo.create(data).pipe(
               tap((newClient) =>
-                patchState(store, { clients: [...store.clients(), newClient] })
+                patchState(store, { clients: [...store.clients(), newClient],lastCreated: newClient })
               ),
               catchError(handleError),
               finalize(setSuccess)
@@ -152,7 +158,7 @@ export const ClientStore = signalStore(
           switchMap((data) =>
             subjectRepo.create(data).pipe(
               tap((newSubject) =>
-                patchState(store, { subjects: [...store.subjects(), newSubject] })
+                patchState(store, { subjects: [...store.subjects(), newSubject], lastCreatedSubject: newSubject })
               ),
               catchError(handleError),
               finalize(setSuccess)

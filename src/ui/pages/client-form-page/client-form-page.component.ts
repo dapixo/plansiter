@@ -1,14 +1,11 @@
-import {
-  Component,
-  inject,
-  signal,
-  computed,
-  DestroyRef,
-  ChangeDetectionStrategy,
-} from '@angular/core';
+import { Component, inject, signal, DestroyRef, ChangeDetectionStrategy } from '@angular/core';
 import { takeUntilDestroyed } from '@angular/core/rxjs-interop';
 import { CommonModule } from '@angular/common';
-import { FormBuilder, FormControl, ReactiveFormsModule, Validators } from '@angular/forms';
+import {
+  NonNullableFormBuilder,
+  ReactiveFormsModule,
+  Validators,
+} from '@angular/forms';
 import { Router, RouterModule } from '@angular/router';
 import { InputTextModule } from 'primeng/inputtext';
 import { MessageModule } from 'primeng/message';
@@ -16,13 +13,16 @@ import { BreadcrumbModule } from 'primeng/breadcrumb';
 import { TranslocoModule } from '@jsverse/transloco';
 import { TextareaModule } from 'primeng/textarea';
 import { tap, catchError } from 'rxjs/operators';
-import { EMPTY } from 'rxjs';
+import { of } from 'rxjs';
 import { Client } from '@domain/entities';
 import { ClientStore } from '@application/stores/client.store';
 import { AuthService, BreadcrumbService } from '@application/services';
 import { LanguageService } from '@application/services/language.service';
-import { ClientManagementService, TempSubject } from '@application/services/client-management.service';
-import { ClientSubjectsFormComponent } from '@ui/components/client-subjects-form/client-subjects-form.component';
+import {
+  ClientManagementService,
+  TempSubject,
+} from '@application/services/client-management.service';
+import { SubjectsManagerComponent } from '@ui/components/subjects-manager/subjects-manager.component';
 import { ActionButtonComponent } from '@ui/components/action-button/action-button.component';
 
 @Component({
@@ -37,7 +37,7 @@ import { ActionButtonComponent } from '@ui/components/action-button/action-butto
     BreadcrumbModule,
     MessageModule,
     TranslocoModule,
-    ClientSubjectsFormComponent,
+    SubjectsManagerComponent,
     ActionButtonComponent,
   ],
   templateUrl: './client-form-page.component.html',
@@ -45,7 +45,7 @@ import { ActionButtonComponent } from '@ui/components/action-button/action-butto
   changeDetection: ChangeDetectionStrategy.OnPush,
 })
 export class ClientFormPageComponent {
-  private readonly fb = inject(FormBuilder);
+  private readonly fb = inject(NonNullableFormBuilder);
   private readonly router = inject(Router);
   private readonly destroyRef = inject(DestroyRef);
   private readonly clientManagement = inject(ClientManagementService);
@@ -57,74 +57,72 @@ export class ClientFormPageComponent {
   protected readonly breadcrumbItems = this.breadcrumbService.createBreadcrumbItems({
     parentLabel: 'clients.title',
     parentRoute: '/dashboard/clients',
-    currentLabel: 'clients.createClient'
+    currentLabel: 'clients.createClient',
   });
 
   protected readonly breadcrumbHome = this.breadcrumbService.createBreadcrumbHome();
 
-  protected readonly form = this.fb.group<{
-    name: FormControl<string>;
-    address: FormControl<string>;
-    city: FormControl<string>;
-    postalCode: FormControl<string>;
-    state: FormControl<string>;
-    country: FormControl<string>;
-    notes: FormControl<string>;
-  }>({
-    name: this.fb.control('', { validators: Validators.required, nonNullable: true }),
-    address: this.fb.control('', { validators: Validators.required, nonNullable: true }),
-    city: this.fb.control('', { validators: Validators.required, nonNullable: true }),
-    postalCode: this.fb.control('', { validators: Validators.required, nonNullable: true }),
-    state: this.fb.control('', { nonNullable: true }),
-    country: this.fb.control('', { validators: Validators.required, nonNullable: true }),
-    notes: this.fb.control('', { nonNullable: true }),
+  /** Formulaire client */
+  protected readonly form = this.fb.group({
+    name: ['', Validators.required],
+    address: ['', Validators.required],
+    city: ['', Validators.required],
+    postalCode: ['', Validators.required],
+    state: [''],
+    country: ['', Validators.required],
+    notes: [''],
   });
 
-  /** Subjects state */
-  private readonly currentSubjects = signal<TempSubject[]>([]);
+  /** Liste temporaire de subjects */
+  protected readonly currentSubjects = signal<TempSubject[]>([]);
 
+  /** Store accessible dans le template */
+  protected readonly clientStore = this.store;
+
+  /** Soumission du formulaire */
   protected onSubmit(): void {
     this.form.markAllAsTouched();
     if (this.store.loading() || this.form.invalid) return;
 
-    const user = this.auth.currentUser();
-    if (!user?.id)  return;
+    const userId = this.auth.currentUser()?.id;
+    if (!userId) return;
 
-    const clientPayload = this.getClientPayload(user.id);
+    const clientPayload = this.getClientPayload(userId);
     const subjects = this.currentSubjects();
 
-    // Utilisation du service d'orchestration
-    this.clientManagement.createClientWithSubjects(clientPayload, subjects).pipe(
-      tap(() => {
-        const lang = this.lang.getCurrentLanguage();
-        this.router.navigate([`/${lang}/dashboard/clients`]);
-      }),
-      catchError(error => {
-        console.error('Error creating client and subjects:', error);
-        return EMPTY;
-      }),
-      takeUntilDestroyed(this.destroyRef)
-    ).subscribe();
+    this.clientManagement
+      .createClientWithSubjects(clientPayload, subjects)
+      .pipe(
+        tap(() => {
+          const lang = this.lang.getCurrentLanguage();
+          this.router.navigateByUrl(`/${lang}/dashboard/clients`);
+        }),
+        catchError((error) => {
+          console.error('❌ Error creating client and subjects:', error);
+          return of(null);
+        }),
+        takeUntilDestroyed(this.destroyRef)
+      )
+      .subscribe();
   }
 
+  /** Construction du payload à partir du formulaire */
   private getClientPayload(userId: string): Omit<Client, 'id' | 'createdAt' | 'updatedAt'> {
-    const { name, address, city, postalCode, state, country, notes } = this.form.value;
+    const { name, address, city, postalCode, state, country, notes } = this.form.getRawValue();
     return {
       userId,
-      name: name!,
-      address: address!,
-      city: city!,
-      postalCode: postalCode!,
+      name,
+      address,
+      city,
+      postalCode,
       state: state || undefined,
-      country: country!,
+      country,
       notes: notes || undefined,
     };
   }
 
-  /** Handler pour l'output du composant enfant */
+  /** Handler pour la sortie du composant enfant */
   protected onSubjectsChange(subjects: TempSubject[]): void {
     this.currentSubjects.set(subjects);
   }
-
-  protected clientStore = this.store;
 }

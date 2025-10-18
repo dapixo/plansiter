@@ -22,8 +22,8 @@ import { ServiceStore } from '@application/stores/service.store';
 import { AuthService, BreadcrumbService } from '@application/services';
 import { LanguageService } from '@application/services/language.service';
 import { ActionButtonComponent } from '@ui/components/action-button/action-button.component';
-
-type PriceType = 'hour' | 'day' | 'night';
+import { SERVICE_TYPE_OPTIONS } from '@ui/constants/service-types.constant';
+import { PRICE_TYPE_OPTIONS_FORM, PriceTypeForm } from '@ui/constants/price-types.constant';
 
 @Component({
   selector: 'app-service-form-page',
@@ -42,7 +42,6 @@ type PriceType = 'hour' | 'day' | 'night';
     ActionButtonComponent,
   ],
   templateUrl: './service-form-page.component.html',
-  styleUrls: ['./service-form-page.component.css'],
   changeDetection: ChangeDetectionStrategy.OnPush,
 })
 export class ServiceFormPageComponent {
@@ -74,29 +73,20 @@ export class ServiceFormPageComponent {
   );
 
   protected readonly breadcrumbHome = this.breadcrumbService.createBreadcrumbHome();
-  protected readonly serviceTypes: { label: string; value: ServiceType }[] = [
-    { label: 'services.types.petSitting', value: 'pet-sitting' },
-    { label: 'services.types.plantSitting', value: 'plant-sitting' },
-    { label: 'services.types.babysitting', value: 'babysitting' },
-    { label: 'services.types.houseSitting', value: 'house-sitting' },
-    { label: 'services.types.other', value: 'other' }
-  ];
-  protected readonly priceTypes: { label: string; value: PriceType }[] = [
-    { label: 'services.form.pricePerHour', value: 'hour' },
-    { label: 'services.form.pricePerDay', value: 'day' },
-    { label: 'services.form.pricePerNight', value: 'night' }
-  ];
+  protected readonly serviceTypes = SERVICE_TYPE_OPTIONS;
+  protected readonly priceTypes = PRICE_TYPE_OPTIONS_FORM;
+
   protected readonly form = this.fb.group<{
     name: FormControl<string>;
     type: FormControl<ServiceType | null>;
     description: FormControl<string>;
-    priceType: FormControl<PriceType | null>;
+    priceType: FormControl<PriceTypeForm | null>;
     price: FormControl<number | null>;
   }>({
     name: this.fb.control('', { validators: Validators.required, nonNullable: true }),
     type: this.fb.control<ServiceType | null>(null, { validators: Validators.required }),
     description: this.fb.control('', { nonNullable: true }),
-    priceType: this.fb.control<PriceType | null>(null, { validators: Validators.required }),
+    priceType: this.fb.control<PriceTypeForm | null>(null, { validators: Validators.required }),
     price: this.fb.control<number | null>(null, { validators: Validators.required })
   });
   protected readonly uiState = computed(() => ({
@@ -113,7 +103,7 @@ export class ServiceFormPageComponent {
     if (!service) return;
 
     // Déterminer le type de prix
-    let priceType: PriceType | null = null;
+    let priceType: PriceTypeForm | null = null;
     let price: number | null = null;
 
     if (service.pricePerHour) {

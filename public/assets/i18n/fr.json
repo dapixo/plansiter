@@ -60,7 +60,36 @@
     "today": "Aujourd'hui",
     "previous": "Période précédente",
     "next": "Période suivante",
-    "noBookings": "Aucune garde planifiée"
+    "noBookings": "Aucune garde planifiée",
+    "addBooking": "Nouvelle garde"
+  },
+  "booking": {
+    "form": {
+      "title": "Nouvelle garde",
+      "client": "Client",
+      "selectClient": "Sélectionnez un client",
+      "clientRequired": "Le client est obligatoire",
+      "addClient": "Ajouter",
+      "noClientsAvailable": "Aucun client disponible. Ajoutez-en un pour continuer.",
+      "subject": "Sujet à garder",
+      "selectSubject": "Sélectionnez un sujet",
+      "subjectRequired": "Le sujet est obligatoire",
+      "addSubject": "Ajouter",
+      "noSubjectsAvailable": "Aucun sujet disponible. Ajoutez-en un pour continuer.",
+      "service": "Service",
+      "selectService": "Sélectionnez un service",
+      "serviceRequired": "Le service est obligatoire",
+      "addService": "Ajouter",
+      "startDate": "Date et heure de début",
+      "selectStartDate": "Sélectionnez la date de début",
+      "startDateRequired": "La date de début est obligatoire",
+      "endDate": "Date et heure de fin",
+      "selectEndDate": "Sélectionnez la date de fin",
+      "endDateRequired": "La date de fin est obligatoire",
+      "notes": "Notes",
+      "notesPlaceholder": "Informations complémentaires...",
+      "create": "Créer la garde"
+    }
   },
   "services": {
     "title": "Services",
@@ -85,6 +114,7 @@
       "namePlaceholder": "Ex: Garde d'animaux ponctuelle",
       "nameRequired": "Le nom est obligatoire",
       "type": "Type de service",
+      "selectType": "Sélectionnez un type",
       "typePlaceholder": "Sélectionnez un type",
       "typeRequired": "Le type est obligatoire",
       "description": "Description",
@@ -162,9 +192,11 @@
       "other": "Autre"
     },
     "form": {
+      "title": "Nouveau sujet",
       "type": "Type",
       "typePlaceholder": "Sélectionnez un type",
       "typeRequired": "Le type est obligatoire",
+      "selectType": "Sélectionnez un type",
       "name": "Nom",
       "namePlaceholder": "Ex: Max, Ficus, Sophie...",
       "nameRequired": "Le nom est obligatoire",

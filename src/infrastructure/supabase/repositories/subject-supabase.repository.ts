@@ -37,6 +37,18 @@ export class SubjectSupabaseRepository implements ISubjectRepository {
     );
   }
 
+  getByClientId(clientId: string, userId: string): Observable<Subject[]> {
+    // Vérifier la propriété via JOIN avec clients
+    return this.supabase.from$('subjects', q =>
+      q.select('*, clients!inner(user_id)')
+        .eq('client_id', clientId)
+        .eq('clients.user_id', userId)
+    ).pipe(
+      map(res => this.extractData<SubjectRow[]>(res, false)),
+      map(rows => rows.map(row => this.mapToEntity(row)))
+    );
+  }
+
   create(subject: Omit<Subject, 'id' | 'createdAt' | 'updatedAt'>): Observable<Subject> {
     const payload = this.toDbPayload(subject);
 

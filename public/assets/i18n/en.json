@@ -60,7 +60,36 @@
     "today": "Today",
     "previous": "Previous period",
     "next": "Next period",
-    "noBookings": "No bookings scheduled"
+    "noBookings": "No bookings scheduled",
+    "addBooking": "New booking"
+  },
+  "booking": {
+    "form": {
+      "title": "New booking",
+      "client": "Client",
+      "selectClient": "Select a client",
+      "clientRequired": "Client is required",
+      "addClient": "Add",
+      "noClientsAvailable": "No clients available. Add one to continue.",
+      "subject": "Care subject",
+      "selectSubject": "Select a subject",
+      "subjectRequired": "Subject is required",
+      "addSubject": "Add",
+      "noSubjectsAvailable": "No subjects available. Add one to continue.",
+      "service": "Service",
+      "selectService": "Select a service",
+      "serviceRequired": "Service is required",
+      "addService": "Add",
+      "startDate": "Start date and time",
+      "selectStartDate": "Select start date",
+      "startDateRequired": "Start date is required",
+      "endDate": "End date and time",
+      "selectEndDate": "Select end date",
+      "endDateRequired": "End date is required",
+      "notes": "Notes",
+      "notesPlaceholder": "Additional information...",
+      "create": "Create booking"
+    }
   },
   "services": {
     "title": "Services",
@@ -85,6 +114,7 @@
       "namePlaceholder": "Ex: Pet sitting",
       "nameRequired": "Name is required",
       "type": "Service type",
+      "selectType": "Select a type",
       "typePlaceholder": "Select a type",
       "typeRequired": "Type is required",
       "description": "Description",
@@ -162,9 +192,11 @@
       "other": "Other"
     },
     "form": {
+      "title": "New subject",
       "type": "Type",
       "typePlaceholder": "Select a type",
       "typeRequired": "Type is required",
+      "selectType": "Select a type",
       "name": "Name",
       "namePlaceholder": "Ex: Max, Ficus, Sophie...",
       "nameRequired": "Name is required",

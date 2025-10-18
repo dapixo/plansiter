@@ -1,79 +1,80 @@
 <section class="p-8 bg-gray-50 min-h-full" aria-labelledby="planning-section-title">
   <!-- Header -->
-  <header class="flex flex-col md:flex-row justify-between items-start md:items-center gap-4 mb-8">
-    <div>
-      <h1 id="planning-section-title" class="text-4xl font-bold mb-2">
-        <span class="bg-gradient-to-r from-indigo-600 to-purple-600 bg-clip-text text-transparent">
-          {{ 'planning.title' | transloco }}
-        </span>
-      </h1>
-      <p class="text-gray-600 text-lg">{{ 'planning.subtitle' | transloco }}</p>
-    </div>
-
-    <!-- View Controls -->
-    <div class="inline-flex rounded-lg border border-gray-200 bg-white p-1 shadow-sm">
-      <button
-        type="button"
-        (click)="setView(CalendarView.Month)"
-        [class]="view() === CalendarView.Month
-          ? 'px-4 py-2 text-sm font-medium text-white bg-gradient-to-r from-indigo-600 to-purple-600 rounded-md shadow-sm transition-all'
-          : 'px-4 py-2 text-sm font-medium text-gray-700 hover:text-indigo-600 hover:bg-indigo-50 rounded-md transition-all'"
-      >
-        {{ 'planning.month' | transloco }}
-      </button>
-      <button
-        type="button"
-        (click)="setView(CalendarView.Week)"
-        [class]="view() === CalendarView.Week
-          ? 'px-4 py-2 text-sm font-medium text-white bg-gradient-to-r from-indigo-600 to-purple-600 rounded-md shadow-sm transition-all'
-          : 'px-4 py-2 text-sm font-medium text-gray-700 hover:text-indigo-600 hover:bg-indigo-50 rounded-md transition-all'"
-      >
-        {{ 'planning.week' | transloco }}
-      </button>
-      <button
-        type="button"
-        (click)="setView(CalendarView.Day)"
-        [class]="view() === CalendarView.Day
-          ? 'px-4 py-2 text-sm font-medium text-white bg-gradient-to-r from-indigo-600 to-purple-600 rounded-md shadow-sm transition-all'
-          : 'px-4 py-2 text-sm font-medium text-gray-700 hover:text-indigo-600 hover:bg-indigo-50 rounded-md transition-all'"
-      >
-        {{ 'planning.day' | transloco }}
-      </button>
-    </div>
+  <header class="mb-8">
+    <h1 id="planning-section-title" class="text-4xl font-bold mb-2">
+      <span class="bg-gradient-to-r from-indigo-600 to-purple-600 bg-clip-text text-transparent">
+        {{ 'planning.title' | transloco }}
+      </span>
+    </h1>
+    <p class="text-gray-600 text-lg">{{ 'planning.subtitle' | transloco }}</p>
   </header>
 
   <!-- Calendar Navigation -->
-  <div class="flex justify-between items-center mb-6 bg-white rounded-xl border border-gray-200 p-4 shadow-sm">
-    <button
-      type="button"
-      (click)="previousPeriod()"
-      class="p-2 text-gray-500 hover:text-indigo-600 hover:bg-indigo-50 rounded-lg transition-colors focus:outline-none focus:ring-2 focus:ring-indigo-500 focus:ring-offset-2"
-      [attr.aria-label]="'planning.previous' | transloco"
-    >
-      <i class="pi pi-chevron-left" aria-hidden="true"></i>
-    </button>
-
-    <div class="flex items-center gap-4">
-      <h2 class="text-xl font-bold text-gray-900">
-        {{ getPeriodLabel() }}
-      </h2>
-      <button
-        type="button"
-        (click)="today()"
-        class="px-4 py-2 text-sm font-medium text-indigo-600 hover:text-indigo-700 bg-indigo-50 hover:bg-indigo-100 rounded-lg transition-colors focus:outline-none focus:ring-2 focus:ring-indigo-500 focus:ring-offset-2"
-      >
-        {{ 'planning.today' | transloco }}
-      </button>
+  <div class="flex flex-col lg:flex-row justify-between items-start lg:items-center gap-4 mb-6">
+    <!-- Period Label -->
+    <div class="text-lg text-gray-700">
+      {{ periodLabel() }}
     </div>
 
-    <button
-      type="button"
-      (click)="nextPeriod()"
-      class="p-2 text-gray-500 hover:text-indigo-600 hover:bg-indigo-50 rounded-lg transition-colors focus:outline-none focus:ring-2 focus:ring-indigo-500 focus:ring-offset-2"
-      [attr.aria-label]="'planning.next' | transloco"
-    >
-      <i class="pi pi-chevron-right" aria-hidden="true"></i>
-    </button>
+    <!-- Navigation Controls -->
+    <div class="flex items-stretch gap-3">
+      <!-- Previous/Today/Next Navigation -->
+      <div class="inline-flex items-stretch bg-white rounded-lg border border-gray-200 shadow-sm h-11">
+        <button
+          type="button"
+          (click)="previousPeriod()"
+          class="px-3 text-gray-600 hover:text-gray-900 hover:bg-gray-50 transition-colors focus:outline-none focus:ring-2 focus:ring-indigo-500 focus:ring-inset rounded-l-lg flex items-center"
+          [attr.aria-label]="'planning.previous' | transloco"
+        >
+          <i class="pi pi-chevron-left text-sm" aria-hidden="true"></i>
+        </button>
+        <button
+          type="button"
+          (click)="today()"
+          class="px-6 text-sm font-medium text-gray-700 hover:text-gray-900 border-x border-gray-200 hover:bg-gray-50 transition-colors focus:outline-none focus:ring-2 focus:ring-indigo-500 focus:ring-inset flex items-center"
+        >
+          {{ 'planning.today' | transloco }}
+        </button>
+        <button
+          type="button"
+          (click)="nextPeriod()"
+          class="px-3 text-gray-600 hover:text-gray-900 hover:bg-gray-50 transition-colors focus:outline-none focus:ring-2 focus:ring-indigo-500 focus:ring-inset rounded-r-lg flex items-center"
+          [attr.aria-label]="'planning.next' | transloco"
+        >
+          <i class="pi pi-chevron-right text-sm" aria-hidden="true"></i>
+        </button>
+      </div>
+
+      <!-- View Selector -->
+      <p-select
+        [options]="viewOptions"
+        [ngModel]="view()"
+        (ngModelChange)="setView($event)"
+        optionValue="value"
+        [style]="{ height: '44px' }"
+        class="w-40"
+        [placeholder]="'planning.month' | transloco"
+      >
+        <ng-template pTemplate="selectedItem" let-selectedOption>
+          @if (selectedOption) {
+            {{ selectedOption.labelKey | transloco }}
+          }
+        </ng-template>
+        <ng-template pTemplate="item" let-option>
+          {{ option.labelKey | transloco }}
+        </ng-template>
+      </p-select>
+
+      <!-- Add Booking Button -->
+      <button
+        type="button"
+        (click)="openBookingDialog()"
+        class="h-11 px-6 text-sm font-semibold text-white bg-gradient-to-r from-indigo-600 to-purple-600 hover:from-indigo-700 hover:to-purple-700 rounded-lg shadow-md hover:shadow-lg transition-all focus:outline-none focus:ring-2 focus:ring-indigo-500 focus:ring-offset-2 flex items-center"
+      >
+        <i class="pi pi-plus mr-2" aria-hidden="true"></i>
+        {{ 'planning.addBooking' | transloco }}
+      </button>
+    </div>
   </div>
 
   <!-- Calendar -->
@@ -120,4 +121,10 @@
       }
     }
   </div>
+
+  <!-- Booking Form Dialog -->
+  <app-booking-form-dialog
+    [(bookingDialogVisible)]="bookingDialogVisible"
+    (bookingCreated)="onBookingCreated($event)"
+  />
 </section>

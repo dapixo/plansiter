@@ -60,7 +60,36 @@
     "today": "Oggi",
     "previous": "Periodo precedente",
     "next": "Periodo successivo",
-    "noBookings": "Nessuna prenotazione programmata"
+    "noBookings": "Nessuna prenotazione programmata",
+    "addBooking": "Nuova prenotazione"
+  },
+  "booking": {
+    "form": {
+      "title": "Nuova prenotazione",
+      "client": "Cliente",
+      "selectClient": "Seleziona un cliente",
+      "clientRequired": "Il cliente è obbligatorio",
+      "addClient": "Aggiungi",
+      "noClientsAvailable": "Nessun cliente disponibile. Aggiungine uno per continuare.",
+      "subject": "Soggetto da custodire",
+      "selectSubject": "Seleziona un soggetto",
+      "subjectRequired": "Il soggetto è obbligatorio",
+      "addSubject": "Aggiungi",
+      "noSubjectsAvailable": "Nessun soggetto disponibile. Aggiungine uno per continuare.",
+      "service": "Servizio",
+      "selectService": "Seleziona un servizio",
+      "serviceRequired": "Il servizio è obbligatorio",
+      "addService": "Aggiungi",
+      "startDate": "Data e ora di inizio",
+      "selectStartDate": "Seleziona la data di inizio",
+      "startDateRequired": "La data di inizio è obbligatoria",
+      "endDate": "Data e ora di fine",
+      "selectEndDate": "Seleziona la data di fine",
+      "endDateRequired": "La data di fine è obbligatoria",
+      "notes": "Note",
+      "notesPlaceholder": "Informazioni aggiuntive...",
+      "create": "Crea prenotazione"
+    }
   },
   "services": {
     "title": "Servizi",
@@ -85,6 +114,7 @@
       "namePlaceholder": "Es: Pet sitting",
       "nameRequired": "Il nome è obbligatorio",
       "type": "Tipo di servizio",
+      "selectType": "Seleziona un tipo",
       "typePlaceholder": "Seleziona un tipo",
       "typeRequired": "Il tipo è obbligatorio",
       "description": "Descrizione",
@@ -162,9 +192,11 @@
       "other": "Altro"
     },
     "form": {
+      "title": "Nuovo soggetto",
       "type": "Tipo",
       "typePlaceholder": "Seleziona un tipo",
       "typeRequired": "Il tipo è obbligatorio",
+      "selectType": "Seleziona un tipo",
       "name": "Nome",
       "namePlaceholder": "Es: Max, Ficus, Sofia...",
       "nameRequired": "Il nome è obbligatorio",

@@ -1,0 +1,169 @@
+<p-dialog
+  [visible]="subjectDialogVisible()"
+  (visibleChange)="onHide($event)"
+  [modal]="true"
+  [closable]="true"
+  [dismissableMask]="true"
+  [draggable]="false"
+  [resizable]="false"
+  styleClass="w-full max-w-2xl"
+>
+  <ng-template pTemplate="header">
+    <h2 class="text-2xl font-bold">
+      <span class="bg-gradient-to-r from-indigo-600 to-purple-600 bg-clip-text text-transparent">
+        {{ 'subjects.addSubject' | transloco }}
+      </span>
+    </h2>
+  </ng-template>
+
+  @if (error()) {
+  <div
+    class="mb-4 p-4 bg-red-50 border border-red-200 rounded-lg"
+    role="alert"
+    aria-live="assertive"
+    aria-atomic="true"
+  >
+    <p class="text-red-600 text-sm">{{ error() }}</p>
+  </div>
+  }
+
+  <div class="flex flex-col gap-4 py-4" [formGroup]="subjectForm">
+    <!-- Type -->
+    <div class="flex flex-col gap-2">
+      <label for="subject-type" class="font-medium text-gray-700 text-sm">
+        {{ 'subjects.form.type' | transloco }}
+        <span class="text-red-500" aria-hidden="true">*</span>
+      </label>
+      <p-select
+        id="subject-type"
+        formControlName="type"
+        [options]="subjectTypes"
+        optionLabel="label"
+        optionValue="value"
+        [placeholder]="'subjects.form.typePlaceholder' | transloco"
+        class="w-full"
+        aria-required="true"
+        [attr.aria-invalid]="subjectForm.controls.type.invalid && subjectForm.controls.type.touched ? 'true' : 'false'"
+        [attr.aria-describedby]="subjectForm.controls.type.invalid && subjectForm.controls.type.touched ? 'type-error' : null"
+      >
+        <ng-template pTemplate="selectedItem" let-selectedOption>
+          @if (selectedOption) {
+          {{ selectedOption.label | transloco }}
+          }
+        </ng-template>
+        <ng-template pTemplate="item" let-option>
+          {{ option.label | transloco }}
+        </ng-template>
+      </p-select>
+      @if (subjectForm.controls.type.invalid && subjectForm.controls.type.touched) {
+      <p-message id="type-error" severity="error" variant="simple">
+        {{ 'subjects.form.typeRequired' | transloco }}
+      </p-message>
+      }
+    </div>
+
+    <!-- Name -->
+    <div class="flex flex-col gap-2">
+      <label for="subject-name" class="font-medium text-gray-700 text-sm">
+        {{ 'subjects.form.name' | transloco }}
+        <span class="text-red-500" aria-hidden="true">*</span>
+      </label>
+      <input
+        pInputText
+        id="subject-name"
+        formControlName="name"
+        [placeholder]="'subjects.form.namePlaceholder' | transloco"
+        class="w-full"
+        aria-required="true"
+        required
+        [attr.aria-invalid]="subjectForm.controls.name.invalid && subjectForm.controls.name.touched ? 'true' : 'false'"
+        [attr.aria-describedby]="subjectForm.controls.name.invalid && subjectForm.controls.name.touched ? 'name-error' : null"
+      />
+      @if (subjectForm.controls.name.invalid && subjectForm.controls.name.touched) {
+      <p-message id="name-error" severity="error" variant="simple">
+        {{ 'subjects.form.nameRequired' | transloco }}
+      </p-message>
+      }
+    </div>
+
+    <!-- Breed & Age -->
+    <div class="grid grid-cols-1 md:grid-cols-2 gap-4">
+      <div class="flex flex-col gap-2">
+        <label for="subject-breed" class="font-medium text-gray-700 text-sm">
+          {{ 'subjects.form.breed' | transloco }}
+        </label>
+        <input
+          pInputText
+          id="subject-breed"
+          formControlName="breed"
+          [placeholder]="'subjects.form.breedPlaceholder' | transloco"
+          class="w-full"
+        />
+      </div>
+
+      <div class="flex flex-col gap-2">
+        <label for="subject-age" class="font-medium text-gray-700 text-sm">
+          {{ 'subjects.form.age' | transloco }}
+        </label>
+        <p-inputNumber
+          id="subject-age"
+          formControlName="age"
+          [min]="0"
+          [placeholder]="'subjects.form.agePlaceholder' | transloco"
+          class="w-full"
+        />
+      </div>
+    </div>
+
+    <!-- Special Needs -->
+    <div class="flex flex-col gap-2">
+      <label for="subject-specialNeeds" class="font-medium text-gray-700 text-sm">
+        {{ 'subjects.form.specialNeeds' | transloco }}
+      </label>
+      <textarea
+        pTextarea
+        id="subject-specialNeeds"
+        formControlName="specialNeeds"
+        [placeholder]="'subjects.form.specialNeedsPlaceholder' | transloco"
+        rows="2"
+        class="w-full"
+      ></textarea>
+    </div>
+
+    <!-- Notes -->
+    <div class="flex flex-col gap-2">
+      <label for="subject-notes" class="font-medium text-gray-700 text-sm">
+        {{ 'subjects.form.notes' | transloco }}
+      </label>
+      <textarea
+        pTextarea
+        id="subject-notes"
+        formControlName="notes"
+        [placeholder]="'subjects.form.notesPlaceholder' | transloco"
+        rows="2"
+        class="w-full"
+      ></textarea>
+    </div>
+  </div>
+
+  <ng-template pTemplate="footer">
+    <div class="flex justify-end gap-3">
+      <app-action-button
+        [route]="null"
+        type="button"
+        labelKey="common.cancel"
+        variant="secondary"
+        (click)="onHide(false)"
+        [disabled]="loading()"
+      />
+      <app-action-button
+        [route]="null"
+        type="button"
+        labelKey="common.save"
+        icon="pi-check"
+        [loading]="loading()"
+        (click)="onSave()"
+      />
+    </div>
+  </ng-template>
+</p-dialog>

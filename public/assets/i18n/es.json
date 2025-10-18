@@ -60,7 +60,36 @@
     "today": "Hoy",
     "previous": "Período anterior",
     "next": "Período siguiente",
-    "noBookings": "No hay reservas programadas"
+    "noBookings": "No hay reservas programadas",
+    "addBooking": "Nueva reserva"
+  },
+  "booking": {
+    "form": {
+      "title": "Nueva reserva",
+      "client": "Cliente",
+      "selectClient": "Seleccione un cliente",
+      "clientRequired": "El cliente es obligatorio",
+      "addClient": "Agregar",
+      "noClientsAvailable": "No hay clientes disponibles. Agregue uno para continuar.",
+      "subject": "Sujeto de cuidado",
+      "selectSubject": "Seleccione un sujeto",
+      "subjectRequired": "El sujeto es obligatorio",
+      "addSubject": "Agregar",
+      "noSubjectsAvailable": "No hay sujetos disponibles. Agregue uno para continuar.",
+      "service": "Servicio",
+      "selectService": "Seleccione un servicio",
+      "serviceRequired": "El servicio es obligatorio",
+      "addService": "Añadir",
+      "startDate": "Fecha y hora de inicio",
+      "selectStartDate": "Seleccione la fecha de inicio",
+      "startDateRequired": "La fecha de inicio es obligatoria",
+      "endDate": "Fecha y hora de fin",
+      "selectEndDate": "Seleccione la fecha de fin",
+      "endDateRequired": "La fecha de fin es obligatoria",
+      "notes": "Notas",
+      "notesPlaceholder": "Información adicional...",
+      "create": "Crear reserva"
+    }
   },
   "services": {
     "title": "Servicios",
@@ -85,6 +114,7 @@
       "namePlaceholder": "Ej: Cuidado de mascotas",
       "nameRequired": "El nombre es obligatorio",
       "type": "Tipo de servicio",
+      "selectType": "Seleccione un tipo",
       "typePlaceholder": "Seleccione un tipo",
       "typeRequired": "El tipo es obligatorio",
       "description": "Descripción",
@@ -162,9 +192,11 @@
       "other": "Otro"
     },
     "form": {
+      "title": "Nuevo sujeto",
       "type": "Tipo",
       "typePlaceholder": "Seleccione un tipo",
       "typeRequired": "El tipo es obligatorio",
+      "selectType": "Seleccione un tipo",
       "name": "Nombre",
       "namePlaceholder": "Ej: Max, Ficus, Sofía...",
       "nameRequired": "El nombre es obligatorio",

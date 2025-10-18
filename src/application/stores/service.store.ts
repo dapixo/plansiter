@@ -10,12 +10,16 @@ interface ServiceState {
   services: Service[];
   loading: boolean;
   error: string | null;
+  success: boolean;
+  lastCreated: Service | null;
 }
 
 const initialState: ServiceState = {
   services: [],
   loading: false,
   error: null,
+  success: false,
+  lastCreated: null,
 };
 
 const updateServiceInList = (list: Service[], updated: Service) =>
@@ -32,10 +36,10 @@ export const ServiceStore = signalStore(
   })),
 
   withMethods((store, repo = inject<IServiceRepository>(SERVICE_REPOSITORY), authService = inject(AuthService)) => {
-    const setLoading = () => patchState(store, { loading: true, error: null });
+    const setLoading = () => patchState(store, { loading: true, error: null, success: false, lastCreated: null });
     const setError = (error: unknown) =>
-      patchState(store, { error: error instanceof Error ? error.message : String(error), loading: false });
-    const setSuccess = () => patchState(store, { loading: false, error: null });
+      patchState(store, { error: error instanceof Error ? error.message : String(error), loading: false, success: false });
+    const setSuccess = () => patchState(store, { loading: false, error: null, success: true });
 
     return {
       setError: (error: unknown) => setError(error),
@@ -67,7 +71,7 @@ export const ServiceStore = signalStore(
             repo.create(data).pipe(
               tap({
                 next: (newService) =>
-                  patchState(store, { services: [...store.services(), newService] }),
+                  patchState(store, { services: [...store.services(), newService], lastCreated: newService }),
                 error: setError,
                 finalize: setSuccess
               })

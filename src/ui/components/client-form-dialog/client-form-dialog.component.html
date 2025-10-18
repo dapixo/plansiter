@@ -1,0 +1,242 @@
+<p-dialog
+  [visible]="clientDialogVisible()"
+  (visibleChange)="onHide($event)"
+  [modal]="true"
+  [closable]="true"
+  [dismissableMask]="true"
+  [draggable]="false"
+  [resizable]="false"
+  styleClass="w-full max-w-2xl"
+>
+  <ng-template pTemplate="header">
+    <h2 class="text-2xl font-bold">
+      <span class="bg-gradient-to-r from-indigo-600 to-purple-600 bg-clip-text text-transparent">
+        {{ 'clients.createClient' | transloco }}
+      </span>
+    </h2>
+  </ng-template>
+
+  @if (error()) {
+  <div
+    class="mb-4 p-4 bg-red-50 border border-red-200 rounded-lg"
+    role="alert"
+    aria-live="assertive"
+    aria-atomic="true"
+  >
+    <p class="text-red-600 text-sm">{{ error() }}</p>
+  </div>
+  }
+
+  <div class="flex flex-col gap-4 py-4" [formGroup]="clientForm">
+    <!-- Name -->
+    <div class="flex flex-col gap-2">
+      <label for="client-name" class="font-medium text-gray-700 text-sm">
+        {{ 'clients.form.name' | transloco }}
+        <span class="text-red-500" aria-hidden="true">*</span>
+      </label>
+      <input
+        pInputText
+        id="client-name"
+        formControlName="name"
+        [placeholder]="'clients.form.namePlaceholder' | transloco"
+        class="w-full"
+        aria-required="true"
+        required
+        autocomplete="name"
+        [attr.aria-invalid]="
+          clientForm.controls.name.invalid && clientForm.controls.name.touched ? 'true' : 'false'
+        "
+        [attr.aria-describedby]="
+          clientForm.controls.name.invalid && clientForm.controls.name.touched ? 'name-error' : null
+        "
+      />
+      @if (clientForm.controls.name.invalid && clientForm.controls.name.touched) {
+      <p-message id="name-error" severity="error" variant="simple" role="alert">
+        {{ 'clients.form.nameRequired' | transloco }}
+      </p-message>
+      }
+    </div>
+
+    <!-- Address -->
+    <div class="flex flex-col gap-2">
+      <label for="client-address" class="font-medium text-gray-700 text-sm">
+        {{ 'clients.form.address' | transloco }}
+        <span class="text-red-500" aria-hidden="true">*</span>
+      </label>
+      <input
+        pInputText
+        id="client-address"
+        formControlName="address"
+        [placeholder]="'clients.form.addressPlaceholder' | transloco"
+        class="w-full"
+        aria-required="true"
+        required
+        autocomplete="address-line1"
+        [attr.aria-invalid]="
+          clientForm.controls.address.invalid && clientForm.controls.address.touched
+            ? 'true'
+            : 'false'
+        "
+        [attr.aria-describedby]="
+          clientForm.controls.address.invalid && clientForm.controls.address.touched
+            ? 'address-error'
+            : null
+        "
+      />
+      @if (clientForm.controls.address.invalid && clientForm.controls.address.touched) {
+      <p-message id="address-error" severity="error" variant="simple" role="alert">
+        {{ 'clients.form.addressRequired' | transloco }}
+      </p-message>
+      }
+    </div>
+
+    <!-- City / Postal Code / State -->
+    <div class="grid grid-cols-1 md:grid-cols-3 gap-4">
+      <div class="flex flex-col gap-2">
+        <label for="client-city" class="font-medium text-gray-700 text-sm">
+          {{ 'clients.form.city' | transloco }}
+          <span class="text-red-500" aria-hidden="true">*</span>
+        </label>
+        <input
+          pInputText
+          id="client-city"
+          formControlName="city"
+          [placeholder]="'clients.form.cityPlaceholder' | transloco"
+          class="w-full"
+          aria-required="true"
+          required
+          autocomplete="address-level2"
+          [attr.aria-invalid]="
+            clientForm.controls.city.invalid && clientForm.controls.city.touched ? 'true' : 'false'
+          "
+          [attr.aria-describedby]="
+            clientForm.controls.city.invalid && clientForm.controls.city.touched
+              ? 'city-error'
+              : null
+          "
+        />
+        @if (clientForm.controls.city.invalid && clientForm.controls.city.touched) {
+        <p-message id="city-error" severity="error" variant="simple" role="alert">
+          {{ 'clients.form.cityRequired' | transloco }}
+        </p-message>
+        }
+      </div>
+
+      <div class="flex flex-col gap-2">
+        <label for="client-postalCode" class="font-medium text-gray-700 text-sm">
+          {{ 'clients.form.postalCode' | transloco }}
+          <span class="text-red-500" aria-hidden="true">*</span>
+        </label>
+        <input
+          pInputText
+          id="client-postalCode"
+          formControlName="postalCode"
+          [placeholder]="'clients.form.postalCodePlaceholder' | transloco"
+          class="w-full"
+          aria-required="true"
+          required
+          autocomplete="postal-code"
+          [attr.aria-invalid]="
+            clientForm.controls.postalCode.invalid && clientForm.controls.postalCode.touched
+              ? 'true'
+              : 'false'
+          "
+          [attr.aria-describedby]="
+            clientForm.controls.postalCode.invalid && clientForm.controls.postalCode.touched
+              ? 'postalCode-error'
+              : null
+          "
+        />
+        @if (clientForm.controls.postalCode.invalid && clientForm.controls.postalCode.touched) {
+        <p-message id="postalCode-error" severity="error" variant="simple" role="alert">
+          {{ 'clients.form.postalCodeRequired' | transloco }}
+        </p-message>
+        }
+      </div>
+
+      <div class="flex flex-col gap-2">
+        <label for="client-state" class="font-medium text-gray-700 text-sm">
+          {{ 'clients.form.state' | transloco }}
+        </label>
+        <input
+          pInputText
+          id="client-state"
+          formControlName="state"
+          [placeholder]="'clients.form.statePlaceholder' | transloco"
+          class="w-full"
+          autocomplete="address-level1"
+        />
+      </div>
+    </div>
+
+    <!-- Country -->
+    <div class="flex flex-col gap-2">
+      <label for="client-country" class="font-medium text-gray-700 text-sm">
+        {{ 'clients.form.country' | transloco }}
+        <span class="text-red-500" aria-hidden="true">*</span>
+      </label>
+      <input
+        pInputText
+        id="client-country"
+        formControlName="country"
+        [placeholder]="'clients.form.countryPlaceholder' | transloco"
+        class="w-full"
+        aria-required="true"
+        required
+        autocomplete="country-name"
+        [attr.aria-invalid]="
+          clientForm.controls.country.invalid && clientForm.controls.country.touched
+            ? 'true'
+            : 'false'
+        "
+        [attr.aria-describedby]="
+          clientForm.controls.country.invalid && clientForm.controls.country.touched
+            ? 'country-error'
+            : null
+        "
+      />
+      @if (clientForm.controls.country.invalid && clientForm.controls.country.touched) {
+      <p-message id="country-error" severity="error" variant="simple" role="alert">
+        {{ 'clients.form.countryRequired' | transloco }}
+      </p-message>
+      }
+    </div>
+
+    <!-- Notes -->
+    <div class="flex flex-col gap-2">
+      <label for="client-notes" class="font-medium text-gray-700 text-sm">
+        {{ 'clients.form.notes' | transloco }}
+      </label>
+      <textarea
+        pTextarea
+        id="client-notes"
+        formControlName="notes"
+        [placeholder]="'clients.form.notesPlaceholder' | transloco"
+        rows="2"
+        class="w-full"
+        autocomplete="off"
+      ></textarea>
+    </div>
+  </div>
+
+  <ng-template pTemplate="footer">
+    <div class="flex justify-end gap-3">
+      <app-action-button
+        [route]="null"
+        type="button"
+        labelKey="common.cancel"
+        variant="secondary"
+        (click)="onHide(false)"
+        [disabled]="loading()"
+      />
+      <app-action-button
+        [route]="null"
+        type="button"
+        labelKey="common.save"
+        icon="pi-check"
+        [loading]="loading()"
+        (click)="onSave()"
+      />
+    </div>
+  </ng-template>
+</p-dialog>

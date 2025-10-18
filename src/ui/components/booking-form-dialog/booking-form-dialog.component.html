@@ -1,0 +1,268 @@
+<p-dialog
+  [visible]="bookingDialogVisible()"
+  (visibleChange)="onHide($event)"
+  [modal]="true"
+  [closable]="true"
+  [dismissableMask]="true"
+  [draggable]="false"
+  [resizable]="false"
+  styleClass="w-full max-w-4xl"
+>
+  <ng-template pTemplate="header">
+    <h2 class="text-2xl font-bold">
+      <span class="bg-gradient-to-r from-indigo-600 to-purple-600 bg-clip-text text-transparent">
+        {{ 'booking.form.title' | transloco }}
+      </span>
+    </h2>
+  </ng-template>
+
+  @if (error()) {
+  <div
+    class="mb-4 p-4 bg-red-50 border border-red-200 rounded-lg"
+    role="alert"
+    aria-live="assertive"
+    aria-atomic="true"
+  >
+    <p class="text-red-600 text-sm">{{ error() }}</p>
+  </div>
+  }
+
+  @if (clientStore.loading() || serviceStore.loading()) {
+  <div class="flex justify-center items-center py-8" role="status" aria-live="polite">
+    <i class="pi pi-spin pi-spinner text-4xl text-indigo-600" aria-hidden="true"></i>
+    <span class="sr-only">{{ 'common.loading' | transloco }}</span>
+  </div>
+  }
+
+  @if (!clientStore.loading() && !serviceStore.loading()) {
+  <div class="flex flex-col gap-4 py-4" [formGroup]="bookingForm">
+    <!-- Client Selection -->
+    <div class="flex flex-col gap-2">
+      <label for="clientId" class="text-sm font-semibold text-gray-700">
+        {{ 'booking.form.client' | transloco }}
+        <span class="text-red-500" aria-hidden="true">*</span>
+      </label>
+      <div class="flex gap-2">
+        <p-select
+          id="clientId"
+          formControlName="clientId"
+          [options]="clientOptions()"
+          optionLabel="label"
+          optionValue="value"
+          [placeholder]="'booking.form.selectClient' | transloco"
+          [filter]="true"
+          [showClear]="true"
+          styleClass="flex-1"
+          [attr.aria-invalid]="bookingForm.controls.clientId.invalid && bookingForm.controls.clientId.touched"
+          [attr.aria-describedby]="bookingForm.controls.clientId.invalid && bookingForm.controls.clientId.touched ? 'clientId-error' : null"
+        />
+        <button
+          type="button"
+          pButton
+          icon="pi pi-plus"
+          [label]="'booking.form.addClient' | transloco"
+          severity="secondary"
+          [outlined]="true"
+          (click)="clientDialogVisible.set(true)"
+          [attr.aria-label]="'booking.form.addClient' | transloco"
+        ></button>
+      </div>
+      @if (bookingForm.controls.clientId.invalid && bookingForm.controls.clientId.touched) {
+      <p-message id="clientId-error" severity="error" variant="simple" role="alert">
+        {{ 'booking.form.clientRequired' | transloco }}
+      </p-message>
+      }
+      @if (clientStore.clients().length === 0) {
+      <small class="text-amber-600">
+        {{ 'booking.form.noClientsAvailable' | transloco }}
+      </small>
+      }
+    </div>
+
+    <!-- Subject Selection -->
+    <div class="flex flex-col gap-2">
+      <label for="subjectId" class="text-sm font-semibold text-gray-700">
+        {{ 'booking.form.subject' | transloco }}
+        <span class="text-red-500" aria-hidden="true">*</span>
+      </label>
+      <div class="flex gap-2">
+        <p-select
+          id="subjectId"
+          formControlName="subjectId"
+          [options]="subjectOptions()"
+          optionLabel="label"
+          optionValue="value"
+          [placeholder]="'booking.form.selectSubject' | transloco"
+          [showClear]="true"
+          styleClass="flex-1"
+          [attr.aria-invalid]="bookingForm.controls.subjectId.invalid && bookingForm.controls.subjectId.touched"
+          [attr.aria-describedby]="bookingForm.controls.subjectId.invalid && bookingForm.controls.subjectId.touched ? 'subjectId-error' : null"
+        />
+        <button
+          type="button"
+          pButton
+          icon="pi pi-plus"
+          [label]="'booking.form.addSubject' | transloco"
+          severity="secondary"
+          [outlined]="true"
+          (click)="subjectDialogVisible.set(true)"
+          [attr.aria-label]="'booking.form.addSubject' | transloco"
+        ></button>
+      </div>
+      @if (bookingForm.controls.subjectId.invalid && bookingForm.controls.subjectId.touched) {
+      <p-message id="subjectId-error" severity="error" variant="simple" role="alert">
+        {{ 'booking.form.subjectRequired' | transloco }}
+      </p-message>
+      }
+      @if (bookingForm.controls.clientId.value && subjectOptions().length === 0) {
+      <small class="text-amber-600">
+        {{ 'booking.form.noSubjectsAvailable' | transloco }}
+      </small>
+      }
+    </div>
+
+    <!-- Service Selection -->
+    <div class="flex flex-col gap-2">
+      <label for="serviceId" class="text-sm font-semibold text-gray-700">
+        {{ 'booking.form.service' | transloco }}
+        <span class="text-red-500" aria-hidden="true">*</span>
+      </label>
+      <div class="flex gap-2">
+        <p-select
+          id="serviceId"
+          formControlName="serviceId"
+          [options]="serviceOptions()"
+          optionLabel="label"
+          optionValue="value"
+          [placeholder]="'booking.form.selectService' | transloco"
+          [showClear]="true"
+          styleClass="flex-1"
+          [attr.aria-invalid]="bookingForm.controls.serviceId.invalid && bookingForm.controls.serviceId.touched"
+          [attr.aria-describedby]="bookingForm.controls.serviceId.invalid && bookingForm.controls.serviceId.touched ? 'serviceId-error' : null"
+        />
+        <button
+          type="button"
+          pButton
+          icon="pi pi-plus"
+          [label]="'booking.form.addService' | transloco"
+          severity="secondary"
+          [outlined]="true"
+          (click)="serviceDialogVisible.set(true)"
+          [attr.aria-label]="'booking.form.addService' | transloco"
+        ></button>
+      </div>
+      @if (bookingForm.controls.serviceId.invalid && bookingForm.controls.serviceId.touched) {
+      <p-message id="serviceId-error" severity="error" variant="simple" role="alert">
+        {{ 'booking.form.serviceRequired' | transloco }}
+      </p-message>
+      }
+    </div>
+
+    <!-- Date Range -->
+    <div class="grid grid-cols-1 md:grid-cols-2 gap-4">
+      <!-- Start Date -->
+      <div class="flex flex-col gap-2">
+        <label for="startDate" class="text-sm font-semibold text-gray-700">
+          {{ 'booking.form.startDate' | transloco }}
+          <span class="text-red-500" aria-hidden="true">*</span>
+        </label>
+        <p-datepicker
+          id="startDate"
+          formControlName="startDate"
+          [showTime]="true"
+          [showIcon]="true"
+          [placeholder]="'booking.form.selectStartDate' | transloco"
+          dateFormat="dd/mm/yy"
+          hourFormat="24"
+          styleClass="w-full"
+          [attr.aria-invalid]="bookingForm.controls.startDate.invalid && bookingForm.controls.startDate.touched"
+          [attr.aria-describedby]="bookingForm.controls.startDate.invalid && bookingForm.controls.startDate.touched ? 'startDate-error' : null"
+        />
+        @if (bookingForm.controls.startDate.invalid && bookingForm.controls.startDate.touched) {
+        <p-message id="startDate-error" severity="error" variant="simple" role="alert">
+          {{ 'booking.form.startDateRequired' | transloco }}
+        </p-message>
+        }
+      </div>
+
+      <!-- End Date -->
+      <div class="flex flex-col gap-2">
+        <label for="endDate" class="text-sm font-semibold text-gray-700">
+          {{ 'booking.form.endDate' | transloco }}
+          <span class="text-red-500" aria-hidden="true">*</span>
+        </label>
+        <p-datepicker
+          id="endDate"
+          formControlName="endDate"
+          [showTime]="true"
+          [showIcon]="true"
+          [placeholder]="'booking.form.selectEndDate' | transloco"
+          dateFormat="dd/mm/yy"
+          hourFormat="24"
+          [minDate]="bookingForm.controls.startDate.value"
+          styleClass="w-full"
+          [attr.aria-invalid]="bookingForm.controls.endDate.invalid && bookingForm.controls.endDate.touched"
+          [attr.aria-describedby]="bookingForm.controls.endDate.invalid && bookingForm.controls.endDate.touched ? 'endDate-error' : null"
+        />
+        @if (bookingForm.controls.endDate.invalid && bookingForm.controls.endDate.touched) {
+        <p-message id="endDate-error" severity="error" variant="simple" role="alert">
+          {{ 'booking.form.endDateRequired' | transloco }}
+        </p-message>
+        }
+      </div>
+    </div>
+
+    <!-- Notes -->
+    <div class="flex flex-col gap-2">
+      <label for="notes" class="text-sm font-semibold text-gray-700">
+        {{ 'booking.form.notes' | transloco }}
+      </label>
+      <textarea
+        id="notes"
+        formControlName="notes"
+        pTextarea
+        rows="4"
+        [placeholder]="'booking.form.notesPlaceholder' | transloco"
+        class="w-full"
+      ></textarea>
+    </div>
+  </div>
+  }
+
+  <ng-template pTemplate="footer">
+    <div class="flex justify-end gap-3">
+      <app-action-button
+        [route]="null"
+        type="button"
+        labelKey="common.cancel"
+        variant="secondary"
+        (click)="onHide(false)"
+        [disabled]="loading()"
+      />
+      <app-action-button
+        [route]="null"
+        type="button"
+        labelKey="booking.form.create"
+        icon="pi-check"
+        [loading]="loading()"
+        (click)="onSave()"
+      />
+    </div>
+  </ng-template>
+</p-dialog>
+
+<app-client-form-dialog
+  [(clientDialogVisible)]="clientDialogVisible"
+  (clientCreated)="onClientCreated($event)"
+/>
+
+<app-subject-form-dialog
+  [(subjectDialogVisible)]="subjectDialogVisible"
+  [clientId]="bookingForm.controls.clientId.value || undefined"
+  (subjectCreated)="onSubjectCreated($event)"
+/>
+
+<app-service-form-dialog
+  [(serviceDialogVisible)]="serviceDialogVisible"
+  (serviceCreated)="onServiceCreated($event)"
+/>

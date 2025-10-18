@@ -8,6 +8,7 @@ import { Service, ServiceType } from '@domain/entities';
 import { ServiceStore } from '@application/stores/service.store';
 import { EmptyStateComponent } from '@ui/components/empty-state/empty-state.component';
 import { ActionButtonComponent } from '@ui/components/action-button/action-button.component';
+import { SERVICE_TYPE_LABELS } from '@ui/constants/service-types.constant';
 
 @Component({
   selector: 'app-services',
@@ -30,14 +31,6 @@ export class ServicesComponent {
   private transloco = inject(TranslocoService);
   private confirmationService = inject(ConfirmationService);
 
-  private readonly SERVICE_TYPE_LABELS: Record<ServiceType, string> = {
-    'pet-sitting': 'services.types.petSitting',
-    'plant-sitting': 'services.types.plantSitting',
-    'babysitting': 'services.types.babysitting',
-    'house-sitting': 'services.types.houseSitting',
-    'other': 'services.types.other'
-  };
-
   protected deleteService(event: Event, service: Service): void {
     // Empêcher la navigation vers la page d'édition
     event.preventDefault();
@@ -57,6 +50,6 @@ export class ServicesComponent {
   }
 
   protected getServiceTypeLabel(type: ServiceType): string {
-    return this.SERVICE_TYPE_LABELS[type] || type;
+    return SERVICE_TYPE_LABELS[type] || type;
   }
 }
