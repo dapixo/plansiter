@@ -74,7 +74,7 @@ export class ClientFormDialogComponent {
     city: this.fb.control('', { validators: Validators.required, nonNullable: true }),
     postalCode: this.fb.control('', { validators: Validators.required, nonNullable: true }),
     state: this.fb.control('', { nonNullable: true }),
-    country: this.fb.control('France', { validators: Validators.required, nonNullable: true }),
+    country: this.fb.control('', { validators: Validators.required, nonNullable: true }),
     notes: this.fb.control('', { nonNullable: true }),
   });
 
@@ -93,6 +93,7 @@ export class ClientFormDialogComponent {
     if (!userId) return;
 
     this.clientForm.markAllAsTouched();
+    this.clientForm.markAllAsDirty();
     if (this.clientForm.invalid || this.loading()) return;
 
     const { name, address, city, postalCode, state, country, notes } =

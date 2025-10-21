@@ -9,11 +9,7 @@ import {
   ChangeDetectionStrategy,
 } from '@angular/core';
 import { CommonModule } from '@angular/common';
-import {
-  FormBuilder,
-  ReactiveFormsModule,
-  Validators,
-} from '@angular/forms';
+import { FormBuilder, ReactiveFormsModule, Validators } from '@angular/forms';
 import { InputTextModule } from 'primeng/inputtext';
 import { ButtonModule } from 'primeng/button';
 import { DialogModule } from 'primeng/dialog';
@@ -71,16 +67,15 @@ export class SubjectFormDialogComponent {
 
   // Form
   protected readonly subjectForm = this.fb.group({
-    type: this.fb.control<SubjectType>('child', {
-      validators: Validators.required,
-      nonNullable: true,
-    }),
+    type: this.fb.control<SubjectType | null>(null, Validators.required),
     name: this.fb.control('', { validators: Validators.required, nonNullable: true }),
     breed: this.fb.control('', { nonNullable: true }),
     age: this.fb.control<number | null>(null),
     specialNeeds: this.fb.control('', { nonNullable: true }),
     notes: this.fb.control('', { nonNullable: true }),
   });
+
+  private initialized = false;
 
   // Effect
   private successEffect_ = effect(() => {
@@ -93,20 +88,36 @@ export class SubjectFormDialogComponent {
     }
   });
 
-  private initFormEffect_ = effect(() => {
-    if (!this.subjectDialogVisible()) return;
-    const subjectData = this.subject();
-    subjectData ? this.populateForm(subjectData) : this.subjectForm.reset();
+  private subjectEffect_ = effect(() => {
+    const s = this.subject();
+    if (!s) {
+      this.subjectForm.reset();
+      this.initialized = false;
+      return;
+    }
+
+    if (!this.initialized) {
+      this.subjectForm.patchValue({
+        type: s.type ?? null,
+        name: s.name ?? '',
+        breed: s.breed ?? '',
+        age: s.age ?? null,
+        specialNeeds: s.specialNeeds ?? '',
+        notes: s.notes ?? '',
+      });
+      this.initialized = true;
+    }
   });
 
   // 🔹 Actions
   protected onSave(): void {
     this.subjectForm.markAllAsTouched();
+    this.subjectForm.markAllAsDirty();
     if (this.subjectForm.invalid || this.loading()) return;
 
     const { type, name, breed, age, specialNeeds, notes } = this.subjectForm.getRawValue();
     const payload = {
-      type,
+      type: type!,
       name,
       breed: breed || undefined,
       age: age || undefined,
@@ -123,19 +134,8 @@ export class SubjectFormDialogComponent {
   }
 
   protected onHide(event: boolean): void {
-    this.subjectDialogVisible.set(false);
+    if (!event) this.subjectDialogVisible.set(false);
     this.subjectForm.reset();
-  }
-
-  // 🔹 Helpers
-  private populateForm(subject: Partial<Subject>): void {
-    this.subjectForm.reset({
-      type: subject.type || 'child',
-      name: subject.name || '',
-      breed: subject.breed || '',
-      age: subject.age || null,
-      specialNeeds: subject.specialNeeds || '',
-      notes: subject.notes || '',
-    });
+    this.initialized = false;
   }
 }

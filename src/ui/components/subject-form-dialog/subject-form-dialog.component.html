@@ -28,6 +28,30 @@
   }
 
   <div class="flex flex-col gap-4 py-4" [formGroup]="subjectForm">
+    <!-- Name -->
+    <div class="flex flex-col gap-2">
+      <label for="subject-name" class="font-medium text-gray-700 text-sm">
+        {{ 'subjects.form.name' | transloco }}
+        <span class="text-red-500" aria-hidden="true">*</span>
+      </label>
+      <input
+        pInputText
+        id="subject-name"
+        formControlName="name"
+        [placeholder]="'subjects.form.namePlaceholder' | transloco"
+        class="w-full"
+        aria-required="true"
+        required
+        [attr.aria-invalid]="subjectForm.controls.name.invalid && subjectForm.controls.name.touched && subjectForm.controls.name.dirty ? 'true' : 'false'"
+        [attr.aria-describedby]="subjectForm.controls.name.invalid && subjectForm.controls.name.touched && subjectForm.controls.name.dirty ? 'name-error' : null"
+      />
+      @if (subjectForm.controls.name.invalid && subjectForm.controls.name.touched && subjectForm.controls.name.dirty) {
+      <p-message id="name-error" severity="error" variant="simple">
+        {{ 'subjects.form.nameRequired' | transloco }}
+      </p-message>
+      }
+    </div>
+    
     <!-- Type -->
     <div class="flex flex-col gap-2">
       <label for="subject-type" class="font-medium text-gray-700 text-sm">
@@ -43,8 +67,8 @@
         [placeholder]="'subjects.form.typePlaceholder' | transloco"
         class="w-full"
         aria-required="true"
-        [attr.aria-invalid]="subjectForm.controls.type.invalid && subjectForm.controls.type.touched ? 'true' : 'false'"
-        [attr.aria-describedby]="subjectForm.controls.type.invalid && subjectForm.controls.type.touched ? 'type-error' : null"
+        [attr.aria-invalid]="subjectForm.controls.type.invalid && subjectForm.controls.type.touched && subjectForm.controls.type.dirty ? 'true' : 'false'"
+        [attr.aria-describedby]="subjectForm.controls.type.invalid && subjectForm.controls.type.touched && subjectForm.controls.type.dirty ? 'type-error' : null"
       >
         <ng-template pTemplate="selectedItem" let-selectedOption>
           @if (selectedOption) {
@@ -55,36 +79,13 @@
           {{ option.label | transloco }}
         </ng-template>
       </p-select>
-      @if (subjectForm.controls.type.invalid && subjectForm.controls.type.touched) {
+      @if (subjectForm.controls.type.invalid && subjectForm.controls.type.touched && subjectForm.controls.type.dirty) {
       <p-message id="type-error" severity="error" variant="simple">
         {{ 'subjects.form.typeRequired' | transloco }}
       </p-message>
       }
     </div>
 
-    <!-- Name -->
-    <div class="flex flex-col gap-2">
-      <label for="subject-name" class="font-medium text-gray-700 text-sm">
-        {{ 'subjects.form.name' | transloco }}
-        <span class="text-red-500" aria-hidden="true">*</span>
-      </label>
-      <input
-        pInputText
-        id="subject-name"
-        formControlName="name"
-        [placeholder]="'subjects.form.namePlaceholder' | transloco"
-        class="w-full"
-        aria-required="true"
-        required
-        [attr.aria-invalid]="subjectForm.controls.name.invalid && subjectForm.controls.name.touched ? 'true' : 'false'"
-        [attr.aria-describedby]="subjectForm.controls.name.invalid && subjectForm.controls.name.touched ? 'name-error' : null"
-      />
-      @if (subjectForm.controls.name.invalid && subjectForm.controls.name.touched) {
-      <p-message id="name-error" severity="error" variant="simple">
-        {{ 'subjects.form.nameRequired' | transloco }}
-      </p-message>
-      }
-    </div>
 
     <!-- Breed & Age -->
     <div class="grid grid-cols-1 md:grid-cols-2 gap-4">

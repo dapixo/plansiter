@@ -41,7 +41,6 @@ import { ActionButtonComponent } from '@ui/components/action-button/action-butto
     ActionButtonComponent,
   ],
   templateUrl: './client-form-page.component.html',
-  styleUrls: ['./client-form-page.component.css'],
   changeDetection: ChangeDetectionStrategy.OnPush,
 })
 export class ClientFormPageComponent {

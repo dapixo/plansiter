@@ -156,6 +156,7 @@ export class BookingFormDialogComponent {
     if (!userId) return this.bookingStore.setError('No user logged in');
 
     this.bookingForm.markAllAsTouched();
+    this.bookingForm.markAllAsDirty();
     if (this.bookingForm.invalid || this.loading()) return;
 
     const { clientId, serviceId, subjectId, startDate, endDate, notes } =

@@ -52,9 +52,9 @@
           [placeholder]="'booking.form.selectClient' | transloco"
           [filter]="true"
           [showClear]="true"
-          styleClass="flex-1"
-          [attr.aria-invalid]="bookingForm.controls.clientId.invalid && bookingForm.controls.clientId.touched"
-          [attr.aria-describedby]="bookingForm.controls.clientId.invalid && bookingForm.controls.clientId.touched ? 'clientId-error' : null"
+          class="flex-1"
+          [attr.aria-invalid]="bookingForm.controls.clientId.invalid && bookingForm.controls.clientId.touched && bookingForm.controls.clientId.dirty"
+          [attr.aria-describedby]="bookingForm.controls.clientId.invalid && bookingForm.controls.clientId.touched && bookingForm.controls.clientId.dirty ? 'clientId-error' : null"
         />
         <button
           type="button"
@@ -67,7 +67,7 @@
           [attr.aria-label]="'booking.form.addClient' | transloco"
         ></button>
       </div>
-      @if (bookingForm.controls.clientId.invalid && bookingForm.controls.clientId.touched) {
+      @if (bookingForm.controls.clientId.invalid && bookingForm.controls.clientId.touched && bookingForm.controls.clientId.dirty) {
       <p-message id="clientId-error" severity="error" variant="simple" role="alert">
         {{ 'booking.form.clientRequired' | transloco }}
       </p-message>
@@ -94,9 +94,9 @@
           optionValue="value"
           [placeholder]="'booking.form.selectSubject' | transloco"
           [showClear]="true"
-          styleClass="flex-1"
-          [attr.aria-invalid]="bookingForm.controls.subjectId.invalid && bookingForm.controls.subjectId.touched"
-          [attr.aria-describedby]="bookingForm.controls.subjectId.invalid && bookingForm.controls.subjectId.touched ? 'subjectId-error' : null"
+          class="flex-1"
+          [attr.aria-invalid]="bookingForm.controls.subjectId.invalid && bookingForm.controls.subjectId.touched && bookingForm.controls.subjectId.dirty"
+          [attr.aria-describedby]="bookingForm.controls.subjectId.invalid && bookingForm.controls.subjectId.touched && bookingForm.controls.subjectId.dirty ? 'subjectId-error' : null"
         />
         <button
           type="button"
@@ -109,7 +109,7 @@
           [attr.aria-label]="'booking.form.addSubject' | transloco"
         ></button>
       </div>
-      @if (bookingForm.controls.subjectId.invalid && bookingForm.controls.subjectId.touched) {
+      @if (bookingForm.controls.subjectId.invalid && bookingForm.controls.subjectId.touched && bookingForm.controls.subjectId.dirty) {
       <p-message id="subjectId-error" severity="error" variant="simple" role="alert">
         {{ 'booking.form.subjectRequired' | transloco }}
       </p-message>
@@ -137,8 +137,8 @@
           [placeholder]="'booking.form.selectService' | transloco"
           [showClear]="true"
           styleClass="flex-1"
-          [attr.aria-invalid]="bookingForm.controls.serviceId.invalid && bookingForm.controls.serviceId.touched"
-          [attr.aria-describedby]="bookingForm.controls.serviceId.invalid && bookingForm.controls.serviceId.touched ? 'serviceId-error' : null"
+          [attr.aria-invalid]="bookingForm.controls.serviceId.invalid && bookingForm.controls.serviceId.touched && bookingForm.controls.serviceId.dirty"
+          [attr.aria-describedby]="bookingForm.controls.serviceId.invalid && bookingForm.controls.serviceId.touched && bookingForm.controls.serviceId.dirty ? 'serviceId-error' : null"
         />
         <button
           type="button"
@@ -151,7 +151,7 @@
           [attr.aria-label]="'booking.form.addService' | transloco"
         ></button>
       </div>
-      @if (bookingForm.controls.serviceId.invalid && bookingForm.controls.serviceId.touched) {
+      @if (bookingForm.controls.serviceId.invalid && bookingForm.controls.serviceId.touched && bookingForm.controls.serviceId.dirty) {
       <p-message id="serviceId-error" severity="error" variant="simple" role="alert">
         {{ 'booking.form.serviceRequired' | transloco }}
       </p-message>
@@ -174,11 +174,11 @@
           [placeholder]="'booking.form.selectStartDate' | transloco"
           dateFormat="dd/mm/yy"
           hourFormat="24"
-          styleClass="w-full"
-          [attr.aria-invalid]="bookingForm.controls.startDate.invalid && bookingForm.controls.startDate.touched"
-          [attr.aria-describedby]="bookingForm.controls.startDate.invalid && bookingForm.controls.startDate.touched ? 'startDate-error' : null"
+          class="w-full"
+          [attr.aria-invalid]="bookingForm.controls.startDate.invalid && bookingForm.controls.startDate.touched && bookingForm.controls.startDate.dirty"
+          [attr.aria-describedby]="bookingForm.controls.startDate.invalid && bookingForm.controls.startDate.touched && bookingForm.controls.startDate.dirty ? 'startDate-error' : null"
         />
-        @if (bookingForm.controls.startDate.invalid && bookingForm.controls.startDate.touched) {
+        @if (bookingForm.controls.startDate.invalid && bookingForm.controls.startDate.touched && bookingForm.controls.startDate.dirty) {
         <p-message id="startDate-error" severity="error" variant="simple" role="alert">
           {{ 'booking.form.startDateRequired' | transloco }}
         </p-message>
@@ -200,11 +200,11 @@
           dateFormat="dd/mm/yy"
           hourFormat="24"
           [minDate]="bookingForm.controls.startDate.value"
-          styleClass="w-full"
-          [attr.aria-invalid]="bookingForm.controls.endDate.invalid && bookingForm.controls.endDate.touched"
-          [attr.aria-describedby]="bookingForm.controls.endDate.invalid && bookingForm.controls.endDate.touched ? 'endDate-error' : null"
+          class="w-full"
+          [attr.aria-invalid]="bookingForm.controls.endDate.invalid && bookingForm.controls.endDate.touched && bookingForm.controls.endDate.dirty"
+          [attr.aria-describedby]="bookingForm.controls.endDate.invalid && bookingForm.controls.endDate.touched && bookingForm.controls.endDate.dirty ? 'endDate-error' : null"
         />
-        @if (bookingForm.controls.endDate.invalid && bookingForm.controls.endDate.touched) {
+        @if (bookingForm.controls.endDate.invalid && bookingForm.controls.endDate.touched && bookingForm.controls.endDate.dirty) {
         <p-message id="endDate-error" severity="error" variant="simple" role="alert">
           {{ 'booking.form.endDateRequired' | transloco }}
         </p-message>
