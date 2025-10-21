@@ -63,6 +63,34 @@
     "noBookings": "No hay reservas programadas",
     "addBooking": "Nueva reserva"
   },
+  "calendar": {
+    "previousMonth": "Mes anterior",
+    "today": "Hoy",
+    "nextMonth": "Próximo mes",
+    "months": {
+      "january": "enero",
+      "february": "febrero",
+      "march": "marzo",
+      "april": "abril",
+      "may": "mayo",
+      "june": "junio",
+      "july": "julio",
+      "august": "agosto",
+      "september": "septiembre",
+      "october": "octubre",
+      "november": "noviembre",
+      "december": "diciembre"
+    },
+    "days": {
+      "sunday": "Dom",
+      "monday": "Lun",
+      "tuesday": "Mar",
+      "wednesday": "Mié",
+      "thursday": "Jue",
+      "friday": "Vie",
+      "saturday": "Sab"
+    }
+  },
   "booking": {
     "form": {
       "title": "Nueva reserva",

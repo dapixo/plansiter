@@ -15,6 +15,7 @@ type ServiceRow = {
   price_per_day: number | null;
   price_per_night: number | null;
   is_active: boolean;
+  deleted_at: string | null;
   created_at: string;
   updated_at: string;
 };
@@ -26,11 +27,15 @@ export class ServiceSupabaseRepository implements IServiceRepository {
   // ---------- PUBLIC METHODS ---------- //
 
   getById(id: string, userId: string): Observable<Service | null> {
-    return this.queryOne(q => q.eq('id', id).eq('user_id', userId));
+    return this.queryOne(q => q.eq('id', id).eq('user_id', userId).is('deleted_at', null));
   }
 
   getByUserId(userId: string): Observable<Service[]> {
-    return this.queryMany(q => q.eq('user_id', userId).order('name', { ascending: true }));
+    return this.queryMany(q =>
+      q.eq('user_id', userId)
+        .is('deleted_at', null)
+        .order('name', { ascending: true })
+    );
   }
 
   create(service: Omit<Service, 'id' | 'createdAt' | 'updatedAt'>): Observable<Service> {
@@ -51,9 +56,12 @@ export class ServiceSupabaseRepository implements IServiceRepository {
     );
   }
 
+  /**
+   * Soft delete: marquer le service comme supprimé sans le retirer de la base de données.
+   * Cela préserve l'intégrité historique des bookings.
+   */
   delete(id: string, userId: string): Observable<void> {
-    return this.supabase.from$('services', q => q.delete().eq('id', id).eq('user_id', userId)).pipe(
-      map(res => this.extractData(res, false)),
+    return this.update(id, userId, { deletedAt: new Date() }).pipe(
       map(() => void 0)
     );
   }
@@ -102,6 +110,7 @@ export class ServiceSupabaseRepository implements IServiceRepository {
       pricePerDay: row.price_per_day ?? 0,
       pricePerNight: row.price_per_night ?? 0,
       isActive: row.is_active,
+      deletedAt: row.deleted_at ? new Date(row.deleted_at) : undefined,
       createdAt: new Date(row.created_at),
       updatedAt: new Date(row.updated_at),
     };
@@ -118,6 +127,7 @@ export class ServiceSupabaseRepository implements IServiceRepository {
     if (!partial || service.pricePerDay !== undefined) payload.price_per_day = service.pricePerDay ?? null;
     if (!partial || service.pricePerNight !== undefined) payload.price_per_night = service.pricePerNight ?? null;
     if (!partial || service.isActive !== undefined) payload.is_active = service.isActive ?? false;
+    if (!partial || service.deletedAt !== undefined) payload.deleted_at = service.deletedAt?.toISOString() ?? null;
     return payload;
   }
 }

@@ -1,7 +1,7 @@
 import { Injectable, inject } from '@angular/core';
 import { Observable } from 'rxjs';
 import { map } from 'rxjs/operators';
-import { Booking, BookingStatus } from '@domain/entities';
+import { Booking } from '@domain/entities';
 import { IBookingRepository } from '@domain/repositories';
 import { SupabaseService } from '../supabase.client';
 
@@ -13,7 +13,7 @@ type BookingRow = {
   subject_id: string;
   start_date: string;
   end_date: string;
-  status: BookingStatus;
+  is_cancelled: boolean;
   total_price: number | null;
   notes: string | null;
   created_at: string;
@@ -123,7 +123,7 @@ export class BookingSupabaseRepository implements IBookingRepository {
       subjectId: row.subject_id,
       startDate: new Date(row.start_date),
       endDate: new Date(row.end_date),
-      status: row.status,
+      isCancelled: row.is_cancelled,
       totalPrice: row.total_price ?? undefined,
       notes: row.notes ?? undefined,
       createdAt: new Date(row.created_at),
@@ -140,7 +140,7 @@ export class BookingSupabaseRepository implements IBookingRepository {
     if (!partial || booking.subjectId !== undefined) payload.subject_id = booking.subjectId!;
     if (!partial || booking.startDate !== undefined) payload.start_date = booking.startDate!.toISOString();
     if (!partial || booking.endDate !== undefined) payload.end_date = booking.endDate!.toISOString();
-    if (!partial || booking.status !== undefined) payload.status = booking.status!;
+    if (!partial || booking.isCancelled !== undefined) payload.is_cancelled = booking.isCancelled!;
     if (!partial || booking.totalPrice !== undefined) payload.total_price = booking.totalPrice ?? null;
     if (!partial || booking.notes !== undefined) payload.notes = booking.notes ?? null;
     return payload;

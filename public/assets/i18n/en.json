@@ -63,6 +63,34 @@
     "noBookings": "No bookings scheduled",
     "addBooking": "New booking"
   },
+  "calendar": {
+    "previousMonth": "Previous month",
+    "today": "Today",
+    "nextMonth": "Next month",
+    "months": {
+      "january": "January",
+      "february": "February",
+      "march": "March",
+      "april": "April",
+      "may": "May",
+      "june": "June",
+      "july": "July",
+      "august": "August",
+      "september": "September",
+      "october": "October",
+      "november": "November",
+      "december": "December"
+    },
+    "days": {
+      "sunday": "Sun",
+      "monday": "Mon",
+      "tuesday": "Tue",
+      "wednesday": "Wed",
+      "thursday": "Thu",
+      "friday": "Fri",
+      "saturday": "Sat"
+    }
+  },
   "booking": {
     "form": {
       "title": "New booking",

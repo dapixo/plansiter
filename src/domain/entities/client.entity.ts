@@ -8,6 +8,7 @@ export interface Client {
   state?: string;
   country: string;
   notes?: string;
+  deletedAt?: Date; // null/undefined = active, Date = soft-deleted
   createdAt: Date;
   updatedAt: Date;
 }

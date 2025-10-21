@@ -9,6 +9,7 @@ export interface Subject {
   age?: number;
   specialNeeds?: string;
   notes?: string;
+  deletedAt?: Date; // null/undefined = active, Date = soft-deleted
   createdAt: Date;
   updatedAt: Date;
 }

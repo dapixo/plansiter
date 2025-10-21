@@ -63,6 +63,34 @@
     "noBookings": "Aucune garde planifiée",
     "addBooking": "Nouvelle garde"
   },
+  "calendar": {
+    "previousMonth": "Mois précédent",
+    "today": "Aujourd'hui",
+    "nextMonth": "Mois suivant",
+    "months": {
+      "january": "janvier",
+      "february": "février",
+      "march": "mars",
+      "april": "avril",
+      "may": "mai",
+      "june": "juin",
+      "july": "juillet",
+      "august": "août",
+      "september": "septembre",
+      "october": "octobre",
+      "november": "novembre",
+      "december": "décembre"
+    },
+    "days": {
+      "sunday": "Dim",
+      "monday": "Lun",
+      "tuesday": "Mar",
+      "wednesday": "Mer",
+      "thursday": "Jeu",
+      "friday": "Ven",
+      "saturday": "Sam"
+    }
+  },
   "booking": {
     "form": {
       "title": "Nouvelle garde",

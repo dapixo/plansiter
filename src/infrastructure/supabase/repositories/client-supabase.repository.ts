@@ -15,6 +15,7 @@ type ClientRow = {
   state: string | null;
   country: string;
   notes: string | null;
+  deleted_at: string | null;
   created_at: string;
   updated_at: string;
 };
@@ -28,6 +29,7 @@ type SubjectRow = {
   age: number | null;
   special_needs: string | null;
   notes: string | null;
+  deleted_at: string | null;
   created_at: string;
   updated_at: string;
 };
@@ -48,25 +50,38 @@ export class ClientSupabaseRepository implements IClientRepository {
   // ---------- PUBLIC METHODS ---------- //
 
   getById(id: string, userId: string): Observable<Client | null> {
-    return this.queryOne(q => q.eq('id', id).eq('user_id', userId));
+    return this.queryOne(q => q.eq('id', id).eq('user_id', userId).is('deleted_at', null));
   }
 
   getByUserId(userId: string): Observable<Client[]> {
-    return this.queryMany(q => q.eq('user_id', userId).order('created_at', { ascending: false }));
+    return this.queryMany(q =>
+      q.eq('user_id', userId)
+        .is('deleted_at', null)
+        .order('created_at', { ascending: false })
+    );
   }
 
   /**
    * Récupère tous les clients avec leurs subjects en une seule requête.
+   * Filtre les clients supprimés (deleted_at IS NULL).
+   * Filtre les subjects supprimés en mémoire après la requête (LEFT JOIN).
    * Optimisé pour la liste des clients avec pagination future.
    */
   getByUserIdWithSubjects(userId: string): Observable<ClientWithSubjects[]> {
     return this.supabase.from$('clients', q =>
-      q.select('*, subjects(*)')
+      q.select('*, subjects(*)')  // LEFT JOIN: retourne clients même sans subjects
         .eq('user_id', userId)
+        .is('deleted_at', null)
         .order('created_at', { ascending: false })
     ).pipe(
       map(res => this.extractData<ClientWithSubjectsRow[]>(res, false)),
-      map(rows => rows.map(row => this.mapToClientWithSubjects(row)))
+      map(rows => rows.map(row => {
+        // Filter deleted subjects in memory
+        const activeSubjects = (row.subjects || [])
+          .filter(s => !s.deleted_at)
+          .map(s => this.mapSubjectToEntity(s));
+        return { client: this.mapToEntity(row), subjects: activeSubjects };
+      }))
     );
   }
 
@@ -88,9 +103,12 @@ export class ClientSupabaseRepository implements IClientRepository {
     );
   }
 
+  /**
+   * Soft delete: marquer le client comme supprimé sans le retirer de la base de données.
+   * Cela préserve l'intégrité historique des bookings.
+   */
   delete(id: string, userId: string): Observable<void> {
-    return this.supabase.from$('clients', q => q.delete().eq('id', id).eq('user_id', userId)).pipe(
-      map(res => this.extractData(res, false)),
+    return this.update(id, userId, { deletedAt: new Date() }).pipe(
       map(() => void 0)
     );
   }
@@ -139,6 +157,7 @@ export class ClientSupabaseRepository implements IClientRepository {
       state: row.state ?? undefined,
       country: row.country,
       notes: row.notes ?? undefined,
+      deletedAt: row.deleted_at ? new Date(row.deleted_at) : undefined,
       createdAt: new Date(row.created_at),
       updatedAt: new Date(row.updated_at)
     };
@@ -162,6 +181,7 @@ export class ClientSupabaseRepository implements IClientRepository {
       age: row.age ?? undefined,
       specialNeeds: row.special_needs ?? undefined,
       notes: row.notes ?? undefined,
+      deletedAt: row.deleted_at ? new Date(row.deleted_at) : undefined,
       createdAt: new Date(row.created_at),
       updatedAt: new Date(row.updated_at)
     };
@@ -178,6 +198,7 @@ export class ClientSupabaseRepository implements IClientRepository {
     if (!partial || client.state !== undefined) payload.state = client.state ?? null;
     if (!partial || client.country !== undefined) payload.country = client.country!;
     if (!partial || client.notes !== undefined) payload.notes = client.notes ?? null;
+    if (!partial || client.deletedAt !== undefined) payload.deleted_at = client.deletedAt?.toISOString() ?? null;
     return payload;
   }
 }

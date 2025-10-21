@@ -173,7 +173,7 @@ export class BookingFormDialogComponent {
       startDate,
       endDate,
       notes: notes || undefined,
-      status: 'pending',
+      isCancelled: false,
     });
   }
 

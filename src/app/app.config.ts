@@ -36,6 +36,7 @@ import {
   SubjectSupabaseRepository,
   BookingSupabaseRepository
 } from '@infrastructure/supabase/repositories';
+import { BookingStore } from '@application/stores/booking.store';
 
 export const appConfig: ApplicationConfig = {
   providers: [
@@ -56,6 +57,7 @@ export const appConfig: ApplicationConfig = {
     // Global Stores
     ClientStore,
     ServiceStore,
+    BookingStore,
     // Dependency Injection for repositories
     { provide: USER_REPOSITORY, useClass: UserSupabaseRepository },
     { provide: CLIENT_REPOSITORY, useClass: ClientSupabaseRepository },

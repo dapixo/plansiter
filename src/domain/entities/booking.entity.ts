@@ -1,4 +1,4 @@
-export type BookingStatus = 'pending' | 'confirmed' | 'in-progress' | 'completed' | 'cancelled';
+export type ComputedBookingStatus = 'pending' | 'in-progress' | 'completed' | 'cancelled';
 
 export interface Booking {
   id: string;
@@ -8,7 +8,7 @@ export interface Booking {
   subjectId: string;
   startDate: Date;
   endDate: Date;
-  status: BookingStatus;
+  isCancelled: boolean;
   totalPrice?: number;
   notes?: string;
   createdAt: Date;
