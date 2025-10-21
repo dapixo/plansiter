@@ -93,6 +93,7 @@
           optionLabel="label"
           optionValue="value"
           [placeholder]="'booking.form.selectSubject' | transloco"
+          [disabled]="bookingForm.controls.clientId.invalid"
           [showClear]="true"
           class="flex-1"
           [attr.aria-invalid]="bookingForm.controls.subjectId.invalid && bookingForm.controls.subjectId.touched && bookingForm.controls.subjectId.dirty"
@@ -259,7 +260,7 @@
 <app-subject-form-dialog
   [(subjectDialogVisible)]="subjectDialogVisible"
   [clientId]="bookingForm.controls.clientId.value || undefined"
-  (subjectCreated)="onSubjectCreated($event)"
+  (subjectSaved)="onSubjectCreated()"
 />
 
 <app-service-form-dialog

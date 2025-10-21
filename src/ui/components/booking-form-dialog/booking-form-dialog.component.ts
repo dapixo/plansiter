@@ -189,8 +189,12 @@ export class BookingFormDialogComponent {
     this.bookingForm.controls.clientId.setValue(client.id);
   }
 
-  onSubjectCreated(subject: Subject): void {
-    this.bookingForm.controls.subjectId.setValue(subject.id);
+  onSubjectCreated(): void {
+    // Le subject a été créé par le store, on récupère le subject créé depuis le store
+    const lastSubject = this.clientStore.lastCreatedSubject();
+    if (lastSubject) {
+      this.bookingForm.controls.subjectId.setValue(lastSubject.id);
+    }
   }
 
   onServiceCreated(service: Service): void {

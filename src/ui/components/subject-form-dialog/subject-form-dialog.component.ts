@@ -22,6 +22,7 @@ import { Subject, SubjectType } from '@domain/entities';
 import { ActionButtonComponent } from '@ui/components/action-button/action-button.component';
 import { SUBJECT_TYPES } from '@ui/constants/subject-types.constant';
 import { ClientStore } from '@application/stores/client.store';
+import { TempSubject } from '@application/services/client-management.service';
 
 @Component({
   selector: 'app-subject-form-dialog',
@@ -47,12 +48,11 @@ export class SubjectFormDialogComponent {
   private readonly store = inject(ClientStore);
 
   // Inputs
-  readonly clientId = input<string>();
-  readonly subject = input<Partial<Subject> | null>(null);
+  readonly clientId = input<string | undefined>();
+  readonly subject = input<Partial<Subject | TempSubject> | null>(null);
   readonly subjectDialogVisible = model<boolean>(false);
 
   // Outputs
-  readonly subjectCreated = output<Subject>();
   readonly subjectSaved = output<Omit<Subject, 'id' | 'clientId' | 'createdAt' | 'updatedAt'>>();
 
   // Store-derived signals
@@ -62,7 +62,8 @@ export class SubjectFormDialogComponent {
   protected readonly lastCreatedSubject = computed(() => this.store.lastCreatedSubject());
 
   // State
-  protected readonly isPersistMode = computed(() => !!this.clientId());
+  protected readonly isEditMode = computed(() => !!this.subject()?.id);
+  protected readonly isInEditMode = computed(() => !!this.clientId());
   protected readonly subjectTypes = SUBJECT_TYPES;
 
   // Form
@@ -75,39 +76,35 @@ export class SubjectFormDialogComponent {
     notes: this.fb.control('', { nonNullable: true }),
   });
 
-  private initialized = false;
+  private lastSubject: Partial<Subject> | null = null;
 
   // Effect
   private successEffect_ = effect(() => {
-    if (!this.isPersistMode()) return;
     const success = this.success();
     const subject = this.lastCreatedSubject();
-    if (success && subject) {
-      this.subjectCreated.emit(subject);
+    if (success) {
       this.subjectDialogVisible.set(false);
     }
   });
 
-  private subjectEffect_ = effect(() => {
-    const s = this.subject();
-    if (!s) {
-      this.subjectForm.reset();
-      this.initialized = false;
-      return;
-    }
+private subjectEffect_ = effect(() => {
+  const s = this.subject();
+  if (s === this.lastSubject) return;
+  this.lastSubject = s;
 
-    if (!this.initialized) {
-      this.subjectForm.patchValue({
-        type: s.type ?? null,
-        name: s.name ?? '',
-        breed: s.breed ?? '',
-        age: s.age ?? null,
-        specialNeeds: s.specialNeeds ?? '',
-        notes: s.notes ?? '',
-      });
-      this.initialized = true;
-    }
-  });
+  if (s) {
+    this.subjectForm.patchValue({
+      type: s.type ?? null,
+      name: s.name ?? '',
+      breed: s.breed ?? '',
+      age: s.age ?? null,
+      specialNeeds: s.specialNeeds ?? '',
+      notes: s.notes ?? '',
+    });
+  } else {
+    this.subjectForm.reset();
+  }
+});
 
   // 🔹 Actions
   protected onSave(): void {
@@ -125,17 +122,25 @@ export class SubjectFormDialogComponent {
       notes: notes || undefined,
     };
 
-    if (this.isPersistMode()) {
+    // Mode création sur client existant (persisté)
+    if (this.isInEditMode() && !this.isEditMode()) {
       this.store.createSubject({ clientId: this.clientId()!, ...payload });
-    } else {
+    }
+    // Mode édition sur subject persisté
+    else if (this.isInEditMode() && this.isEditMode()) {
+      const subjectId = this.subject()?.id;
+      if (subjectId) {
+        this.store.updateSubject({ id: subjectId, data: payload });
+      }
+    }
+    // Mode temporaire (création de client)
+    else {
       this.subjectSaved.emit(payload);
-      this.subjectDialogVisible.set(false);
     }
   }
 
   protected onHide(event: boolean): void {
     if (!event) this.subjectDialogVisible.set(false);
     this.subjectForm.reset();
-    this.initialized = false;
   }
 }

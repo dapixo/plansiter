@@ -66,7 +66,6 @@ import { ActionButtonComponent } from '../action-button/action-button.component'
         [(subjectDialogVisible)]="dialogVisible"
         [clientId]="clientId() ?? undefined"
         [subject]="editingSubject()"
-        (subjectCreated)="handleSubjectCreated($event)"
         (subjectSaved)="handleSubjectSaved($event)"
       />
     </section>
