@@ -1,0 +1,117 @@
+<div class="flex flex-col gap-6">
+  <!-- Header avec navigation -->
+  <div class="flex flex-col gap-4 md:flex-row md:items-center md:justify-between">
+    <h2 class="text-2xl font-bold">
+      <span class="bg-gradient-to-r from-indigo-600 to-purple-600 bg-clip-text text-transparent">
+        {{ 'calendar.months.' + currentMonthDisplay().monthKey | transloco }}
+        {{ currentMonthDisplay().year }}
+      </span>
+    </h2>
+
+    <div class="flex gap-2 items-center">
+      <button
+        pButton
+        type="button"
+        icon="pi pi-chevron-left"
+        severity="secondary"
+        [outlined]="true"
+        (click)="prevMonth()"
+        [attr.aria-label]="'calendar.previousMonth' | transloco"
+        class="!p-2"
+      ></button>
+      <button
+        pButton
+        type="button"
+        [label]="'calendar.today' | transloco"
+        severity="secondary"
+        [outlined]="true"
+        (click)="toCurrentMonth()"
+        [attr.aria-label]="'calendar.today' | transloco"
+      ></button>
+      <button
+        pButton
+        type="button"
+        icon="pi pi-chevron-right"
+        severity="secondary"
+        [outlined]="true"
+        (click)="nextMonth()"
+        [attr.aria-label]="'calendar.nextMonth' | transloco"
+        class="!p-2"
+      ></button>
+      <app-action-button
+        labelKey="booking.form.create"
+        ariaLabelKey="booking.form.create"
+        icon="pi pi-plus"
+        variant="primary"
+        (click)="addBooking.emit()"
+      ></app-action-button>
+    </div>
+  </div>
+
+  <!-- Grille du calendrier -->
+  <div class="flex flex-col gap-4">
+    <!-- En-têtes des jours -->
+    <div class="grid grid-cols-7 gap-1 text-center text-xs font-semibold leading-6 text-gray-600">
+      @for (item of daysMetadata(); track item.dayKey) {
+      <div [class.text-indigo-600]="item.isToday" [class.font-bold]="item.isToday">
+        {{ 'calendar.days.' + item.dayKey | transloco }}
+      </div>
+      }
+    </div>
+
+    <!-- Grille du calendrier (conteneur pour positionnement absolu des barres) -->
+    <div class="relative">
+      <div class="grid grid-cols-7 auto-rows-max" #calendarGrid>
+        @for (day of daysEnriched(); track getDateKey(day.day)) {
+        <div
+          class="flex h-32 md:h-40 w-full flex-col rounded-lg border-2 transition-all relative"
+          [ngClass]="day.borderClass + ' ' + day.bgClass"
+        >
+          <!-- Numéro du jour (en haut au milieu) -->
+          <div class="absolute top-1 left-1/2 -translate-x-1/2">
+            <div
+              class="flex h-5 w-5 items-center justify-center rounded-full text-xs font-semibold"
+              [class.bg-indigo-600]="day.isToday && day.isCurrentMonth"
+              [class.text-white]="day.isToday && day.isCurrentMonth"
+              [class.text-gray-400]="!day.isCurrentMonth"
+              [class.text-gray-600]="!day.isToday && day.isCurrentMonth"
+            >
+              {{ day.day | date : 'd' }}
+            </div>
+          </div>
+        </div>
+        }
+      </div>
+
+      <!-- Barres positionnées absolument -->
+      <div class="absolute inset-0 pointer-events-none">
+        @for (bar of bookings(); track bar.id) { @for (barSegment of getBarSegments(bar); track
+        barSegment.segmentId) {
+        <div
+          class="absolute h-5 px-1.5 py-0 text-xs font-semibold flex items-center gap-1 truncate cursor-pointer transition-all pointer-events-auto border-l-4 group/bar"
+          [attr.data-bar-id]="bar.id"
+          [style.top.px]="barSegment.top"
+          [style.left.px]="barSegment.left"
+          [style.width.px]="barSegment.width"
+          [class.rounded-l-lg]="barSegment.isStart"
+          [class.rounded-r-lg]="barSegment.isEnd"
+          [ngClass]="getBarClasses(bar.status)"
+          (mouseenter)="highlightBar(bar.id)"
+          (mouseleave)="unhighlightBar()"
+          (click)="displayProduct($event, bar)"
+        >
+          @if (barSegment.isStart) {
+          <span class="truncate text-xs leading-none">{{ bar.subjectName }}</span>
+          } @if (barSegment.isEnd) {
+          <span class="text-xs ml-auto">✓</span>
+          }
+        </div>
+        } }
+      </div>
+
+      <p-popover #op>
+        <ng-content></ng-content>
+      </p-popover>
+    </div>
+  </div>
+</div>

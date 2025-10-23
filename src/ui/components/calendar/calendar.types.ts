@@ -1,15 +1,26 @@
 /**
  * Types et interfaces pour le composant Calendar
  */
+import { Booking, bookingStatus } from '@domain/entities';
 
-export interface TimelineBar {
-  id: string;
-  startDate: Date;
-  endDate: Date;
-  subjectId: string;
+/**
+ * Barre de timeline - données minimales pour afficher un booking dans le calendrier
+ */
+export interface TimelineBar extends Booking {
   subjectName: string;
-  status: 'pending' | 'in-progress' | 'completed' | 'cancelled';
-  clientId: string;
+  status: bookingStatus;
+}
+
+/**
+ * Données enrichies pour le popover de détail du booking
+ * Juste les infos essentielles pour afficher le détail
+ */
+export interface BookingDetail extends Booking {
+  status: bookingStatus;
+  clientName: string;
+  clientAddress: string;
+  subjectName: string;
+  serviceName: string;
 }
 
 export interface BarSegment {

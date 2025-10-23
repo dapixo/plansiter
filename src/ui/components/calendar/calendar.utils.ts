@@ -2,39 +2,22 @@ import { format } from 'date-fns';
 import { BarSegment, TimelineBar } from './calendar.types';
 import { CALENDAR_CONSTANTS } from './calendar.config';
 
-/**
- * Fonctions utilitaires pures pour le calendrier
- */
-
-/**
- * Normalise une date en enlevant la composante temps
- */
 export function normalizeDate(date: Date): Date {
   const normalized = new Date(date);
   normalized.setHours(0, 0, 0, 0);
   return normalized;
 }
 
-/**
- * Génère une clé unique pour une date (format yyyy-MM-dd)
- */
 export function getDateKey(date: Date): string {
   return format(date, 'yyyy-MM-dd');
 }
 
-/**
- * Calcule le nombre de jours entre deux dates
- */
-export function daysBetween(start: Date, end: Date): number {
+function daysBetween(start: Date, end: Date): number {
   return Math.floor(
     (end.getTime() - start.getTime()) / (1000 * 60 * 60 * 24)
   ) + 1;
 }
 
-/**
- * Calcule les segments de barre avec positionnement absolu
- * Une barre peut être divisée en plusieurs segments si elle passe à la ligne
- */
 export function calculateBarSegments(
   bar: TimelineBar,
   gridStart: Date,
@@ -103,12 +86,8 @@ export function calculateBarSegments(
   return segments;
 }
 
-/**
- * Calcule le map d'index des barres par jour
- * Système de file dynamique pour empiler les barres
- */
 export function calculateBarIndexMap(
-  timelineBars: TimelineBar[],
+  bookings: readonly TimelineBar[],
   gridStart: Date,
   gridEnd: Date
 ): Map<string, number> {
@@ -124,7 +103,7 @@ export function calculateBarIndexMap(
     const normalizedCurrentDay = normalizeDate(currentDay);
 
     // Trouver toutes les barres actives ce jour
-    const activeBars = timelineBars
+    const activeBars = bookings
       .filter((bar) => {
         const barStart = normalizeDate(new Date(bar.startDate));
         const barEnd = normalizeDate(new Date(bar.endDate));

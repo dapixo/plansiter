@@ -7,6 +7,7 @@
     "cancel": "Cancel",
     "save": "Save",
     "back": "Back",
+    "close": "Close",
     "cancelAction": "Cancel creation or modification",
     "saveService": "Save service information",
     "saveClient": "Save client information"
@@ -92,6 +93,12 @@
     }
   },
   "booking": {
+    "subject": "Subject",
+    "service": "Service",
+    "startDate": "Start date",
+    "endDate": "End date",
+    "notes": "Booking notes",
+    "viewClientDetail": "View client details",
     "form": {
       "title": "New booking",
       "client": "Client",
@@ -202,6 +209,14 @@
       "notesPlaceholder": "Additional information...",
       "postalCodeRequired": "Postal code is required"
     }
+  },
+  "subject": {
+    "pet": "Pet",
+    "plant": "Plant",
+    "child": "Child",
+    "house": "House",
+    "other": "Other",
+    "notes": "Subject notes"
   },
   "subjects": {
     "title": "Care subjects",

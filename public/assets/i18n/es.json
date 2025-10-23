@@ -7,6 +7,7 @@
     "cancel": "Cancelar",
     "save": "Guardar",
     "back": "Volver",
+    "close": "Cerrar",
     "cancelAction": "Cancelar la creación o modificación",
     "saveService": "Guardar la información del servicio",
     "saveClient": "Guardar la información del cliente"
@@ -92,6 +93,12 @@
     }
   },
   "booking": {
+    "subject": "Sujeto",
+    "service": "Servicio",
+    "startDate": "Fecha de inicio",
+    "endDate": "Fecha de fin",
+    "notes": "Notas de la reserva",
+    "viewClientDetail": "Ver detalles del cliente",
     "form": {
       "title": "Nueva reserva",
       "client": "Cliente",
@@ -202,6 +209,14 @@
       "notesPlaceholder": "Información adicional...",
       "postalCodeRequired": "El código postal es obligatorio"
     }
+  },
+  "subject": {
+    "pet": "Mascota",
+    "plant": "Planta",
+    "child": "Niño",
+    "house": "Casa",
+    "other": "Otro",
+    "notes": "Notas sobre el sujeto"
   },
   "subjects": {
     "title": "Sujetos de cuidado",

@@ -9,7 +9,7 @@
       </h2>
       <p class="text-gray-600 text-lg">{{ 'clients.subtitle' | transloco }}</p>
     </div>
-    @if (store.clients().length > 0) {
+    @if (store.activeClients().length > 0) {
     <app-action-button
       route="new"
       labelKey="clients.addClient"
@@ -21,7 +21,7 @@
 
   <!-- Clients list -->
   <ul class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6" role="list">
-    @for (client of store.clients(); track client.id) {
+    @for (client of store.activeClients(); track client.id) {
     <li class="relative group h-full">
       <!-- Card cliquable -->
       <a
@@ -76,7 +76,7 @@
   </ul>
 
   <!-- Empty state -->
-  @if (store.clients().length === 0 && !store.loading()) {
+  @if (store.activeClients().length === 0 && !store.loading()) {
   <app-empty-state
     icon="pi-users"
     messageKey="clients.noClients"

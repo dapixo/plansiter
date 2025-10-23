@@ -62,26 +62,20 @@ export class ClientSupabaseRepository implements IClientRepository {
   }
 
   /**
-   * Récupère tous les clients avec leurs subjects en une seule requête.
-   * Filtre les clients supprimés (deleted_at IS NULL).
-   * Filtre les subjects supprimés en mémoire après la requête (LEFT JOIN).
-   * Optimisé pour la liste des clients avec pagination future.
+   * Récupère tous les clients avec leurs subjects (incluant soft-deleted).
+   * Les filtres par deletedAt doivent être appliqués au niveau du store/UI selon le contexte.
    */
   getByUserIdWithSubjects(userId: string): Observable<ClientWithSubjects[]> {
     return this.supabase.from$('clients', q =>
-      q.select('*, subjects(*)')  // LEFT JOIN: retourne clients même sans subjects
+      q.select('*, subjects(*)')
         .eq('user_id', userId)
-        .is('deleted_at', null)
         .order('created_at', { ascending: false })
     ).pipe(
       map(res => this.extractData<ClientWithSubjectsRow[]>(res, false)),
-      map(rows => rows.map(row => {
-        // Filter deleted subjects in memory
-        const activeSubjects = (row.subjects || [])
-          .filter(s => !s.deleted_at)
-          .map(s => this.mapSubjectToEntity(s));
-        return { client: this.mapToEntity(row), subjects: activeSubjects };
-      }))
+      map(rows => rows.map(row => ({
+        client: this.mapToEntity(row),
+        subjects: (row.subjects || []).map(s => this.mapSubjectToEntity(s))
+      })))
     );
   }
 
@@ -161,13 +155,6 @@ export class ClientSupabaseRepository implements IClientRepository {
       createdAt: new Date(row.created_at),
       updatedAt: new Date(row.updated_at)
     };
-  }
-
-  /** Map Supabase row with subjects → client + subjects */
-  private mapToClientWithSubjects(row: ClientWithSubjectsRow): ClientWithSubjects {
-    const client = this.mapToEntity(row);
-    const subjects = (row.subjects || []).map(subjectRow => this.mapSubjectToEntity(subjectRow));
-    return { client, subjects };
   }
 
   /** Map Supabase subject row → domain entity */

@@ -1,6 +1,11 @@
 <div class="p-6">
-  <app-calendar [timelineBars]="timelineBars()" (addBooking)="onAddBooking()" (bookingClic)="openBooking($event)"></app-calendar>
+  <app-calendar
+    [bookings]="bookingStore.timelineBars()"
+    (addBooking)="onAddBooking()"
+    (barClicked)="onBarClicked($event.bar.id)">
+    <app-booking-detail-popover
+      [detail]="bookingStore.selectedBookingDetail()"/>
+  </app-calendar>
 </div>
 
-<!-- Dialog de création de booking -->
 <app-booking-form-dialog [(bookingDialogVisible)]="bookingDialogVisible"></app-booking-form-dialog>

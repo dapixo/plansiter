@@ -1,12 +1,23 @@
 import { computed, inject } from '@angular/core';
-import { patchState, signalStore, withComputed, withHooks, withMethods, withState } from '@ngrx/signals';
+import {
+  patchState,
+  signalStore,
+  withComputed,
+  withHooks,
+  withMethods,
+  withState,
+} from '@ngrx/signals';
 import { rxMethod } from '@ngrx/signals/rxjs-interop';
-import { EMPTY, pipe, switchMap, tap, catchError, finalize } from 'rxjs';
+import { pipe, switchMap, tap, catchError, finalize } from 'rxjs';
 import { Client, Subject } from '@domain/entities';
-import { IClientRepository, CLIENT_REPOSITORY } from '@domain/repositories';
-import { ISubjectRepository, SUBJECT_REPOSITORY } from '@domain/repositories';
-import { ClientSupabaseRepository } from '@infrastructure/supabase/repositories/client-supabase.repository';
+import {
+  IClientRepositoryExtended,
+  CLIENT_REPOSITORY,
+  ISubjectRepository,
+  SUBJECT_REPOSITORY,
+} from '@domain/repositories';
 import { AuthService } from '../services/auth.service';
+import { updateInList, removeFromList, createStoreHelpers } from './store.utils';
 
 interface ClientState {
   clients: Client[];
@@ -25,90 +36,72 @@ const initialState: ClientState = {
   error: null,
   success: false,
   lastCreated: null,
-  lastCreatedSubject: null
+  lastCreatedSubject: null,
 };
-
-const updateClientInList = (list: Client[], updated: Client) =>
-  list.map(c => (c.id === updated.id ? updated : c));
-
-const removeClientFromList = (list: Client[], id: string) =>
-  list.filter(c => c.id !== id);
-
-const updateSubjectInList = (list: Subject[], updated: Subject) =>
-  list.map(s => (s.id === updated.id ? updated : s));
-
-const removeSubjectFromList = (list: Subject[], id: string) =>
-  list.filter(s => s.id !== id);
 
 export const ClientStore = signalStore(
   withState(initialState),
 
-  withComputed((state) => ({
+  withComputed(state => ({
     clientsCount: computed(() => state.clients().length),
     subjectsCount: computed(() => state.subjects().length),
+    activeClients: computed(() => state.clients().filter(c => !c.deletedAt)),
+    activeSubjects: computed(() => state.subjects().filter(s => !s.deletedAt)),
   })),
 
-  withMethods((store, repo = inject<IClientRepository>(CLIENT_REPOSITORY), subjectRepo = inject<ISubjectRepository>(SUBJECT_REPOSITORY), authService = inject(AuthService)) => {
-    // ========== HELPERS ==========
-    const setLoading = () => patchState(store, { loading: true, error: null, success: false, lastCreated: null, lastCreatedSubject: null });
-    const setError = (error: unknown) =>
-      patchState(store, { error: error instanceof Error ? error.message : String(error), loading: false, success: false });
-    const setSuccess = () => patchState(store, { loading: false, error: null, success: true });
-
-    const getUserId = (): string | null => authService.currentUser()?.id ?? null;
-
-    const handleError = (error: unknown) => {
-      setError(error);
-      return EMPTY;
-    };
-
-    // Cast pour accéder à la méthode getByUserIdWithSubjects
-    const repoWithSubjects = repo as ClientSupabaseRepository;
+  withMethods((store,
+    clientRepo = inject<IClientRepositoryExtended>(CLIENT_REPOSITORY),
+    subjectRepo = inject<ISubjectRepository>(SUBJECT_REPOSITORY),
+    auth = inject(AuthService)
+  ) => {
+    const { setLoading, setError, setSuccess, handleError, runAuthenticated } =
+      createStoreHelpers((state) => patchState(store, state), auth);
 
     return {
-      setError: (error: unknown) => setError(error),
-
-      // ========== MÉTHODES CLIENTS ==========
+      setError,
 
       loadAll: rxMethod<void>(
         pipe(
           tap(setLoading),
-          switchMap(() => {
-            const userId = getUserId();
-            if (!userId) {
-              patchState(store, { clients: [], subjects: [], loading: false, error: 'No user logged in' });
-              return EMPTY;
-            }
-            return repoWithSubjects.getByUserIdWithSubjects(userId).pipe(
-              tap((results) => {
-                const clients = results.map(r => r.client);
-                const newSubjects = results.flatMap(r => r.subjects);
+          switchMap(() =>
+            runAuthenticated(userId =>
+              clientRepo.getByUserIdWithSubjects(userId).pipe(
+                tap(results => {
+                  const clients = results.map(r => r.client);
+                  const newSubjects = results.flatMap(r => r.subjects);
 
-                // Merger intelligemment les subjects pour préserver ceux créés récemment
-                const currentSubjects = store.subjects();
-                const newSubjectIds = new Set(newSubjects.map(s => s.id));
-                const recentSubjects = currentSubjects.filter(s => !newSubjectIds.has(s.id));
-                const mergedSubjects = [...newSubjects, ...recentSubjects];
+                  const mergedSubjects = [
+                    ...newSubjects,
+                    ...store.subjects().filter(
+                      s => !newSubjects.some(ns => ns.id === s.id)
+                    ),
+                  ];
 
-                patchState(store, { clients, subjects: mergedSubjects });
-              }),
-              catchError(handleError),
-              finalize(setSuccess)
-            );
-          })
+                  patchState(store, { clients, subjects: mergedSubjects });
+                }),
+                catchError(handleError),
+                finalize(setSuccess)
+              )
+            )
+          )
         )
       ),
 
       create: rxMethod<Omit<Client, 'id' | 'createdAt' | 'updatedAt'>>(
         pipe(
           tap(setLoading),
-          switchMap((data) =>
-            repo.create(data).pipe(
-              tap((newClient) =>
-                patchState(store, { clients: [...store.clients(), newClient],lastCreated: newClient })
-              ),
-              catchError(handleError),
-              finalize(setSuccess)
+          switchMap(data =>
+            runAuthenticated(() =>
+              clientRepo.create(data).pipe(
+                tap(newClient =>
+                  patchState(store, {
+                    clients: [...store.clients(), newClient],
+                    lastCreated: newClient,
+                  })
+                ),
+                catchError(handleError),
+                finalize(setSuccess)
+              )
             )
           )
         )
@@ -117,51 +110,58 @@ export const ClientStore = signalStore(
       update: rxMethod<{ id: string; data: Partial<Client> }>(
         pipe(
           tap(setLoading),
-          switchMap(({ id, data }) => {
-            const userId = getUserId();
-            if (!userId) return handleError(new Error('No user logged in'));
-
-            return repo.update(id, userId, data).pipe(
-              tap((updatedClient) =>
-                patchState(store, { clients: updateClientInList(store.clients(), updatedClient) })
-              ),
-              catchError(handleError),
-              finalize(setSuccess)
-            );
-          })
+          switchMap(({ id, data }) =>
+            runAuthenticated(userId =>
+              clientRepo.update(id, userId, data).pipe(
+                tap(updatedClient =>
+                  patchState(store, {
+                    clients: updateInList(store.clients(), updatedClient),
+                  })
+                ),
+                catchError(handleError),
+                finalize(setSuccess)
+              )
+            )
+          )
         )
       ),
 
       delete: rxMethod<string>(
         pipe(
           tap(setLoading),
-          switchMap((id) => {
-            const userId = getUserId();
-            if (!userId) return handleError(new Error('No user logged in'));
-
-            return repo.delete(id, userId).pipe(
-              tap(() =>
-                patchState(store, { clients: removeClientFromList(store.clients(), id) })
-              ),
-              catchError(handleError),
-              finalize(setSuccess)
-            );
-          })
+          switchMap(id =>
+            runAuthenticated(userId =>
+              clientRepo.delete(id, userId).pipe(
+                tap(() =>
+                  patchState(store, {
+                    clients: removeFromList(store.clients(), id),
+                  })
+                ),
+                catchError(handleError),
+                finalize(setSuccess)
+              )
+            )
+          )
         )
       ),
 
-      // ========== MÉTHODES SUBJECTS ==========
+      // ===== Subjects =====
 
       createSubject: rxMethod<Omit<Subject, 'id' | 'createdAt' | 'updatedAt'>>(
         pipe(
           tap(setLoading),
-          switchMap((data) =>
-            subjectRepo.create(data).pipe(
-              tap((newSubject) =>
-                patchState(store, { subjects: [...store.subjects(), newSubject], lastCreatedSubject: newSubject })
-              ),
-              catchError(handleError),
-              finalize(setSuccess)
+          switchMap(data =>
+            runAuthenticated(() =>
+              subjectRepo.create(data).pipe(
+                tap(newSubject =>
+                  patchState(store, {
+                    subjects: [...store.subjects(), newSubject],
+                    lastCreatedSubject: newSubject,
+                  })
+                ),
+                catchError(handleError),
+                finalize(setSuccess)
+              )
             )
           )
         )
@@ -170,36 +170,38 @@ export const ClientStore = signalStore(
       updateSubject: rxMethod<{ id: string; data: Partial<Subject> }>(
         pipe(
           tap(setLoading),
-          switchMap(({ id, data }) => {
-            const userId = getUserId();
-            if (!userId) return handleError(new Error('No user logged in'));
-
-            return subjectRepo.update(id, userId, data).pipe(
-              tap((updatedSubject) =>
-                patchState(store, { subjects: updateSubjectInList(store.subjects(), updatedSubject) })
-              ),
-              catchError(handleError),
-              finalize(setSuccess)
-            );
-          })
+          switchMap(({ id, data }) =>
+            runAuthenticated(userId =>
+              subjectRepo.update(id, userId, data).pipe(
+                tap(updatedSubject =>
+                  patchState(store, {
+                    subjects: updateInList(store.subjects(), updatedSubject),
+                  })
+                ),
+                catchError(handleError),
+                finalize(setSuccess)
+              )
+            )
+          )
         )
       ),
 
       deleteSubject: rxMethod<string>(
         pipe(
           tap(setLoading),
-          switchMap((id) => {
-            const userId = getUserId();
-            if (!userId) return handleError(new Error('No user logged in'));
-
-            return subjectRepo.delete(id, userId).pipe(
-              tap(() =>
-                patchState(store, { subjects: removeSubjectFromList(store.subjects(), id) })
-              ),
-              catchError(handleError),
-              finalize(setSuccess)
-            );
-          })
+          switchMap(id =>
+            runAuthenticated(userId =>
+              subjectRepo.delete(id, userId).pipe(
+                tap(() =>
+                  patchState(store, {
+                    subjects: removeFromList(store.subjects(), id),
+                  })
+                ),
+                catchError(handleError),
+                finalize(setSuccess)
+              )
+            )
+          )
         )
       ),
     };
@@ -207,7 +209,7 @@ export const ClientStore = signalStore(
 
   withHooks({
     onInit(store) {
-      store.loadAll();
-    }
+      if (!store.clients().length) store.loadAll();
+    },
   })
 );

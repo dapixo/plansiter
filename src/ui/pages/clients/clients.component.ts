@@ -40,9 +40,8 @@ export class ClientsComponent {
     'other': 'pi-circle'
   };
 
-  // Computed global qui groupe tous les subjects par clientId
   protected readonly subjectsByClient = computed(() => {
-    const subjects = this.store.subjects();
+    const subjects = this.store.activeSubjects();
     return subjects.reduce((acc, subject) => {
       if (!acc[subject.clientId]) {
         acc[subject.clientId] = [];

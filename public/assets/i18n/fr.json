@@ -7,6 +7,7 @@
     "cancel": "Annuler",
     "save": "Enregistrer",
     "back": "Retour",
+    "close": "Fermer",
     "cancelAction": "Annuler la création ou la modification",
     "saveService": "Enregistrer les informations du service",
     "saveClient": "Enregistrer les informations du client"
@@ -92,6 +93,12 @@
     }
   },
   "booking": {
+    "subject": "Sujet",
+    "service": "Service",
+    "startDate": "Date de début",
+    "endDate": "Date de fin",
+    "notes": "Notes de la garde",
+    "viewClientDetail": "Voir les détails du client",
     "form": {
       "title": "Nouvelle garde",
       "client": "Client",
@@ -202,6 +209,14 @@
       "notesPlaceholder": "Informations complémentaires...",
       "postalCodeRequired": "Le code postal est obligatoire"
     }
+  },
+  "subject": {
+    "pet": "Animal de compagnie",
+    "plant": "Plante",
+    "child": "Enfant",
+    "house": "Maison",
+    "other": "Autre",
+    "notes": "Notes sur le sujet"
   },
   "subjects": {
     "title": "Sujets à garder",

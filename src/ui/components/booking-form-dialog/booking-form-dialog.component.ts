@@ -25,7 +25,7 @@ import { MessageModule } from 'primeng/message';
 import { TranslocoModule } from '@jsverse/transloco';
 import { toSignal } from '@angular/core/rxjs-interop';
 
-import { Subject, Booking, Client, Service } from '@domain/entities';
+import { Booking, Client, Service } from '@domain/entities';
 import { AuthService } from '@application/services';
 import { BookingStore } from '@application/stores/booking.store';
 import { ClientStore } from '@application/stores/client.store';
@@ -53,7 +53,6 @@ import { ActionButtonComponent } from '../action-button/action-button.component'
     ServiceFormDialogComponent,
     ActionButtonComponent,
   ],
-  providers: [BookingStore, ClientStore, ServiceStore],
   templateUrl: './booking-form-dialog.component.html',
   changeDetection: ChangeDetectionStrategy.OnPush,
 })
@@ -61,29 +60,23 @@ export class BookingFormDialogComponent {
   private readonly fb = inject(FormBuilder);
   private readonly authService = inject(AuthService);
 
-  // Stores
   private readonly bookingStore = inject(BookingStore);
   protected readonly clientStore = inject(ClientStore);
   protected readonly serviceStore = inject(ServiceStore);
 
-  // Model for dialog visibility
   readonly bookingDialogVisible = model<boolean>(false);
 
-  // UI States
   protected readonly loading = computed(() => this.bookingStore.loading());
   protected readonly error = computed(() => this.bookingStore.error());
   protected readonly success = computed(() => this.bookingStore.success());
   protected readonly lastCreated = computed(() => this.bookingStore.lastCreated());
 
-  // Outputs
   readonly bookingCreated = output<Booking>();
 
-  // Sub-dialogs visibility
   clientDialogVisible = model(false);
   subjectDialogVisible = model(false);
   serviceDialogVisible = model(false);
 
-  // Form
   protected readonly bookingForm: FormGroup<{
     clientId: FormControl<string>;
     serviceId: FormControl<string>;
@@ -98,33 +91,28 @@ export class BookingFormDialogComponent {
     notes: this.fb.control('', { nonNullable: true }),
   });
 
-  // Signals pour les valueChanges
   private readonly clientIdValue = toSignal(this.bookingForm.controls.clientId.valueChanges, {
     initialValue: '',
   });
 
-  // Signal pour tracker la valeur précédente du clientId
   private readonly previousClientId = signal<string>('');
 
-  // Computed: derive options from stores
   readonly clientOptions = computed(() =>
-    this.clientStore.clients().map((c) => ({ label: c.name, value: c.id }))
+    this.clientStore.activeClients().map((c) => ({ label: c.name, value: c.id }))
   );
 
   readonly serviceOptions = computed(() =>
     this.serviceStore.services().map((s) => ({ label: s.name, value: s.id }))
   );
 
-  /** Liste des subjects filtrés selon le client sélectionné */
   readonly subjectOptions = computed(() => {
-    const clientId = this.clientIdValue(); // Utiliser le signal pour la réactivité
-    const allSubjects = this.clientStore.subjects();
+    const clientId = this.clientIdValue();
+    const allSubjects = this.clientStore.activeSubjects();
     return allSubjects
       .filter((s) => !clientId || s.clientId === clientId)
       .map((s) => ({ label: s.name, value: s.id }));
   });
 
-  // Effects
   private successEffect_ = effect(() => {
     const success = this.success();
     const lastCreated = this.lastCreated();
@@ -135,17 +123,14 @@ export class BookingFormDialogComponent {
     }
   });
 
-  /** Réinitialise le champ subjectId quand le client change */
   private readonly resetSubjectEffect_ = effect(() => {
     const currentClientId = this.clientIdValue();
     const prevClientId = this.previousClientId();
 
-    // Réinitialiser uniquement si le clientId a vraiment changé (pas au premier render)
     if (prevClientId && currentClientId !== prevClientId) {
       this.bookingForm.controls.subjectId.setValue('', { emitEvent: false });
     }
 
-    // Mettre à jour la valeur précédente
     this.previousClientId.set(currentClientId);
   });
 
@@ -184,13 +169,11 @@ export class BookingFormDialogComponent {
     }
   }
 
-  // Sub-dialogs handlers
   onClientCreated(client: Client): void {
     this.bookingForm.controls.clientId.setValue(client.id);
   }
 
   onSubjectCreated(): void {
-    // Le subject a été créé par le store, on récupère le subject créé depuis le store
     const lastSubject = this.clientStore.lastCreatedSubject();
     if (lastSubject) {
       this.bookingForm.controls.subjectId.setValue(lastSubject.id);
