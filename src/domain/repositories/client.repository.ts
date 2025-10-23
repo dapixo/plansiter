@@ -12,7 +12,7 @@ export interface IClientRepository {
   getByUserId(userId: string): Observable<Client[]>;
   create(client: Omit<Client, 'id' | 'createdAt' | 'updatedAt'>): Observable<Client>;
   update(id: string, userId: string, client: Partial<Client>): Observable<Client>;
-  delete(id: string, userId: string): Observable<void>;
+  delete(id: string, userId: string): Observable<Client>;
 }
 
 export interface IClientRepositoryExtended extends IClientRepository {

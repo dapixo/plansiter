@@ -81,12 +81,8 @@ export class SubjectSupabaseRepository implements ISubjectRepository {
    * Soft delete: marquer le subject comme supprimé sans le retirer de la base de données.
    * Cela préserve l'intégrité historique des bookings.
    */
-  delete(id: string, _userId: string): Observable<void> {
-    // Note: userId n'est pas utilisé explicitement car RLS (Row Level Security)
-    // s'occupe de la vérification du userId via la relation client_id
-    return this.update(id, _userId, { deletedAt: new Date() }).pipe(
-      map(() => void 0)
-    );
+  delete(id: string, _userId: string): Observable<Subject> {
+    return this.update(id, _userId, { deletedAt: new Date() });
   }
 
   // ---------- PRIVATE HELPERS ---------- //

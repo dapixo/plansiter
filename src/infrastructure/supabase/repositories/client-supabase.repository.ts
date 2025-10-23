@@ -101,10 +101,8 @@ export class ClientSupabaseRepository implements IClientRepository {
    * Soft delete: marquer le client comme supprimé sans le retirer de la base de données.
    * Cela préserve l'intégrité historique des bookings.
    */
-  delete(id: string, userId: string): Observable<void> {
-    return this.update(id, userId, { deletedAt: new Date() }).pipe(
-      map(() => void 0)
-    );
+  delete(id: string, userId: string): Observable<Client> {
+    return this.update(id, userId, { deletedAt: new Date() });
   }
 
   // ---------- PRIVATE HELPERS ---------- //

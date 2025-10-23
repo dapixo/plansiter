@@ -17,7 +17,7 @@ import {
   SUBJECT_REPOSITORY,
 } from '@domain/repositories';
 import { AuthService } from '../services/auth.service';
-import { updateInList, removeFromList, createStoreHelpers } from './store.utils';
+import { updateInList, createStoreHelpers } from './store.utils';
 
 interface ClientState {
   clients: Client[];
@@ -132,9 +132,9 @@ export const ClientStore = signalStore(
           switchMap(id =>
             runAuthenticated(userId =>
               clientRepo.delete(id, userId).pipe(
-                tap(() =>
+                tap((deletedClient) =>
                   patchState(store, {
-                    clients: removeFromList(store.clients(), id),
+                    clients: updateInList(store.clients(), deletedClient),
                   })
                 ),
                 catchError(handleError),
@@ -192,9 +192,9 @@ export const ClientStore = signalStore(
           switchMap(id =>
             runAuthenticated(userId =>
               subjectRepo.delete(id, userId).pipe(
-                tap(() =>
+                tap((deletedSubject) =>
                   patchState(store, {
-                    subjects: removeFromList(store.subjects(), id),
+                    subjects: updateInList(store.subjects(), deletedSubject),
                   })
                 ),
                 catchError(handleError),
