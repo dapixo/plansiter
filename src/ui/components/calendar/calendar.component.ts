@@ -150,9 +150,10 @@ import {
               [class.rounded-r-lg]="barSegment.isEnd"
               [ngClass]="getBarClasses(bar.status)"
               (mouseenter)="highlightBar(bar.id)"
-              (mouseleave)="unhighlightBar()">
+              (mouseleave)="unhighlightBar()"
+              (click)="onTimelineClic(bar)">
               @if (barSegment.isStart) {
-              <span class="truncate text-xs leading-none">{{ bar.title }}</span>
+              <span class="truncate text-xs leading-none">{{ bar.subjectName }}</span>
               } @if (barSegment.isEnd) {
               <span class="text-xs ml-auto">✓</span>
               }
@@ -178,6 +179,7 @@ export class CalendarComponent implements AfterViewInit {
   // Outputs
   readonly monthChange = output<Date>();
   readonly addBooking = output<void>();
+  readonly bookingClic = output<TimelineBar>();
 
   // State
   private readonly currentDate = signal(startOfToday());
@@ -345,5 +347,9 @@ export class CalendarComponent implements AfterViewInit {
     const rect = firstCell.getBoundingClientRect();
     this.cellWidth.set(rect.width);
     this.cellHeight.set(rect.height);
+  }
+
+  protected onTimelineClic(timeline :TimelineBar): void {
+    this.bookingClic.emit(timeline);
   }
 }

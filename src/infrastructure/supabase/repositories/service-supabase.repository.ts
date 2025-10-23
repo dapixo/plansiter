@@ -11,7 +11,7 @@ type ServiceRow = {
   name: string;
   type: ServiceType;
   description: string | null;
-  price_per_hour: number | null;
+  price_per_visit: number | null;
   price_per_day: number | null;
   price_per_night: number | null;
   is_active: boolean;
@@ -106,7 +106,7 @@ export class ServiceSupabaseRepository implements IServiceRepository {
       name: row.name,
       type: row.type,
       description: row.description ?? '',
-      pricePerHour: row.price_per_hour ?? 0,
+      pricePerVisit: row.price_per_visit ?? 0,
       pricePerDay: row.price_per_day ?? 0,
       pricePerNight: row.price_per_night ?? 0,
       isActive: row.is_active,
@@ -123,7 +123,7 @@ export class ServiceSupabaseRepository implements IServiceRepository {
     if (!partial || service.name !== undefined) payload.name = service.name!;
     if (!partial || service.type !== undefined) payload.type = service.type!;
     if (!partial || service.description !== undefined) payload.description = service.description ?? null;
-    if (!partial || service.pricePerHour !== undefined) payload.price_per_hour = service.pricePerHour ?? null;
+    if (!partial || service.pricePerVisit !== undefined) payload.price_per_visit = service.pricePerVisit ?? null;
     if (!partial || service.pricePerDay !== undefined) payload.price_per_day = service.pricePerDay ?? null;
     if (!partial || service.pricePerNight !== undefined) payload.price_per_night = service.pricePerNight ?? null;
     if (!partial || service.isActive !== undefined) payload.is_active = service.isActive ?? false;

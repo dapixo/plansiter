@@ -6,9 +6,10 @@ export interface TimelineBar {
   id: string;
   startDate: Date;
   endDate: Date;
-  title: string;
+  subjectId: string;
+  subjectName: string;
   status: 'pending' | 'in-progress' | 'completed' | 'cancelled';
-  clientName?: string;
+  clientId: string;
 }
 
 export interface BarSegment {

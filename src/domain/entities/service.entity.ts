@@ -1,12 +1,14 @@
 export type ServiceType = 'pet-sitting' | 'plant-sitting' | 'babysitting' | 'house-sitting' | 'other';
 
+export type PriceType = 'per-visit' | 'per-day' | 'per-night';
+
 export interface Service {
   id: string;
   userId: string;
   name: string;
   type: ServiceType;
   description?: string;
-  pricePerHour?: number;
+  pricePerVisit?: number;
   pricePerDay?: number;
   pricePerNight?: number;
   isActive: boolean;

@@ -32,14 +32,19 @@ export class PlanningComponent {
         id: booking.id,
         startDate: booking.startDate,
         endDate: booking.endDate,
-        title: subject?.name || booking.subjectId,
+        subjectName: subject?.name,
+        subjectId: booking.subjectId,
         status: calculateBookingStatus(booking),
-        clientName: booking.clientId,
+        clientId: booking.clientId,
       };
     });
   });
 
   protected onAddBooking(): void {
     this.bookingDialogVisible.set(true);
+  }
+
+  protected openBooking(booking: TimelineBar) {
+    console.log(booking)
   }
 }
