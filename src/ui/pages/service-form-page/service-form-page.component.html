@@ -116,39 +116,33 @@
       </fieldset>
 
       <!-- Tarification -->
-      <fieldset class="grid grid-cols-1 md:grid-cols-2 gap-4 border-0 p-0">
-        <!-- Type de tarif -->
-        <div class="flex flex-col gap-2">
-          <label for="priceType" class="font-medium text-gray-700">
+      <fieldset class="flex flex-col gap-4 border-0 p-0">
+        <!-- Type de tarif (Radio Buttons) -->
+        <div class="flex flex-col gap-3">
+          <label class="font-medium text-gray-700">
             {{ 'services.form.priceType' | transloco }}
             <span class="text-red-500" aria-hidden="true">*</span>
           </label>
-          <p-select
-            id="priceType"
-            formControlName="priceType"
-            [options]="priceTypes"
-            optionValue="value"
-            [placeholder]="'services.form.priceTypePlaceholder' | transloco"
-            class="w-full"
-            aria-required="true"
-            [attr.aria-invalid]="form.controls.priceType.invalid && form.controls.priceType.touched ? 'true' : 'false'"
-            [attr.aria-describedby]="
-              form.controls.priceType.invalid && form.controls.priceType.touched
-                ? 'priceType-error'
-                : null
-            "
-          >
-            <ng-template pTemplate="selectedItem" let-selectedOption>
-              @if (selectedOption) {
-              {{ selectedOption.labelKey | transloco }}
-              }
-            </ng-template>
-            <ng-template pTemplate="item" let-option>
-              {{ option.labelKey | transloco }}
-            </ng-template>
-          </p-select>
+          <div class="flex flex-col sm:flex-row gap-3">
+            @for (option of priceTypes; track option.value) {
+            <div
+              [appRadioButtonWrapper]="form.controls.priceType.value === option.value">
+              <p-radiobutton
+                [inputId]="'priceType-' + option.value"
+                [value]="option.value"
+                formControlName="priceType"
+                [attr.aria-label]="option.labelKey | transloco" />
+              <label
+                [for]="'priceType-' + option.value"
+                class="flex items-center gap-2 cursor-pointer flex-1">
+                <i [class]="'pi ' + option.icon + ' text-indigo-600'" aria-hidden="true"></i>
+                <span class="font-medium">{{ option.labelKey | transloco }}</span>
+              </label>
+            </div>
+            }
+          </div>
           @if (form.controls.priceType.invalid && form.controls.priceType.touched) {
-          <p-message id="priceType-error" severity="error" variant="simple">
+          <p-message id="priceType-error" severity="error" variant="simple" role="alert">
             {{ 'services.form.priceTypeRequired' | transloco }}
           </p-message>
           }
@@ -160,23 +154,22 @@
             {{ 'services.form.price' | transloco }}
             <span class="text-red-500" aria-hidden="true">*</span>
           </label>
-          <p-inputNumber
-            id="price"
+          <p-inputnumber
+            inputId="price"
             formControlName="price"
             mode="currency"
             currency="EUR"
             locale="fr-FR"
-            [min]="0"
-            [attr.aria-label]="'services.form.priceAriaLabel' | transloco"
+            [minFractionDigits]="2"
+            class="w-full"
             aria-required="true"
+            [attr.aria-label]="'services.form.priceAriaLabel' | transloco"
             [attr.aria-invalid]="form.controls.price.invalid && form.controls.price.touched ? 'true' : 'false'"
             [attr.aria-describedby]="
               form.controls.price.invalid && form.controls.price.touched ? 'price-error' : null
-            "
-            class="w-full"
-          />
+            " />
           @if (form.controls.price.invalid && form.controls.price.touched) {
-          <p-message id="price-error" severity="error" variant="simple">
+          <p-message id="price-error" severity="error" variant="simple" role="alert">
             {{ 'services.form.priceRequired' | transloco }}
           </p-message>
           }

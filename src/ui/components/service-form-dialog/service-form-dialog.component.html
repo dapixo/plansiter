@@ -106,70 +106,65 @@
       ></textarea>
     </div>
 
-    <!-- Price Type and Amount -->
-    <div class="grid grid-cols-1 md:grid-cols-2 gap-4">
-      <div class="flex flex-col gap-2">
-        <label for="service-priceType" class="font-medium text-gray-700 text-sm">
-          {{ 'services.form.priceType' | transloco }}
-          <span class="text-red-500" aria-hidden="true">*</span>
-        </label>
-        <p-select
-          id="service-priceType"
-          formControlName="priceType"
-          [options]="priceTypes"
-          optionValue="value"
-          [placeholder]="'services.form.priceTypePlaceholder' | transloco"
-          class="w-full"
-          aria-required="true"
-          [attr.aria-invalid]="
-            serviceForm.controls.priceType.invalid && serviceForm.controls.priceType.touched ? 'true' : 'false'
-          "
-          [attr.aria-describedby]="
-            serviceForm.controls.priceType.invalid && serviceForm.controls.priceType.touched ? 'priceType-error' : null
-          "
-        >
-          <ng-template pTemplate="item" let-option>
-            {{ option.labelKey | transloco }}
-          </ng-template>
-          <ng-template pTemplate="selectedItem" let-option>
-            {{ option.labelKey | transloco }}
-          </ng-template>
-        </p-select>
-        @if (serviceForm.controls.priceType.invalid && serviceForm.controls.priceType.touched) {
-        <p-message id="priceType-error" severity="error" variant="simple" role="alert">
-          {{ 'services.form.priceTypeRequired' | transloco }}
-        </p-message>
+    <!-- Price Type (Radio Buttons) -->
+    <div class="flex flex-col gap-3">
+      <label class="font-medium text-gray-700 text-sm">
+        {{ 'services.form.priceType' | transloco }}
+        <span class="text-red-500" aria-hidden="true">*</span>
+      </label>
+      <div class="flex flex-col sm:flex-row gap-3">
+        @for (option of priceTypes; track option.value) {
+        <div
+          [appRadioButtonWrapper]="serviceForm.controls.priceType.value === option.value">
+          <p-radiobutton
+            [inputId]="'priceType-' + option.value"
+            [value]="option.value"
+            formControlName="priceType"
+            [attr.aria-label]="option.labelKey | transloco" />
+          <label
+            [for]="'priceType-' + option.value"
+            class="flex items-center gap-2 cursor-pointer flex-1">
+            <i [class]="'pi ' + option.icon + ' text-indigo-600'" aria-hidden="true"></i>
+            <span class="font-medium">{{ option.labelKey | transloco }}</span>
+          </label>
+        </div>
         }
       </div>
+      @if (serviceForm.controls.priceType.invalid && serviceForm.controls.priceType.touched) {
+      <p-message id="priceType-error" severity="error" variant="simple" role="alert">
+        {{ 'services.form.priceTypeRequired' | transloco }}
+      </p-message>
+      }
+    </div>
 
-      <div class="flex flex-col gap-2">
-        <label for="service-price" class="font-medium text-gray-700 text-sm">
-          {{ 'services.form.price' | transloco }}
-          <span class="text-red-500" aria-hidden="true">*</span>
-        </label>
-        <p-inputnumber
-          inputId="service-price"
-          formControlName="price"
-          mode="currency"
-          currency="EUR"
-          locale="fr-FR"
-          [minFractionDigits]="2"
-          class="w-full"
-          aria-required="true"
-          [attr.aria-label]="'services.form.priceAriaLabel' | transloco"
-          [attr.aria-invalid]="
-            serviceForm.controls.price.invalid && serviceForm.controls.price.touched ? 'true' : 'false'
-          "
-          [attr.aria-describedby]="
-            serviceForm.controls.price.invalid && serviceForm.controls.price.touched ? 'price-error' : null
-          "
-        />
-        @if (serviceForm.controls.price.invalid && serviceForm.controls.price.touched) {
-        <p-message id="price-error" severity="error" variant="simple" role="alert">
-          {{ 'services.form.priceRequired' | transloco }}
-        </p-message>
-        }
-      </div>
+    <!-- Price Amount -->
+    <div class="flex flex-col gap-2">
+
+      <label for="service-price" class="font-medium text-gray-700 text-sm">
+        {{ 'services.form.price' | transloco }}
+        <span class="text-red-500" aria-hidden="true">*</span>
+      </label>
+      <p-inputnumber
+        inputId="service-price"
+        formControlName="price"
+        mode="currency"
+        currency="EUR"
+        locale="fr-FR"
+        [minFractionDigits]="2"
+        class="w-full"
+        aria-required="true"
+        [attr.aria-label]="'services.form.priceAriaLabel' | transloco"
+        [attr.aria-invalid]="
+          serviceForm.controls.price.invalid && serviceForm.controls.price.touched ? 'true' : 'false'
+        "
+        [attr.aria-describedby]="
+          serviceForm.controls.price.invalid && serviceForm.controls.price.touched ? 'price-error' : null
+        " />
+      @if (serviceForm.controls.price.invalid && serviceForm.controls.price.touched) {
+      <p-message id="price-error" severity="error" variant="simple" role="alert">
+        {{ 'services.form.priceRequired' | transloco }}
+      </p-message>
+      }
     </div>
   </div>
 

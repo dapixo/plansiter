@@ -17,13 +17,15 @@ import { MessageModule } from 'primeng/message';
 import { BreadcrumbModule } from 'primeng/breadcrumb';
 import { TranslocoModule } from '@jsverse/transloco';
 import { TextareaModule } from 'primeng/textarea';
-import { Service, ServiceType } from '@domain/entities';
+import { RadioButtonModule } from 'primeng/radiobutton';
+import { PriceType, Service, ServiceType } from '@domain/entities';
 import { ServiceStore } from '@application/stores/service.store';
 import { AuthService, BreadcrumbService } from '@application/services';
 import { LanguageService } from '@application/services/language.service';
 import { ActionButtonComponent } from '@ui/components/action-button/action-button.component';
 import { SERVICE_TYPE_OPTIONS } from '@ui/constants/service-types.constant';
-import { PRICE_TYPE_OPTIONS_FORM, PriceTypeForm } from '@ui/constants/price-types.constant';
+import { PRICE_TYPE_OPTIONS } from '@ui/constants/price-types.constant';
+import { RadioButtonWrapperDirective } from '@ui/directives/radio-button-wrapper.directive';
 
 @Component({
   selector: 'app-service-form-page',
@@ -39,6 +41,8 @@ import { PRICE_TYPE_OPTIONS_FORM, PriceTypeForm } from '@ui/constants/price-type
     MessageModule,
     BreadcrumbModule,
     TranslocoModule,
+    RadioButtonModule,
+    RadioButtonWrapperDirective,
     ActionButtonComponent,
   ],
   templateUrl: './service-form-page.component.html',
@@ -74,19 +78,19 @@ export class ServiceFormPageComponent {
 
   protected readonly breadcrumbHome = this.breadcrumbService.createBreadcrumbHome();
   protected readonly serviceTypes = SERVICE_TYPE_OPTIONS;
-  protected readonly priceTypes = PRICE_TYPE_OPTIONS_FORM;
+  protected readonly priceTypes = PRICE_TYPE_OPTIONS;
 
   protected readonly form = this.fb.group<{
     name: FormControl<string>;
     type: FormControl<ServiceType | null>;
     description: FormControl<string>;
-    priceType: FormControl<PriceTypeForm | null>;
+    priceType: FormControl<PriceType | null>;
     price: FormControl<number | null>;
   }>({
     name: this.fb.control('', { validators: Validators.required, nonNullable: true }),
     type: this.fb.control<ServiceType | null>(null, { validators: Validators.required }),
     description: this.fb.control('', { nonNullable: true }),
-    priceType: this.fb.control<PriceTypeForm | null>(null, { validators: Validators.required }),
+    priceType: this.fb.control<PriceType | null>(null, { validators: Validators.required }),
     price: this.fb.control<number | null>(null, { validators: Validators.required })
   });
   protected readonly uiState = computed(() => ({
@@ -103,17 +107,17 @@ export class ServiceFormPageComponent {
     if (!service) return;
 
     // Déterminer le type de prix
-    let priceType: PriceTypeForm | null = null;
+    let priceType: PriceType | null = null;
     let price: number | null = null;
 
-    if (service.pricePerHour) {
-      priceType = 'hour';
-      price = service.pricePerHour;
+    if (service.pricePerVisit) {
+      priceType = 'per-visit';
+      price = service.pricePerVisit;
     } else if (service.pricePerDay) {
-      priceType = 'day';
+      priceType = 'per-day';
       price = service.pricePerDay;
     } else if (service.pricePerNight) {
-      priceType = 'night';
+      priceType = 'per-night';
       price = service.pricePerNight;
     }
 
@@ -174,9 +178,9 @@ export class ServiceFormPageComponent {
       name: name!,
       type: type!,
       description: description || undefined,
-      pricePerHour: priceType === 'hour' ? price || undefined : undefined,
-      pricePerDay: priceType === 'day' ? price || undefined : undefined,
-      pricePerNight: priceType === 'night' ? price || undefined : undefined
+      pricePerVisit: priceType === 'per-visit' ? price || undefined : undefined,
+      pricePerDay: priceType === 'per-day' ? price || undefined : undefined,
+      pricePerNight: priceType === 'per-night' ? price || undefined : undefined
     };
   }
 }

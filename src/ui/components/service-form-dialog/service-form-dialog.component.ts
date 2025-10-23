@@ -26,9 +26,11 @@ import { TextareaModule } from 'primeng/textarea';
 import { ActionButtonComponent } from '@ui/components/action-button/action-button.component';
 import { ServiceStore } from '@application/stores/service.store';
 import { AuthService } from '@application/services';
-import { Service, ServiceType } from '@domain/entities';
+import { Service, ServiceType, PriceType } from '@domain/entities';
 import { SERVICE_TYPE_OPTIONS } from '@ui/constants/service-types.constant';
-import { PRICE_TYPE_OPTIONS_DIALOG, PriceTypeDialog } from '@ui/constants/price-types.constant';
+import { PRICE_TYPE_OPTIONS } from '@ui/constants/price-types.constant';
+import { RadioButtonModule } from 'primeng/radiobutton';
+import { RadioButtonWrapperDirective } from '@ui/directives/radio-button-wrapper.directive';
 
 @Component({
   selector: 'app-service-form-dialog',
@@ -44,6 +46,8 @@ import { PRICE_TYPE_OPTIONS_DIALOG, PriceTypeDialog } from '@ui/constants/price-
     SelectModule,
     InputNumberModule,
     TextareaModule,
+    RadioButtonModule,
+    RadioButtonWrapperDirective,
     ActionButtonComponent,
   ],
   templateUrl: './service-form-dialog.component.html',
@@ -67,20 +71,20 @@ export class ServiceFormDialogComponent {
 
   // Constants
   protected readonly serviceTypes = SERVICE_TYPE_OPTIONS;
-  protected readonly priceTypes = PRICE_TYPE_OPTIONS_DIALOG;
+  protected readonly priceTypes = PRICE_TYPE_OPTIONS;
 
   // Form
   protected readonly serviceForm: FormGroup<{
     name: FormControl<string>;
     type: FormControl<ServiceType | null>;
     description: FormControl<string>;
-    priceType: FormControl<PriceTypeDialog | null>;
+    priceType: FormControl<PriceType | null>;
     price: FormControl<number | null>;
   }> = this.fb.group({
     name: this.fb.control('', { validators: Validators.required, nonNullable: true }),
     type: this.fb.control<ServiceType | null>(null, { validators: Validators.required }),
     description: this.fb.control('', { nonNullable: true }),
-    priceType: this.fb.control<PriceTypeDialog | null>(null, { validators: Validators.required }),
+    priceType: this.fb.control<PriceType | null>(null, { validators: Validators.required }),
     price: this.fb.control<number | null>(null, { validators: Validators.required }),
   });
 
@@ -118,9 +122,9 @@ export class ServiceFormDialogComponent {
       name,
       type,
       description: description || undefined,
-      pricePerHour: priceType === 'perHour' ? price : undefined,
-      pricePerDay: priceType === 'perDay' ? price : undefined,
-      pricePerNight: priceType === 'perNight' ? price : undefined,
+      pricePerVisit: priceType === 'per-visit' ? price : undefined,
+      pricePerDay: priceType === 'per-day' ? price : undefined,
+      pricePerNight: priceType === 'per-night' ? price : undefined,
       isActive: true,
     };
 
