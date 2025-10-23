@@ -88,15 +88,13 @@ export class BookingFormDialogComponent {
     clientId: FormControl<string>;
     serviceId: FormControl<string>;
     subjectId: FormControl<string>;
-    startDate: FormControl<Date | null>;
-    endDate: FormControl<Date | null>;
+    dateRange: FormControl<Date[] | null>;
     notes: FormControl<string>;
   }> = this.fb.group({
     clientId: this.fb.control('', { validators: Validators.required, nonNullable: true }),
     serviceId: this.fb.control('', { validators: Validators.required, nonNullable: true }),
     subjectId: this.fb.control('', { validators: Validators.required, nonNullable: true }),
-    startDate: this.fb.control<Date | null>(null, { validators: Validators.required }),
-    endDate: this.fb.control<Date | null>(null, { validators: Validators.required }),
+    dateRange: this.fb.control<Date[] | null>(null, { validators: Validators.required }),
     notes: this.fb.control('', { nonNullable: true }),
   });
 
@@ -159,11 +157,13 @@ export class BookingFormDialogComponent {
     this.bookingForm.markAllAsDirty();
     if (this.bookingForm.invalid || this.loading()) return;
 
-    const { clientId, serviceId, subjectId, startDate, endDate, notes } =
+    const { clientId, serviceId, subjectId, dateRange, notes } =
       this.bookingForm.getRawValue();
 
-    if (!startDate || !endDate)
+    if (!dateRange || dateRange.length !== 2 || !dateRange[0] || !dateRange[1])
       return this.bookingStore.setError('Start and end dates are required');
+
+    const [startDate, endDate] = dateRange;
 
     this.bookingStore.create({
       sitterId: userId,

@@ -56,6 +56,9 @@ importers:
       primeicons:
         specifier: ^7.0.0
         version: 7.0.0
+      primelocale:
+        specifier: ^2.2.2
+        version: 2.2.2
       primeng:
         specifier: ^20.2.0
         version: 20.2.0(ba2506c0e4d97e5a0142e69dd77074b9)
@@ -2807,6 +2810,10 @@ packages:
 
   primeicons@7.0.0:
     resolution: {integrity: sha512-jK3Et9UzwzTsd6tzl2RmwrVY/b8raJ3QZLzoDACj+oTJ0oX7L9Hy+XnVwgo4QVKlKpnP/Ur13SXV/pVh4LzaDw==}
+
+  primelocale@2.2.2:
+    resolution: {integrity: sha512-0U5pTI7v/2WPCCsY/QYJEhhY7wDEP6vcKn1vw6dAlCIKEVs6YzaP4P6Sfq6AIEM01BnhmfyPojuEXUnwCEt95Q==}
+    engines: {node: '>=18.0.0', npm: '>=8.6.0'}
 
   primeng@20.2.0:
     resolution: {integrity: sha512-SXdL5dY+YWaCt1jRFqf4EUVhyVlhYV0MjLeke/UeLx/Od0+06Ru33MLQe2Ul7o/vAmItbh+OvRTu7jEk5LMjqQ==}
@@ -6132,6 +6139,8 @@ snapshots:
       source-map-js: 1.2.1
 
   primeicons@7.0.0: {}
+
+  primelocale@2.2.2: {}
 
   primeng@20.2.0(ba2506c0e4d97e5a0142e69dd77074b9):
     dependencies:

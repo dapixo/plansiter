@@ -1,6 +1,6 @@
 import { Component, ChangeDetectionStrategy, signal, inject, computed } from '@angular/core';
 import { CommonModule } from '@angular/common';
-import { CalendarComponent, type TimelineBar } from '@ui/components/calendar/calendar.component';
+import { CalendarComponent, type TimelineBar } from '@ui/components/calendar';
 import { BookingFormDialogComponent } from '@ui/components/booking-form-dialog/booking-form-dialog.component';
 import { BookingStore, calculateBookingStatus } from '@application/stores/booking.store';
 import { ClientStore } from '@application/stores/client.store';

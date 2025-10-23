@@ -42,6 +42,7 @@
     "angular-resizable-element": "^8.0.0",
     "date-fns": "^4.1.0",
     "primeicons": "^7.0.0",
+    "primelocale": "^2.2.2",
     "primeng": "^20.2.0",
     "rxjs": "~7.8.0",
     "tslib": "^2.3.0",

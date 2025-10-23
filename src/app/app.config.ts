@@ -1,9 +1,10 @@
-import { ApplicationConfig, provideBrowserGlobalErrorListeners, provideZoneChangeDetection, LOCALE_ID } from '@angular/core';
+import { ApplicationConfig, provideBrowserGlobalErrorListeners, provideZoneChangeDetection, APP_INITIALIZER } from '@angular/core';
 import { provideRouter } from '@angular/router';
 import { provideAnimations } from '@angular/platform-browser/animations';
 import { provideHttpClient } from '@angular/common/http';
 import { providePrimeNG } from 'primeng/config';
 import Aura from '@primeng/themes/aura';
+import { definePreset } from '@primeng/themes';
 import { registerLocaleData } from '@angular/common';
 import localeFr from '@angular/common/locales/fr';
 import localeEs from '@angular/common/locales/es';
@@ -11,6 +12,26 @@ import localeIt from '@angular/common/locales/it';
 
 import { routes } from './app.routes';
 import { translocoConfig } from '@infrastructure/i18n/transloco.config';
+import { initializePrimeNGLocale } from '@infrastructure/primeng/primeng-locale.initializer';
+
+// Personnalisation du thème Aura avec couleurs indigo/purple
+const PlansitterTheme = definePreset(Aura, {
+  semantic: {
+    primary: {
+      50: '{indigo.50}',
+      100: '{indigo.100}',
+      200: '{indigo.200}',
+      300: '{indigo.300}',
+      400: '{indigo.400}',
+      500: '{indigo.500}',
+      600: '{indigo.600}',
+      700: '{indigo.700}',
+      800: '{indigo.800}',
+      900: '{indigo.900}',
+      950: '{indigo.950}'
+    }
+  }
+});
 
 // Register locales
 registerLocaleData(localeFr);
@@ -48,12 +69,18 @@ export const appConfig: ApplicationConfig = {
     translocoConfig,
     providePrimeNG({
       theme: {
-        preset: Aura,
+        preset: PlansitterTheme,
         options: {
-          darkModeSelector: '.dark-mode'
+          darkModeSelector: '.dark-mode',
         }
       }
     }),
+    // Initialize PrimeNG locale based on current language
+    {
+      provide: APP_INITIALIZER,
+      useFactory: initializePrimeNGLocale,
+      multi: true
+    },
     // Global Stores
     ClientStore,
     ServiceStore,
