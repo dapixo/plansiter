@@ -14,13 +14,12 @@ import { InputTextModule } from 'primeng/inputtext';
 import { InputNumberModule } from 'primeng/inputnumber';
 import { SelectModule } from 'primeng/select';
 import { MessageModule } from 'primeng/message';
-import { BreadcrumbModule } from 'primeng/breadcrumb';
 import { TranslocoModule } from '@jsverse/transloco';
 import { TextareaModule } from 'primeng/textarea';
 import { RadioButtonModule } from 'primeng/radiobutton';
 import { PriceType, Service, ServiceType } from '@domain/entities';
 import { ServiceStore } from '@application/stores/service.store';
-import { AuthService, BreadcrumbService } from '@application/services';
+import { AuthService } from '@application/services';
 import { LanguageService } from '@application/services/language.service';
 import { ActionButtonComponent } from '@ui/components/action-button/action-button.component';
 import { SERVICE_TYPE_OPTIONS } from '@ui/constants/service-types.constant';
@@ -39,7 +38,6 @@ import { RadioButtonWrapperDirective } from '@ui/directives/radio-button-wrapper
     InputNumberModule,
     SelectModule,
     MessageModule,
-    BreadcrumbModule,
     TranslocoModule,
     RadioButtonModule,
     RadioButtonWrapperDirective,
@@ -54,7 +52,6 @@ export class ServiceFormPageComponent {
   private readonly router = inject(Router);
   private readonly store = inject(ServiceStore);
   private readonly auth = inject(AuthService);
-  private readonly breadcrumbService = inject(BreadcrumbService);
   protected readonly lang = inject(LanguageService);
 
   private readonly paramMap = toSignal(this.route.paramMap);
@@ -67,16 +64,6 @@ export class ServiceFormPageComponent {
   protected readonly isEditMode = computed(() => !!this.serviceId());
   protected readonly isFormReady = computed(() => !this.isEditMode() || !!this.service());
 
-  protected readonly breadcrumbItems = this.breadcrumbService.createBreadcrumbItemsWithDynamicLabel(
-    {
-      parentLabel: 'services.title',
-      parentRoute: '/dashboard/services'
-    },
-    () => this.service()?.name,
-    this.isEditMode() ? 'services.editService' : 'services.createService'
-  );
-
-  protected readonly breadcrumbHome = this.breadcrumbService.createBreadcrumbHome();
   protected readonly serviceTypes = SERVICE_TYPE_OPTIONS;
   protected readonly priceTypes = PRICE_TYPE_OPTIONS;
 
@@ -93,6 +80,7 @@ export class ServiceFormPageComponent {
     priceType: this.fb.control<PriceType | null>(null, { validators: Validators.required }),
     price: this.fb.control<number | null>(null, { validators: Validators.required })
   });
+
   protected readonly uiState = computed(() => ({
     ready: this.isFormReady(),
     loading: this.store.loading(),

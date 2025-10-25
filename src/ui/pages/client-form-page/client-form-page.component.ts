@@ -9,14 +9,13 @@ import {
 import { Router, RouterModule } from '@angular/router';
 import { InputTextModule } from 'primeng/inputtext';
 import { MessageModule } from 'primeng/message';
-import { BreadcrumbModule } from 'primeng/breadcrumb';
 import { TranslocoModule } from '@jsverse/transloco';
 import { TextareaModule } from 'primeng/textarea';
 import { tap, catchError } from 'rxjs/operators';
 import { of } from 'rxjs';
 import { Client } from '@domain/entities';
 import { ClientStore } from '@application/stores/client.store';
-import { AuthService, BreadcrumbService } from '@application/services';
+import { AuthService } from '@application/services';
 import { LanguageService } from '@application/services/language.service';
 import {
   ClientManagementService,
@@ -34,7 +33,6 @@ import { ActionButtonComponent } from '@ui/components/action-button/action-butto
     RouterModule,
     InputTextModule,
     TextareaModule,
-    BreadcrumbModule,
     MessageModule,
     TranslocoModule,
     SubjectsManagerComponent,
@@ -50,16 +48,7 @@ export class ClientFormPageComponent {
   private readonly clientManagement = inject(ClientManagementService);
   private readonly store = inject(ClientStore);
   private readonly auth = inject(AuthService);
-  private readonly breadcrumbService = inject(BreadcrumbService);
   protected readonly lang = inject(LanguageService);
-
-  protected readonly breadcrumbItems = this.breadcrumbService.createBreadcrumbItems({
-    parentLabel: 'clients.title',
-    parentRoute: '/dashboard/clients',
-    currentLabel: 'clients.createClient',
-  });
-
-  protected readonly breadcrumbHome = this.breadcrumbService.createBreadcrumbHome();
 
   /** Formulaire client */
   protected readonly form = this.fb.group({

@@ -1,12 +1,13 @@
-import { Component, inject, DestroyRef, signal } from '@angular/core';
+import { Component, inject, DestroyRef, signal, ChangeDetectionStrategy } from '@angular/core';
 import { CommonModule } from '@angular/common';
 import { RouterModule } from '@angular/router';
 import { takeUntilDestroyed } from '@angular/core/rxjs-interop';
 import { AvatarModule } from 'primeng/avatar';
 import { ButtonModule } from 'primeng/button';
 import { TooltipModule } from 'primeng/tooltip';
+import { BreadcrumbModule } from 'primeng/breadcrumb';
 import { TranslocoModule } from '@jsverse/transloco';
-import { AuthService } from '@application/services';
+import { AuthService, BreadcrumbService } from '@application/services';
 import { LanguageSwitcherComponent } from '@ui/components/language-switcher/language-switcher.component';
 
 @Component({
@@ -18,19 +19,22 @@ import { LanguageSwitcherComponent } from '@ui/components/language-switcher/lang
     AvatarModule,
     ButtonModule,
     TooltipModule,
+    BreadcrumbModule,
     TranslocoModule,
     LanguageSwitcherComponent
   ],
   templateUrl: './dashboard-layout.component.html',
-  styleUrls: ['./dashboard-layout.component.css']
+  changeDetection: ChangeDetectionStrategy.OnPush
 })
 export class DashboardLayoutComponent {
   private authService = inject(AuthService);
+  protected readonly breadcrumbService = inject(BreadcrumbService);
   private destroyRef = inject(DestroyRef);
 
-  readonly currentUser = this.authService.currentUser;
-  readonly userDisplayName = this.authService.userDisplayName;
-  readonly isCollapsed = signal(false);
+  protected readonly isCollapsed = signal(false);
+  protected readonly userDisplayName = this.authService.userDisplayName;
+  protected readonly breadcrumbItems = this.breadcrumbService.breadcrumbItems;
+  protected readonly breadcrumbHome = this.breadcrumbService.breadcrumbHome;
 
   protected readonly menuItems = [
     { label: 'sidebar.planning', icon: 'pi pi-calendar', route: 'planning' },

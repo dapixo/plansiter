@@ -1,93 +1,61 @@
-import { Injectable, inject, computed, Signal } from '@angular/core';
-import { TranslocoService } from '@jsverse/transloco';
+import { computed, inject, Injectable } from '@angular/core';
 import { MenuItem } from 'primeng/api';
+import { TranslocoService } from '@jsverse/transloco';
+import { ActivatedRoute, NavigationEnd, Router } from '@angular/router';
+import { toSignal } from '@angular/core/rxjs-interop';
+import { filter, startWith } from 'rxjs';
 import { LanguageService } from './language.service';
+import { BreadcrumbData } from 'app/app.routes';
 
-export interface BreadcrumbConfig {
-  parentLabel?: string;
-  parentRoute?: string;
-  currentLabel: string;
-  currentRoute?: string;
-}
-
-type LabelResolver = string | (() => string | null | undefined);
-
-@Injectable({
-  providedIn: 'root'
-})
+@Injectable({ providedIn: 'root' })
 export class BreadcrumbService {
   private readonly transloco = inject(TranslocoService);
+  private readonly router = inject(Router);
+  private readonly activatedRoute = inject(ActivatedRoute);
   private readonly lang = inject(LanguageService);
 
-  /**
-   * Crée les items du breadcrumb de manière réactive
-   * @param config Configuration du breadcrumb
-   * @returns Signal des items du breadcrumb
-   */
-  createBreadcrumbItems(config: BreadcrumbConfig): Signal<MenuItem[]> {
-    return this.buildBreadcrumb(config, () => this.transloco.translate(config.currentLabel));
+  private readonly navigationEnd = toSignal(
+    this.router.events.pipe(
+      filter((e): e is NavigationEnd => e instanceof NavigationEnd),
+      startWith(null)
+    )
+  );
+
+  private readonly activeLang = toSignal(
+    this.transloco.langChanges$.pipe(
+      startWith(this.transloco.getActiveLang())
+    )
+  );
+
+  readonly breadcrumbItems = computed<MenuItem[]>(() => {
+    this.navigationEnd();
+    this.activeLang();
+
+    const route = this.getLeafRoute(this.activatedRoute);
+    const breadcrumb = route.snapshot.data['breadcrumb'] as BreadcrumbData | undefined;
+    if (!breadcrumb) return [];
+
+    const lang = this.lang.getCurrentLanguage();
+
+    const parentItems: MenuItem[] = breadcrumb.parent
+      ? [{
+          label: this.transloco.translate(breadcrumb.parent.label),
+          routerLink: [`/${lang}${breadcrumb.parent.path}`]
+        }]
+      : [];
+
+    const label = this.transloco.translate(breadcrumb.label as string);
+
+    return [...parentItems, { label }];
+  });
+
+  private getLeafRoute(route: ActivatedRoute): ActivatedRoute {
+    while (route.firstChild) route = route.firstChild;
+    return route;
   }
 
-  /**
-   * Crée les items du breadcrumb avec un label dynamique
-   * @param config Configuration du breadcrumb
-   * @param dynamicLabel Fonction retournant le label dynamique
-   * @param fallbackLabelKey Clé de traduction de fallback si le label dynamique est null
-   * @returns Signal des items du breadcrumb
-   */
-  createBreadcrumbItemsWithDynamicLabel(
-    config: Omit<BreadcrumbConfig, 'currentLabel'>,
-    dynamicLabel: () => string | null | undefined,
-    fallbackLabelKey?: string
-  ): Signal<MenuItem[]> {
-    return this.buildBreadcrumb(config, () => {
-      const label = dynamicLabel();
-      return label || (fallbackLabelKey ? this.transloco.translate(fallbackLabelKey) : '...');
-    });
-  }
-
-  /**
-   * Crée l'item home du breadcrumb
-   * @returns Item home du breadcrumb
-   */
-  createBreadcrumbHome(): MenuItem {
-    return {
-      icon: 'pi pi-home',
-      routerLink: `/${this.lang.getCurrentLanguage()}/dashboard`
-    };
-  }
-
-  /**
-   * Méthode privée pour construire les items du breadcrumb
-   * @param config Configuration du breadcrumb
-   * @param currentLabelResolver Fonction qui résout le label de l'item courant
-   * @returns Signal des items du breadcrumb
-   */
-  private buildBreadcrumb(
-    config: Partial<BreadcrumbConfig>,
-    currentLabelResolver: () => string
-  ): Signal<MenuItem[]> {
-    return computed<MenuItem[]>(() => {
-      // Force reactivity to active language
-      this.transloco.getActiveLang();
-      const currentLang = this.lang.getCurrentLanguage();
-      const items: MenuItem[] = [];
-
-      // Ajouter le parent s'il existe
-      if (config.parentLabel) {
-        items.push({
-          label: this.transloco.translate(config.parentLabel),
-          routerLink: config.parentRoute ? `/${currentLang}${config.parentRoute}` : undefined
-        });
-      }
-
-      // Ajouter l'item courant
-      items.push({
-        label: currentLabelResolver(),
-        routerLink: config.currentRoute ? `/${currentLang}${config.currentRoute}` : undefined
-      });
-
-      return items;
-    });
-  }
+  readonly breadcrumbHome = computed(() => ({
+    icon: 'pi pi-home',
+    routerLink: `/${this.lang.getCurrentLanguage()}/dashboard`
+  }));
 }

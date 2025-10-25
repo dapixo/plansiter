@@ -11,13 +11,11 @@ import { CommonModule } from '@angular/common';
 import { FormBuilder, ReactiveFormsModule, Validators } from '@angular/forms';
 import { ActivatedRoute, RouterModule } from '@angular/router';
 import { InputTextModule } from 'primeng/inputtext';
-import { BreadcrumbModule } from 'primeng/breadcrumb';
 import { MessageModule } from 'primeng/message';
 import { TranslocoModule } from '@jsverse/transloco';
 import { TextareaModule } from 'primeng/textarea';
 import { ClientStore } from '@application/stores/client.store';
 import { LanguageService } from '@application/services/language.service';
-import { BreadcrumbService } from '@application/services';
 import { SubjectsManagerComponent } from '@ui/components/subjects-manager/subjects-manager.component';
 
 @Component({
@@ -29,7 +27,6 @@ import { SubjectsManagerComponent } from '@ui/components/subjects-manager/subjec
     RouterModule,
     InputTextModule,
     TextareaModule,
-    BreadcrumbModule,
     MessageModule,
     TranslocoModule,
     SubjectsManagerComponent,
@@ -42,37 +39,21 @@ export class ClientDetailPageComponent {
   private readonly fb = inject(FormBuilder);
   private readonly route = inject(ActivatedRoute);
   private readonly store = inject(ClientStore);
-  private readonly breadcrumbService = inject(BreadcrumbService);
   protected readonly lang = inject(LanguageService);
 
-  /** 🧭 Breadcrumbs */
-  protected readonly breadcrumbItems = this.breadcrumbService.createBreadcrumbItemsWithDynamicLabel(
-    {
-      parentLabel: 'clients.title',
-      parentRoute: '/dashboard/clients',
-    },
-    () => this.client()?.name,
-    'clients.detailClient'
-  );
-  protected readonly breadcrumbHome = this.breadcrumbService.createBreadcrumbHome();
-
-  /** 🔗 Router params */
   private readonly paramMap = toSignal(this.route.paramMap);
   protected readonly clientId = computed(() => this.paramMap()?.get('id'));
   protected readonly client = computed(
     () => this.store.clients().find((c) => c.id === this.clientId()) ?? null
   );
 
-  /** ⚙️ UI State */
   protected readonly isReady = computed(() => !!this.client());
   protected readonly loading = this.store.loading;
   protected readonly error = this.store.error;
 
-  /** ✏️ Editing states */
   protected readonly editingInfo = signal(false);
   protected readonly editingNotes = signal(false);
 
-  /** 🧾 Forms */
   protected readonly infoForm = this.fb.group({
     name: this.fb.nonNullable.control('', Validators.required),
     address: this.fb.nonNullable.control('', Validators.required),
@@ -86,7 +67,7 @@ export class ClientDetailPageComponent {
     notes: this.fb.nonNullable.control(''),
   });
 
-  /** 🧠 Effect : patch form when client changes */
+
   private readonly patchEffect = effect(() => {
     const client = this.client();
     if (!client) return;
@@ -102,7 +83,6 @@ export class ClientDetailPageComponent {
     this.notesForm.patchValue({ notes: client.notes ?? '' });
   });
 
-  /** 🅰️ Initials helper */
   protected getInitials(): string {
     const name = this.client()?.name;
     return name
@@ -114,7 +94,6 @@ export class ClientDetailPageComponent {
       : '';
   }
 
-  /** ✏️ Info edition */
   protected onEditInfo(): void {
     this.editingInfo.set(true);
   }
@@ -158,7 +137,6 @@ export class ClientDetailPageComponent {
     this.editingInfo.set(false);
   }
 
-  /** 📝 Notes edition */
   protected onEditNotes(): void {
     this.editingNotes.set(true);
   }

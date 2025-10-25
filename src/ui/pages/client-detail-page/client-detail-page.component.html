@@ -3,11 +3,6 @@
   aria-labelledby="client-detail-title"
   [attr.aria-busy]="!isReady() ? 'true' : null"
 >
-  <!-- Breadcrumb -->
-  <nav aria-label="breadcrumb" class="mb-6">
-    <p-breadcrumb [model]="breadcrumbItems()" [home]="breadcrumbHome" />
-  </nav>
-
   <!-- Header -->
   <header class="mb-8">
     <h1 id="client-detail-title" class="text-gray-600 text-lg">

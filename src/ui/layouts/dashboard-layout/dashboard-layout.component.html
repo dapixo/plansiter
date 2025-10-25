@@ -66,21 +66,33 @@
   <div class="flex flex-col flex-1 overflow-hidden">
     <!-- Topbar -->
     <header class="bg-white border-b border-gray-200">
-      <div class="flex items-center justify-between px-6 h-16">
-        <!-- Bouton toggle sidebar à gauche -->
-        <button
-          type="button"
-          (click)="toggleSidebar()"
-          class="p-2 hover:bg-gray-100 rounded-lg transition-colors"
-          [attr.aria-label]="isCollapsed() ? ('sidebar.expandMenu' | transloco) : ('sidebar.collapseMenu' | transloco)"
-          [attr.aria-expanded]="!isCollapsed()"
-          aria-controls="main-navigation"
-        >
-          <i class="pi pi-bars text-gray-600 text-xl" aria-hidden="true"></i>
-        </button>
+      <div class="flex items-center justify-between px-6 h-16 gap-4">
+        <!-- Bouton toggle sidebar + Breadcrumb -->
+        <div class="flex items-center gap-4 min-w-0 flex-1">
+          <!-- Bouton toggle sidebar -->
+          <button
+            type="button"
+            (click)="toggleSidebar()"
+            class="p-2 hover:bg-gray-100 rounded-lg transition-colors flex-shrink-0"
+            [attr.aria-label]="isCollapsed() ? ('sidebar.expandMenu' | transloco) : ('sidebar.collapseMenu' | transloco)"
+            [attr.aria-expanded]="!isCollapsed()"
+            aria-controls="main-navigation"
+          >
+            <i class="pi pi-bars text-gray-600 text-xl" aria-hidden="true"></i>
+          </button>
+
+          <!-- Breadcrumb -->
+          @if (breadcrumbItems().length > 0) {
+          <p-breadcrumb
+            [model]="breadcrumbItems()"
+            [home]="breadcrumbHome()"
+            styleClass="flex-1 min-w-0"
+          />
+          }
+        </div>
 
         <!-- Actions à droite -->
-        <div class="flex items-center gap-3">
+        <div class="flex items-center gap-3 flex-shrink-0">
           <!-- Notifications -->
           <button
             type="button"
