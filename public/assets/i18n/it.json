@@ -249,5 +249,17 @@
       "notes": "Note",
       "notesPlaceholder": "Informazioni aggiuntive..."
     }
+  },
+  "account": {
+    "title": "Il mio account",
+    "subtitle": "Gestisci le tue informazioni personali",
+    "personalInformation": "Informazioni personali",
+    "email": "Indirizzo email",
+    "emailRequired": "L'indirizzo email è obbligatorio",
+    "name": "Nome completo",
+    "nameRequired": "Il nome è obbligatorio",
+    "memberSince": "Membro dal",
+    "updateSuccess": "Le tue informazioni sono state aggiornate con successo",
+    "updateError": "Si è verificato un errore durante l'aggiornamento"
   }
 }

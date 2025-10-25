@@ -90,19 +90,22 @@
             <i class="pi pi-bell text-gray-600 text-xl" aria-hidden="true"></i>
           </button>
 
-          <div
-            class="flex items-center gap-2 px-2 py-1.5 rounded-lg hover:bg-gray-50 transition-colors"
+          <button
+            type="button"
+            [routerLink]="['account']"
+            class="flex items-center gap-2 px-2 py-1.5 rounded-lg hover:bg-gray-50 transition-colors cursor-pointer"
+            [attr.aria-label]="'account.title' | transloco"
           >
             <p-avatar
-              [label]="getUserInitials()"
+              icon="pi pi-user"
               shape="circle"
               class="bg-gradient-to-br from-indigo-600 to-purple-600 text-white text-sm"
               size="normal"
             />
             <span class="hidden sm:block text-sm font-medium text-gray-900 max-w-[100px] truncate">
-              {{ getUserDisplayName() }}
+              {{ userDisplayName() }}
             </span>
-          </div>
+          </button>
         </div>
       </div>
     </header>

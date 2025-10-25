@@ -15,11 +15,5 @@ export class DashboardComponent {
   private authService = inject(AuthService);
 
   readonly currentUser = this.authService.currentUser;
-
-  getUserDisplayName(): string {
-    const email = this.currentUser()?.email;
-    if (!email) return 'User';
-    const parts = email.split('@');
-    return parts[0] ?? 'User';
-  }
+  readonly userDisplayName = this.authService.userDisplayName;
 }

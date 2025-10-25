@@ -1,0 +1,158 @@
+
+  <section
+    class="p-8 bg-gray-50 min-h-full"
+    aria-labelledby="account-section-title"
+  >
+    <!-- Toast notifications -->
+    <p-toast/>
+
+    <header class="mb-8">
+      <h2 id="account-section-title" class="text-4xl font-bold mb-2">
+        <span
+          class="bg-gradient-to-r from-indigo-600 to-purple-600 bg-clip-text text-transparent"
+        >
+          {{ 'account.title' | transloco }}
+        </span>
+      </h2>
+      <p class="text-gray-700 text-lg">
+        {{ 'account.subtitle' | transloco }}
+      </p>
+    </header>
+
+    <div class="max-w-2xl space-y-6">
+      <!-- Member Since Info -->
+      <aside
+        class="bg-white rounded-xl border border-gray-200 p-6"
+        aria-label="{{ 'account.memberSince' | transloco }}"
+      >
+        <div class="flex items-center gap-3">
+          <i
+            class="pi pi-calendar text-indigo-600 text-xl"
+            aria-hidden="true"
+          ></i>
+          <div>
+            <p class="text-sm text-gray-600">
+              {{ 'account.memberSince' | transloco }}
+            </p>
+            <p class="text-lg font-semibold text-gray-900">
+              {{ memberSince() }}
+            </p>
+          </div>
+        </div>
+      </aside>
+
+      <!-- Account Info Card -->
+      <article
+        class="bg-white rounded-xl border border-gray-200 p-8"
+        aria-labelledby="personal-info-heading"
+      >
+        <!-- Card Header -->
+        <header class="mb-6 pb-4 border-b border-gray-100">
+          <h3
+            id="personal-info-heading"
+            class="text-xl font-semibold text-gray-900"
+          >
+            {{ 'account.personalInformation' | transloco }}
+          </h3>
+        </header>
+
+        <!-- Form -->
+        <form
+          [formGroup]="accountForm"
+          (ngSubmit)="onSubmit()"
+          class="space-y-6"
+          novalidate
+        >
+          <!-- Email -->
+          <div>
+            <label
+              for="email"
+              class="block text-sm font-medium text-gray-700 mb-2"
+            >
+              {{ 'account.email' | transloco }}
+              <span class="text-red-500">*</span>
+            </label>
+            <input
+              pInputText
+              type="email"
+              id="email"
+              formControlName="email"
+              class="w-full"
+              autocomplete="email"
+              required
+              [attr.aria-required]="true"
+              [attr.aria-invalid]="
+                accountForm.controls.email.invalid &&
+                accountForm.controls.email.touched
+              "
+              [attr.aria-describedby]="
+                accountForm.controls.email.invalid ? 'email-error' : null
+              "
+            />
+            @if (
+              accountForm.controls.email.invalid &&
+              accountForm.controls.email.touched
+            ) {
+              <small
+                id="email-error"
+                class="text-red-600 block mt-1"
+              >
+                {{ 'account.emailRequired' | transloco }}
+              </small>
+            }
+          </div>
+
+          <!-- Name -->
+          <div>
+            <label
+              for="name"
+              class="block text-sm font-medium text-gray-700 mb-2"
+            >
+              {{ 'account.name' | transloco }}
+              <span class="text-red-500">*</span>
+            </label>
+            <input
+              pInputText
+              type="text"
+              id="name"
+              formControlName="name"
+              class="w-full"
+              autocomplete="name"
+              required
+              [attr.aria-required]="true"
+              [attr.aria-invalid]="
+                accountForm.controls.name.invalid &&
+                accountForm.controls.name.touched
+              "
+              [attr.aria-describedby]="
+                accountForm.controls.name.invalid ? 'name-error' : null
+              "
+            />
+            @if (
+              accountForm.controls.name.invalid &&
+              accountForm.controls.name.touched
+            ) {
+              <small
+                id="name-error"
+                class="text-red-600 block mt-1"
+              >
+                {{ 'account.nameRequired' | transloco }}
+              </small>
+            }
+          </div>
+
+          <!-- Actions -->
+          <div class="flex justify-end gap-3 pt-4 border-t border-gray-200">
+            <app-action-button
+              type="submit"
+              labelKey="common.save"
+              icon="pi-check"
+              [loading]="isLoading()"
+              ariaLabelKey="common.save"
+            />
+          </div>
+        </form>
+      </article>
+    </div>
+  </section>
+

@@ -82,7 +82,7 @@ export const routes: Routes = [
           {
             path: 'account',
             loadComponent: () =>
-              import('../ui/pages/dashboard/dashboard.component').then(m => m.DashboardComponent) // Placeholder
+              import('../ui/pages/account/account.component').then(m => m.AccountComponent)
           }
         ]
       },

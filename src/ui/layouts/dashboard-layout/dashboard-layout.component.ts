@@ -29,6 +29,7 @@ export class DashboardLayoutComponent {
   private destroyRef = inject(DestroyRef);
 
   readonly currentUser = this.authService.currentUser;
+  readonly userDisplayName = this.authService.userDisplayName;
   readonly isCollapsed = signal(false);
 
   protected readonly menuItems = [
@@ -43,18 +44,6 @@ export class DashboardLayoutComponent {
     ).subscribe();
   }
 
-  protected getUserInitials(): string {
-    const email = this.currentUser()?.email;
-    if (!email) return 'U';
-    return email.charAt(0).toUpperCase();
-  }
-
-  protected getUserDisplayName(): string {
-    const email = this.currentUser()?.email;
-    if (!email) return 'User';
-    const parts = email.split('@');
-    return parts[0] ?? 'User';
-  }
 
   protected toggleSidebar(): void {
     this.isCollapsed.update(value => !value);

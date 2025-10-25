@@ -249,5 +249,17 @@
       "notes": "Notas",
       "notesPlaceholder": "Información adicional..."
     }
+  },
+  "account": {
+    "title": "Mi cuenta",
+    "subtitle": "Gestiona tu información personal",
+    "personalInformation": "Información personal",
+    "email": "Dirección de correo electrónico",
+    "emailRequired": "La dirección de correo electrónico es obligatoria",
+    "name": "Nombre completo",
+    "nameRequired": "El nombre es obligatorio",
+    "memberSince": "Miembro desde",
+    "updateSuccess": "Tu información ha sido actualizada correctamente",
+    "updateError": "Se ha producido un error al actualizar"
   }
 }

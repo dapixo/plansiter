@@ -1,28 +1,31 @@
 import { Injectable } from '@angular/core';
-import { createClient, SupabaseClient, AuthOtpResponse, User, Session, AuthError } from '@supabase/supabase-js';
+import {
+  createClient,
+  SupabaseClient,
+  AuthOtpResponse,
+  User,
+  Session,
+  AuthError,
+} from '@supabase/supabase-js';
 import { from, Observable, throwError } from 'rxjs';
 import { map, catchError } from 'rxjs/operators';
 import { environment } from '../environment/environment';
 
 @Injectable({
-  providedIn: 'root'
+  providedIn: 'root',
 })
 export class SupabaseService {
   private readonly supabaseClient: SupabaseClient;
 
   constructor() {
-    this.supabaseClient = createClient(
-      environment.supabase.url,
-      environment.supabase.anonKey,
-      {
-        auth: {
-          autoRefreshToken: true,
-          persistSession: true,
-          detectSessionInUrl: true,
-          flowType: 'pkce'
-        }
-      }
-    );
+    this.supabaseClient = createClient(environment.supabase.url, environment.supabase.anonKey, {
+      auth: {
+        autoRefreshToken: true,
+        persistSession: true,
+        detectSessionInUrl: true,
+        flowType: 'pkce',
+      },
+    });
   }
 
   get client(): SupabaseClient {
@@ -31,35 +34,35 @@ export class SupabaseService {
 
   // Authentication avec OTP
   signInWithOtp(email: string): Observable<AuthOtpResponse> {
+    const name = (email.split('@')[0] || '').trim();
+
     return from(
       this.supabaseClient.auth.signInWithOtp({
         email,
         options: {
-          shouldCreateUser: true
-        }
+          shouldCreateUser: true,
+          data: { full_name: name },
+        },
       })
-    ).pipe(
-      map(response => {
-        if (response.error) throw response.error;
-        return response;
-      }),
-      catchError((error: AuthError) => throwError(() => error))
-    );
+    ).pipe(catchError((error: AuthError) => throwError(() => error)));
   }
 
-  verifyOtp(email: string, token: string): Observable<{ user: User | null; session: Session | null }> {
+  verifyOtp(
+    email: string,
+    token: string
+  ): Observable<{ user: User | null; session: Session | null }> {
     return from(
       this.supabaseClient.auth.verifyOtp({
         email,
         token,
-        type: 'email'
+        type: 'email',
       })
     ).pipe(
-      map(response => {
+      map((response) => {
         if (response.error) throw response.error;
         return {
           user: response.data.user,
-          session: response.data.session
+          session: response.data.session,
         };
       }),
       catchError((error: AuthError) => throwError(() => error))
@@ -68,7 +71,7 @@ export class SupabaseService {
 
   signOut(): Observable<void> {
     return from(this.supabaseClient.auth.signOut()).pipe(
-      map(response => {
+      map((response) => {
         if (response.error) throw response.error;
       }),
       catchError((error: AuthError) => throwError(() => error))
@@ -77,7 +80,7 @@ export class SupabaseService {
 
   getCurrentUser(): Observable<User | null> {
     return from(this.supabaseClient.auth.getUser()).pipe(
-      map(response => {
+      map((response) => {
         if (response.error) throw response.error;
         return response.data.user;
       }),
@@ -87,7 +90,7 @@ export class SupabaseService {
 
   getSession(): Observable<Session | null> {
     return from(this.supabaseClient.auth.getSession()).pipe(
-      map(response => {
+      map((response) => {
         if (response.error) throw response.error;
         return response.data.session;
       }),
@@ -95,11 +98,19 @@ export class SupabaseService {
     );
   }
 
+  updateUser(updates: { email?: string; data?: { [key: string]: any } }): Observable<User> {
+    return from(this.supabaseClient.auth.updateUser(updates)).pipe(
+      map((response) => {
+        if (response.error) throw response.error;
+        if (!response.data.user) throw new Error('No user returned');
+        return response.data.user;
+      }),
+      catchError((error: AuthError) => throwError(() => error))
+    );
+  }
+
   // Méthode générique pour les requêtes Supabase
-  from$<T = any>(
-    table: string,
-    queryFn: (query: any) => any
-  ): Observable<{ data: T; error: any }> {
+  from$<T = any>(table: string, queryFn: (query: any) => any): Observable<{ data: T; error: any }> {
     return from(queryFn(this.supabaseClient.from(table))) as Observable<{ data: T; error: any }>;
   }
 }

@@ -291,8 +291,15 @@ Le projet suit une **architecture hexagonale (Clean Architecture)** avec sépara
 ## Entités métier
 
 ### User
-- Représente un utilisateur (peut être client ou baby-sitter)
-- Propriétés : id, email, firstName, lastName, phone, role, createdAt, updatedAt
+- **Important** : On utilise directement le type `User` de Supabase Auth (`@supabase/supabase-js`)
+- Pas de table `users` custom, pas de UserRepository ni UserService
+- Les informations utilisateur sont gérées via `user_metadata` dans Supabase Auth
+- Principales propriétés utilisées :
+  - `id` : UUID de l'utilisateur
+  - `email` : Email de l'utilisateur
+  - `user_metadata.full_name` : Nom complet (initialisé automatiquement depuis l'email lors du premier login)
+  - `created_at` : Date de création du compte
+- AuthService expose un `userDisplayName` computed signal pour l'affichage avec fallback
 
 ### Client
 - Information client liée à un utilisateur
@@ -335,11 +342,11 @@ Le projet suit une **architecture hexagonale (Clean Architecture)** avec sépara
 
 ## État actuel
 - Architecture mise en place
-- Entités et repositories définis
-- Services de base créés (UserService, BookingService, AuthService)
+- Entités et repositories définis (Client, Subject, Service, Booking)
+- Services de base créés (AuthService, BookingService, ClientManagementService, LanguageService, BreadcrumbService)
 - Use cases de base implémentés
-- Authentification complète avec OTP (login + guards)
+- Authentification complète avec OTP (login + guards) utilisant directement Supabase Auth
 - Internationalisation (i18n) complète avec Transloco (fr, en, es, it)
-- Pages créées : Login, Dashboard
-- Guards : authGuard (routes protégées), guestGuard (redirection si authentifié)
+- Pages créées : Login, Dashboard, Account, Planning, Clients, Client Detail, Client Form
+- Guards : authGuard (routes protégées), guestGuard (redirection si authentifié), languageGuard
 - Application démarre sans erreur sur port 4200

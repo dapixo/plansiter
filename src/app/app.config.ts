@@ -44,14 +44,12 @@ import { ServiceStore } from '@application/stores/service.store';
 
 // Supabase repositories
 import {
-  USER_REPOSITORY,
   CLIENT_REPOSITORY,
   SERVICE_REPOSITORY,
   SUBJECT_REPOSITORY,
   BOOKING_REPOSITORY
 } from '@domain/repositories';
 import {
-  UserSupabaseRepository,
   ClientSupabaseRepository,
   ServiceSupabaseRepository,
   SubjectSupabaseRepository,
@@ -86,7 +84,6 @@ export const appConfig: ApplicationConfig = {
     ServiceStore,
     BookingStore,
     // Dependency Injection for repositories
-    { provide: USER_REPOSITORY, useClass: UserSupabaseRepository },
     { provide: CLIENT_REPOSITORY, useClass: ClientSupabaseRepository },
     { provide: SERVICE_REPOSITORY, useClass: ServiceSupabaseRepository },
     { provide: SUBJECT_REPOSITORY, useClass: SubjectSupabaseRepository },

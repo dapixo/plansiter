@@ -174,8 +174,8 @@ export class ClientStore {
 │  │  stores/                    services/                           │   │
 │  │  ┌──────────────┐          ┌──────────────┐                    │   │
 │  │  │ ClientStore  │          │ AuthService  │                    │   │
-│  │  │ (signals)    │          │ UserService  │                    │   │
-│  │  │ ServiceStore │          │ LanguageServ │                    │   │
+│  │  │ (signals)    │          │ LanguageServ │                    │   │
+│  │  │ ServiceStore │          │ BreadcrumbSrv│                    │   │
 │  │  │ SubjectStore │          └──────┬───────┘                    │   │
 │  │  └──────┬───────┘                 │                            │   │
 │  │         │                         │                            │   │
@@ -199,9 +199,10 @@ export class ClientStore {
 │  │  │ Client       │            │ IClientRepository   │            │ │
 │  │  │ Service      │            │ (interface)         │            │ │
 │  │  │ Subject      │            │ + TOKEN             │            │ │
-│  │  │ User         │            │                     │            │ │
-│  │  │ Booking      │            │ IServiceRepository  │            │ │
-│  │  └──────────────┘            │ ISubjectRepository  │            │ │
+│  │  │ Booking      │            │                     │            │ │
+│  │  │ (User via    │            │ IServiceRepository  │            │ │
+│  │  │  Supabase)   │            │ ISubjectRepository  │            │ │
+│  │  └──────────────┘            │ IBookingRepository  │            │ │
 │  │                              └─────────────────────┘            │ │
 │  │                                                                  │ │
 │  │  use-cases/ (optionnel pour logique complexe)                   │ │
@@ -332,22 +333,33 @@ export const ClientStore = signalStore(
 #### 2b. `application/services/`
 
 **Services Angular classiques** :
-- **AuthService** : Authentification Supabase
-- **UserService** : Gestion utilisateurs
+- **AuthService** : Authentification Supabase (gère directement les Users via Supabase Auth, pas de UserRepository)
 - **LanguageService** : Internationalisation
+- **BreadcrumbService** : Navigation fil d'Ariane
+- **ClientManagementService** : Gestion des clients
 
 **Exemple** :
 ```typescript
 // src/application/services/auth.service.ts
 @Injectable({ providedIn: 'root' })
 export class AuthService {
-  private userRepo = inject<IUserRepository>(USER_REPOSITORY);
+  private supabase = inject(SupabaseService);
 
-  currentUser = signal<User | null>(null);
-  isAuthenticated = computed(() => this.currentUser() !== null);
+  private currentUserSignal = signal<User | null>(null);
+  readonly currentUser = this.currentUserSignal.asReadonly();
+  readonly isAuthenticated = computed(() => this.currentUser() !== null);
 
-  signOut(): void {
-    // Logique de déconnexion
+  // Computed signal pour l'affichage du nom avec fallback
+  readonly userDisplayName = computed(() => {
+    const user = this.currentUser();
+    if (!user) return 'User';
+    return user.user_metadata?.['full_name'] || user.email?.split('@')[0] || 'User';
+  });
+
+  signOut(): Observable<void> {
+    return this.supabase.signOut().pipe(
+      tap(() => this.updateAuthState(null))
+    );
   }
 }
 ```
@@ -374,9 +386,10 @@ Cette couche est le **cœur** de l'application. Elle ne contient que du TypeScri
 #### 3a. `domain/entities/`
 
 **Interfaces des entités métier** :
-- **Client**, **Service**, **Subject**, **User**, **Booking**
+- **Client**, **Service**, **Subject**, **Booking**
 - Définissent la structure des données métier
 - TypeScript pur (pas d'Angular, pas de décorateurs)
+- **Note** : Pas d'entité User custom - on utilise le type `User` de `@supabase/supabase-js`
 
 **Exemple** :
 ```typescript
@@ -643,8 +656,9 @@ export const appConfig: ApplicationConfig = {
     { provide: CLIENT_REPOSITORY, useClass: ClientSupabaseRepository },
     { provide: SERVICE_REPOSITORY, useClass: ServiceSupabaseRepository },
     { provide: SUBJECT_REPOSITORY, useClass: SubjectSupabaseRepository },
-    { provide: USER_REPOSITORY, useClass: UserSupabaseRepository },
     { provide: BOOKING_REPOSITORY, useClass: BookingSupabaseRepository },
+
+    // Note: Pas de USER_REPOSITORY - on utilise directement Supabase Auth via AuthService
   ]
 };
 ```
