@@ -122,6 +122,7 @@
           [label]="'booking.form.addSubject' | transloco"
           severity="secondary"
           [outlined]="true"
+          [disabled]="isAddSubjectDisabled()"
           (click)="subjectDialogVisible.set(true)"
           [attr.aria-label]="'booking.form.addSubject' | transloco"
         ></button>
@@ -152,8 +153,9 @@
           optionLabel="label"
           optionValue="value"
           [placeholder]="'booking.form.selectService' | transloco"
+          [disabled]="isServiceSelectDisabled()"
           [showClear]="true"
-          styleClass="flex-1"
+          class="flex-1"
           [attr.aria-invalid]="
             bookingForm.controls.serviceId.invalid &&
             bookingForm.controls.serviceId.touched &&
@@ -174,11 +176,20 @@
           [label]="'booking.form.addService' | transloco"
           severity="secondary"
           [outlined]="true"
+          [disabled]="isAddServiceDisabled()"
           (click)="serviceDialogVisible.set(true)"
           [attr.aria-label]="'booking.form.addService' | transloco"
         ></button>
       </div>
-      @if (bookingForm.controls.serviceId.invalid && bookingForm.controls.serviceId.touched &&
+      @if (isServiceSelectDisabled()) {
+      <small class="text-gray-500">
+        {{ 'booking.form.selectSubjectFirst' | transloco }}
+      </small>
+      } @else if (serviceOptions().length === 0) {
+      <small class="text-amber-600">
+        {{ 'booking.form.noMatchingServices' | transloco }}
+      </small>
+      } @else if (bookingForm.controls.serviceId.invalid && bookingForm.controls.serviceId.touched &&
       bookingForm.controls.serviceId.dirty) {
       <p-message id="serviceId-error" severity="error" variant="simple" role="alert">
         {{ 'booking.form.serviceRequired' | transloco }}
@@ -272,9 +283,11 @@
   [(subjectDialogVisible)]="subjectDialogVisible"
   [clientId]="bookingForm.controls.clientId.value || undefined"
   (subjectSaved)="onSubjectCreated()"
+  (subjectCreated)="onSubjectCreated()"
 />
 
 <app-service-form-dialog
   [(serviceDialogVisible)]="serviceDialogVisible"
+  [prefilledType]="serviceDialogPrefilledType()"
   (serviceCreated)="onServiceCreated($event)"
 />

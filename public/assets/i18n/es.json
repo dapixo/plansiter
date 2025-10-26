@@ -8,9 +8,17 @@
     "save": "Guardar",
     "back": "Volver",
     "close": "Cerrar",
+    "delete": "Eliminar",
     "cancelAction": "Cancelar la creación o modificación",
     "saveService": "Guardar la información del servicio",
-    "saveClient": "Guardar la información del cliente"
+    "saveClient": "Guardar la información del cliente",
+    "careTypes": {
+      "pet": "Cuidado de mascotas",
+      "plant": "Cuidado de plantas",
+      "child": "Cuidado de niños",
+      "house": "Cuidado de casa",
+      "other": "Otro"
+    }
   },
   "auth": {
     "login": {
@@ -115,6 +123,8 @@
       "selectService": "Seleccione un servicio",
       "serviceRequired": "El servicio es obligatorio",
       "addService": "Añadir",
+      "selectSubjectFirst": "Por favor, seleccione primero un sujeto",
+      "noMatchingServices": "Ningún servicio coincide con el tipo de sujeto seleccionado",
       "dateRange": "Período de reserva",
       "selectDateRange": "Seleccione la fecha de inicio y fin",
       "dateRangeRequired": "El período de reserva es obligatorio",
@@ -134,6 +144,7 @@
     "deleteAccept": "Eliminar",
     "editService": "Editar servicio",
     "createService": "Crear servicio",
+    "createServiceForType": "Añadir servicio de {{type}}",
     "noServices": "No hay servicios disponibles",
     "pricePerVisit": "{{price}}€/visita",
     "pricePerDay": "{{price}}€/día",
@@ -162,10 +173,10 @@
       "priceAriaLabel": "Monto del servicio en euros"
     },
     "types": {
-      "petSitting": "Cuidado de mascotas",
-      "plantSitting": "Cuidado de plantas",
-      "babysitting": "Niñera",
-      "houseSitting": "Cuidado de casa",
+      "pet": "Cuidado de mascotas",
+      "plant": "Cuidado de plantas",
+      "child": "Niñera",
+      "house": "Cuidado de casa",
       "other": "Otro"
     }
   },
@@ -224,6 +235,10 @@
     "editSubject": "Editar sujeto",
     "edit": "Editar",
     "delete": "Eliminar",
+    "deleteConfirmTitle": "Confirmar eliminación",
+    "deleteConfirmMessage": "¿Está seguro de que desea eliminar este sujeto?",
+    "list": "Lista de sujetos",
+    "managerTitle": "Gestión de sujetos",
     "types": {
       "pet": "Mascota",
       "plant": "Planta",
@@ -260,6 +275,18 @@
     "nameRequired": "El nombre es obligatorio",
     "memberSince": "Miembro desde",
     "updateSuccess": "Tu información ha sido actualizada correctamente",
-    "updateError": "Se ha producido un error al actualizar"
+    "updateError": "Se ha producido un error al actualizar",
+    "preferences": "Preferencias de cuidado",
+    "careTypes": "Tipos de cuidado que ofreces",
+    "careTypesHelp": "Selecciona al menos un tipo de cuidado que desees ofrecer",
+    "careTypesRequired": "Por favor selecciona al menos un tipo de cuidado",
+    "noCareTypesConfigured": "No hay tipos de cuidado configurados. Por favor configura tus preferencias en tu cuenta.",
+    "careTypeOptions": {
+      "pet": "Cuidado de mascotas",
+      "plant": "Cuidado de plantas",
+      "child": "Niñera / Cuidado de niños",
+      "house": "Cuidado de casa",
+      "other": "Otro"
+    }
   }
 }

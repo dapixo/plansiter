@@ -8,7 +8,9 @@ import {
   ChangeDetectionStrategy,
 } from '@angular/core';
 import { CommonModule } from '@angular/common';
-import { TranslocoModule } from '@jsverse/transloco';
+import { TranslocoModule, TranslocoService } from '@jsverse/transloco';
+import { ConfirmDialogModule } from 'primeng/confirmdialog';
+import { ConfirmationService } from 'primeng/api';
 import { Subject } from '@domain/entities';
 import { ClientStore } from '@application/stores/client.store';
 import { TempSubject } from '@application/services/client-management.service';
@@ -22,10 +24,12 @@ import { ActionButtonComponent } from '../action-button/action-button.component'
   imports: [
     CommonModule,
     TranslocoModule,
+    ConfirmDialogModule,
     SubjectCardComponent,
     SubjectFormDialogComponent,
     ActionButtonComponent
   ],
+  providers: [ConfirmationService],
   changeDetection: ChangeDetectionStrategy.OnPush,
   template: `
     <section class="flex flex-col gap-4" aria-label="{{ 'subjects.managerTitle' | transloco }}">
@@ -68,11 +72,16 @@ import { ActionButtonComponent } from '../action-button/action-button.component'
         [subject]="editingSubject()"
         (subjectSaved)="handleSubjectSaved($event)"
       />
+
+      <!-- Modale confirmation suppression -->
+      <p-confirmDialog />
     </section>
   `,
 })
 export class SubjectsManagerComponent {
   private readonly store = inject(ClientStore);
+  private readonly confirmationService = inject(ConfirmationService);
+  private readonly transloco = inject(TranslocoService);
 
   // Inputs / Outputs
   readonly clientId = input<string | null>(null);
@@ -89,7 +98,7 @@ export class SubjectsManagerComponent {
   // Subjects affichés selon le mode
   protected readonly displayedSubjects = computed<Subject[] | TempSubject[]>(() => {
     return this.isEditMode()
-      ? this.store.subjects().filter(s => s.clientId === this.clientId())
+      ? this.store.subjects().filter(s => s.clientId === this.clientId() && !s.deletedAt)
       : this.tempSubjects();
   });
 
@@ -108,9 +117,20 @@ export class SubjectsManagerComponent {
 
   protected onDelete(index: number): void {
     const subject = this.displayedSubjects()[index];
-    this.isEditMode() && subject.id
-      ? this.deletePersistedSubject(subject.id)
-      : this.deleteTempSubject(index);
+
+    this.confirmationService.confirm({
+      message: `${this.transloco.translate('subjects.deleteConfirmMessage')} (${subject.name})`,
+      header: this.transloco.translate('subjects.deleteConfirmTitle'),
+      icon: 'pi pi-exclamation-triangle',
+      acceptLabel: this.transloco.translate('common.delete'),
+      rejectLabel: this.transloco.translate('common.cancel'),
+      acceptButtonStyleClass: 'p-button-danger',
+      accept: () => {
+        this.isEditMode() && subject.id
+          ? this.deletePersistedSubject(subject.id)
+          : this.deleteTempSubject(index);
+      }
+    });
   }
 
   // === Dialog Handlers ===

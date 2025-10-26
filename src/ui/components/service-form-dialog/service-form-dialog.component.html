@@ -11,7 +11,7 @@
   <ng-template pTemplate="header">
     <h2 class="text-2xl font-bold">
       <span class="bg-gradient-to-r from-indigo-600 to-purple-600 bg-clip-text text-transparent">
-        {{ 'services.createService' | transloco }}
+        {{ dialogTitle() }}
       </span>
     </h2>
   </ng-template>
@@ -56,7 +56,8 @@
       }
     </div>
 
-    <!-- Type -->
+    <!-- Type (hidden if prefilled) -->
+    @if (!isTypeSelectHidden()) {
     <div class="flex flex-col gap-2">
       <label for="service-type" class="font-medium text-gray-700 text-sm">
         {{ 'services.form.type' | transloco }}
@@ -65,7 +66,8 @@
       <p-select
         id="service-type"
         formControlName="type"
-        [options]="serviceTypes"
+        [options]="serviceTypes()"
+        optionLabel="labelKey"
         optionValue="value"
         [placeholder]="'services.form.selectType' | transloco"
         class="w-full"
@@ -90,6 +92,7 @@
       </p-message>
       }
     </div>
+    }
 
     <!-- Description -->
     <div class="flex flex-col gap-2">

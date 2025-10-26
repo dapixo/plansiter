@@ -1,9 +1,11 @@
 import { Injectable, inject } from '@angular/core';
 import { Observable } from 'rxjs';
 import { map } from 'rxjs/operators';
-import { Client, Subject, SubjectType } from '@domain/entities';
+import { Client, Subject } from '@domain/entities';
+import { CareType } from '@domain/entities/user-preferences.entity';
 import { IClientRepository } from '@domain/repositories';
 import { SupabaseService } from '../supabase.client';
+import { BaseSupabaseRepository } from './base-supabase.repository';
 
 type ClientRow = {
   id: string;
@@ -23,7 +25,7 @@ type ClientRow = {
 type SubjectRow = {
   id: string;
   client_id: string;
-  type: SubjectType;
+  type: CareType;
   name: string;
   breed: string | null;
   age: number | null;
@@ -44,7 +46,7 @@ export type ClientWithSubjects = {
 };
 
 @Injectable()
-export class ClientSupabaseRepository implements IClientRepository {
+export class ClientSupabaseRepository extends BaseSupabaseRepository implements IClientRepository {
   private supabase = inject(SupabaseService);
 
   // ---------- PUBLIC METHODS ---------- //
@@ -125,16 +127,6 @@ export class ClientSupabaseRepository implements IClientRepository {
       map(res => this.extractData<ClientRow[]>(res, false)),
       map(rows => rows.map(r => this.mapToEntity(r)))
     );
-  }
-
-  /** Generic Supabase response handler */
-  private extractData<T>(response: any, strict = true): T {
-    if (response.error) {
-      console.error('Supabase error:', response.error);
-      if (strict) throw response.error;
-      return Array.isArray(response.data) ? [] as any : null as any;
-    }
-    return response.data;
   }
 
   /** Map Supabase row → domain entity */

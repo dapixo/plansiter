@@ -78,13 +78,34 @@ export class ClientFormDialogComponent {
     notes: this.fb.control('', { nonNullable: true }),
   });
 
+  // -----------------------
   // Effects
-  private successEffect_ = effect(() => {
+  // -----------------------
+
+  // Track previous visible state to detect opening
+  private wasVisible = false;
+
+  // 1) Reset state when dialog opens
+  private readonly openEffect = effect(() => {
+    const isVisible = this.clientDialogVisible();
+
+    if (isVisible && !this.wasVisible) {
+      // Dialog just opened - reset store state
+      this.store.setError('');
+    }
+
+    this.wasVisible = isVisible;
+  });
+
+  // 2) Emit created client + close dialog after successful creation
+  private readonly successEffect = effect(() => {
     const success = this.success();
     const lastCreated = this.lastCreated();
+
     if (success && lastCreated) {
       this.clientCreated.emit(lastCreated);
       this.clientDialogVisible.set(false);
+      this.clientForm.reset();
     }
   });
 
@@ -114,7 +135,6 @@ export class ClientFormDialogComponent {
   protected onHide(event: boolean): void {
     if (!event) {
       this.clientDialogVisible.set(false);
-      this.clientForm.reset();
     }
   }
 }

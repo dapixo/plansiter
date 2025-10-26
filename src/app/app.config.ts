@@ -41,19 +41,22 @@ registerLocaleData(localeIt);
 // Stores
 import { ClientStore } from '@application/stores/client.store';
 import { ServiceStore } from '@application/stores/service.store';
+import { UserPreferencesStore } from '@application/stores/user-preferences.store';
 
 // Supabase repositories
 import {
   CLIENT_REPOSITORY,
   SERVICE_REPOSITORY,
   SUBJECT_REPOSITORY,
-  BOOKING_REPOSITORY
+  BOOKING_REPOSITORY,
+  USER_PREFERENCES_REPOSITORY
 } from '@domain/repositories';
 import {
   ClientSupabaseRepository,
   ServiceSupabaseRepository,
   SubjectSupabaseRepository,
-  BookingSupabaseRepository
+  BookingSupabaseRepository,
+  UserPreferencesSupabaseRepository
 } from '@infrastructure/supabase/repositories';
 import { BookingStore } from '@application/stores/booking.store';
 
@@ -83,10 +86,12 @@ export const appConfig: ApplicationConfig = {
     ClientStore,
     ServiceStore,
     BookingStore,
+    UserPreferencesStore,
     // Dependency Injection for repositories
     { provide: CLIENT_REPOSITORY, useClass: ClientSupabaseRepository },
     { provide: SERVICE_REPOSITORY, useClass: ServiceSupabaseRepository },
     { provide: SUBJECT_REPOSITORY, useClass: SubjectSupabaseRepository },
-    { provide: BOOKING_REPOSITORY, useClass: BookingSupabaseRepository }
+    { provide: BOOKING_REPOSITORY, useClass: BookingSupabaseRepository },
+    { provide: USER_PREFERENCES_REPOSITORY, useClass: UserPreferencesSupabaseRepository }
   ]
 };

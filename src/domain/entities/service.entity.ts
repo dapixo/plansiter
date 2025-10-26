@@ -1,4 +1,4 @@
-export type ServiceType = 'pet-sitting' | 'plant-sitting' | 'babysitting' | 'house-sitting' | 'other';
+import { CareType } from './user-preferences.entity';
 
 export type PriceType = 'per-visit' | 'per-day' | 'per-night';
 
@@ -6,7 +6,7 @@ export interface Service {
   id: string;
   userId: string;
   name: string;
-  type: ServiceType;
+  type: CareType;
   description?: string;
   pricePerVisit?: number;
   pricePerDay?: number;

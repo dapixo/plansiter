@@ -8,9 +8,17 @@
     "save": "Salva",
     "back": "Indietro",
     "close": "Chiudi",
+    "delete": "Elimina",
     "cancelAction": "Annulla la creazione o la modifica",
     "saveService": "Salva le informazioni del servizio",
-    "saveClient": "Salva le informazioni del cliente"
+    "saveClient": "Salva le informazioni del cliente",
+    "careTypes": {
+      "pet": "Cura degli animali",
+      "plant": "Cura delle piante",
+      "child": "Cura dei bambini",
+      "house": "Cura della casa",
+      "other": "Altro"
+    }
   },
   "auth": {
     "login": {
@@ -115,6 +123,8 @@
       "selectService": "Seleziona un servizio",
       "serviceRequired": "Il servizio è obbligatorio",
       "addService": "Aggiungi",
+      "selectSubjectFirst": "Seleziona prima un soggetto",
+      "noMatchingServices": "Nessun servizio corrisponde al tipo di soggetto selezionato",
       "dateRange": "Periodo di prenotazione",
       "selectDateRange": "Seleziona la data di inizio e fine",
       "dateRangeRequired": "Il periodo di prenotazione è obbligatorio",
@@ -134,6 +144,7 @@
     "deleteAccept": "Elimina",
     "editService": "Modifica servizio",
     "createService": "Crea servizio",
+    "createServiceForType": "Aggiungi servizio di {{type}}",
     "noServices": "Nessun servizio disponibile",
     "pricePerVisit": "{{price}}€/visita",
     "pricePerDay": "{{price}}€/giorno",
@@ -162,10 +173,10 @@
       "priceAriaLabel": "Importo del servizio in euro"
     },
     "types": {
-      "petSitting": "Pet sitting",
-      "plantSitting": "Cura delle piante",
-      "babysitting": "Babysitting",
-      "houseSitting": "Custodia casa",
+      "pet": "Pet sitting",
+      "plant": "Cura delle piante",
+      "child": "Babysitting",
+      "house": "Custodia casa",
       "other": "Altro"
     }
   },
@@ -224,6 +235,10 @@
     "editSubject": "Modifica soggetto",
     "edit": "Modifica",
     "delete": "Elimina",
+    "deleteConfirmTitle": "Conferma eliminazione",
+    "deleteConfirmMessage": "Sei sicuro di voler eliminare questo soggetto?",
+    "list": "Elenco soggetti",
+    "managerTitle": "Gestione soggetti",
     "types": {
       "pet": "Animale domestico",
       "plant": "Pianta",
@@ -260,6 +275,18 @@
     "nameRequired": "Il nome è obbligatorio",
     "memberSince": "Membro dal",
     "updateSuccess": "Le tue informazioni sono state aggiornate con successo",
-    "updateError": "Si è verificato un errore durante l'aggiornamento"
+    "updateError": "Si è verificato un errore durante l'aggiornamento",
+    "preferences": "Preferenze di custodia",
+    "careTypes": "Tipi di custodia che offri",
+    "careTypesHelp": "Seleziona almeno un tipo di custodia che vuoi offrire",
+    "careTypesRequired": "Seleziona almeno un tipo di custodia",
+    "noCareTypesConfigured": "Nessun tipo di custodia configurato. Configura le tue preferenze nel tuo account.",
+    "careTypeOptions": {
+      "pet": "Custodia animali domestici",
+      "plant": "Cura delle piante",
+      "child": "Babysitting / Custodia bambini",
+      "house": "Custodia casa",
+      "other": "Altro"
+    }
   }
 }

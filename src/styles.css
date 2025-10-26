@@ -165,6 +165,40 @@
   border-color: #ef4444 !important; /* red-500 */
 }
 
+/* MultiSelect (PrimeNG v18+) - État normal */
+.p-multiselect:not(.p-disabled).p-focus {
+  outline: 0 none !important;
+  outline-offset: 0 !important;
+  box-shadow: 0 0 0 0.2rem rgba(99, 102, 241, 0.25) !important; /* indigo-500 */
+  border-color: #6366f1 !important; /* indigo-500 */
+}
+
+/* MultiSelect - Bordure rouge en état invalide (sans focus) */
+.p-multiselect.p-invalid,
+.p-multiselect[aria-invalid="true"] {
+  border-color: #ef4444 !important; /* red-500 */
+}
+
+/* MultiSelect - État invalide au focus */
+.p-multiselect.p-invalid:not(.p-disabled).p-focus,
+.p-multiselect[aria-invalid="true"]:not(.p-disabled).p-focus {
+  outline: 0 none !important;
+  outline-offset: 0 !important;
+  box-shadow: 0 0 0 0.2rem rgba(239, 68, 68, 0.25) !important; /* red-500 */
+  border-color: #ef4444 !important; /* red-500 */
+}
+
+/* MultiSelect - Option sélectionnée dans le dropdown (override du vert par défaut) */
+.p-multiselect-option.p-multiselect-option-selected {
+  background: rgba(99, 102, 241, 0.12) !important; /* indigo-500 avec opacity */
+  color: #4338ca !important; /* indigo-700 */
+}
+
+/* MultiSelect - Option au hover */
+.p-multiselect-option:not(.p-multiselect-option-selected):hover {
+  background: rgba(99, 102, 241, 0.04) !important; /* indigo-500 très léger */
+}
+
 /* ========================================
    Angular Calendar Custom Theme (Planning)
    ======================================== */

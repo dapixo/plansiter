@@ -6,11 +6,19 @@
     "success": "Succès",
     "cancel": "Annuler",
     "save": "Enregistrer",
+    "delete": "Supprimer",
     "back": "Retour",
     "close": "Fermer",
     "cancelAction": "Annuler la création ou la modification",
     "saveService": "Enregistrer les informations du service",
-    "saveClient": "Enregistrer les informations du client"
+    "saveClient": "Enregistrer les informations du client",
+    "careTypes": {
+      "pet": "Garde d'animaux",
+      "plant": "Garde de plantes",
+      "child": "Garde d'enfants",
+      "house": "Garde de maison",
+      "other": "Autre"
+    }
   },
   "auth": {
     "login": {
@@ -115,6 +123,8 @@
       "selectService": "Sélectionnez un service",
       "serviceRequired": "Le service est obligatoire",
       "addService": "Ajouter",
+      "selectSubjectFirst": "Veuillez d'abord sélectionner un sujet",
+      "noMatchingServices": "Aucun service ne correspond au type de sujet sélectionné",
       "dateRange": "Période de garde",
       "selectDateRange": "Sélectionnez la date de début et de fin",
       "dateRangeRequired": "La période de garde est obligatoire",
@@ -134,6 +144,7 @@
     "deleteAccept": "Supprimer",
     "editService": "Modifier le service",
     "createService": "Créer un service",
+    "createServiceForType": "Ajouter un service de {{type}}",
     "noServices": "Aucun service disponible",
     "pricePerVisit": "{{price}}€/visite",
     "pricePerDay": "{{price}}€/jour",
@@ -162,10 +173,10 @@
       "priceAriaLabel": "Montant du service en euros"
     },
     "types": {
-      "petSitting": "Garde d'animaux",
-      "plantSitting": "Garde de plantes",
-      "babysitting": "Baby-sitting",
-      "houseSitting": "Garde de maison",
+      "pet": "Garde d'animaux",
+      "plant": "Garde de plantes",
+      "child": "Baby-sitting",
+      "house": "Garde de maison",
       "other": "Autre"
     }
   },
@@ -224,6 +235,10 @@
     "editSubject": "Modifier le sujet",
     "edit": "Modifier",
     "delete": "Supprimer",
+    "deleteConfirmTitle": "Confirmer la suppression",
+    "deleteConfirmMessage": "Êtes-vous sûr de vouloir supprimer ce sujet ?",
+    "list": "Liste des sujets",
+    "managerTitle": "Gestion des sujets",
     "types": {
       "pet": "Animal de compagnie",
       "plant": "Plante",
@@ -260,6 +275,18 @@
     "nameRequired": "Le nom est obligatoire",
     "memberSince": "Membre depuis",
     "updateSuccess": "Vos informations ont été mises à jour avec succès",
-    "updateError": "Une erreur est survenue lors de la mise à jour"
+    "updateError": "Une erreur est survenue lors de la mise à jour",
+    "preferences": "Préférences de garde",
+    "careTypes": "Types de garde que vous proposez",
+    "careTypesHelp": "Sélectionnez au moins un type de garde que vous souhaitez proposer",
+    "careTypesRequired": "Veuillez sélectionner au moins un type de garde",
+    "noCareTypesConfigured": "Aucun type de garde configuré. Veuillez configurer vos préférences dans votre compte.",
+    "careTypeOptions": {
+      "pet": "Garde d'animaux",
+      "plant": "Garde de plantes",
+      "child": "Baby-sitting / Garde d'enfants",
+      "house": "Garde de maison",
+      "other": "Autre"
+    }
   }
 }

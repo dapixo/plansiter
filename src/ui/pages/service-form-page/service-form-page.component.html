@@ -65,7 +65,7 @@
           <p-select
             id="type"
             formControlName="type"
-            [options]="serviceTypes"
+            [options]="serviceTypes()"
             optionValue="value"
             [placeholder]="'services.form.typePlaceholder' | transloco"
             class="w-full"

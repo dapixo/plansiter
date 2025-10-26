@@ -14,10 +14,15 @@ import { InputTextModule } from 'primeng/inputtext';
 import { ButtonModule } from 'primeng/button';
 import { ToastModule } from 'primeng/toast';
 import { MessageService } from 'primeng/api';
+import { MultiSelectModule } from 'primeng/multiselect';
 import { AuthService } from '@application/services/auth.service';
+import { UserPreferencesStore } from '@application/stores/user-preferences.store';
+import { CareType } from '@domain/entities/user-preferences.entity';
 import { EMPTY } from 'rxjs';
 import { tap, catchError, finalize } from 'rxjs/operators';
 import { ActionButtonComponent } from '@ui/components/action-button/action-button.component';
+import { getLocaleCode } from '@ui/utils/locale.utils';
+import { CARE_TYPE_LABELS } from '@ui/constants/care-types.constant';
 
 @Component({
   selector: 'app-account',
@@ -28,6 +33,7 @@ import { ActionButtonComponent } from '@ui/components/action-button/action-butto
     InputTextModule,
     ButtonModule,
     ToastModule,
+    MultiSelectModule,
     ActionButtonComponent,
   ],
   providers: [MessageService],
@@ -36,24 +42,29 @@ import { ActionButtonComponent } from '@ui/components/action-button/action-butto
 })
 export class AccountComponent {
   private authService = inject(AuthService);
+  private preferencesStore = inject(UserPreferencesStore);
   private transloco = inject(TranslocoService);
   private messageService = inject(MessageService);
   private fb = inject(FormBuilder);
   private destroyRef = inject(DestroyRef);
 
-  // Source signal from AuthService
   readonly currentUser = this.authService.currentUser;
-
-  // State signals
   readonly isLoading = signal(false);
 
-  // Reactive form
+  readonly careTypeOptions = computed(() => {
+    const careTypes: CareType[] = ['pet', 'plant', 'child', 'house', 'other'];
+    return careTypes.map(type => ({
+      label: this.transloco.translate(CARE_TYPE_LABELS[type]),
+      value: type,
+    }));
+  });
+
   readonly accountForm = this.fb.nonNullable.group({
     email: ['', [Validators.required, Validators.email]],
     name: ['', [Validators.required]],
+    careTypes: [[] as CareType[], [Validators.required, Validators.minLength(1)]],
   });
 
-  // Computed signal for member since
   readonly memberSince = computed(() => {
     const user = this.currentUser();
     if (!user?.created_at) return '';
@@ -61,14 +72,7 @@ export class AccountComponent {
     const date = new Date(user.created_at);
     const locale = this.transloco.getActiveLang();
 
-    const localeMap: Record<string, string> = {
-      fr: 'fr-FR',
-      es: 'es-ES',
-      it: 'it-IT',
-      en: 'en-GB',
-    };
-
-    return date.toLocaleDateString(localeMap[locale] || 'fr-FR', {
+    return date.toLocaleDateString(getLocaleCode(locale), {
       year: 'numeric',
       month: 'long',
       day: 'numeric',
@@ -77,19 +81,22 @@ export class AccountComponent {
 
   private _patchFormEffect = effect(() => {
     const user = this.currentUser();
+    const preferences = this.preferencesStore.preferences();
+
     if (user) {
       this.accountForm.patchValue({
         email: user.email ?? '',
         name: user.user_metadata?.['full_name'] ?? '',
+        careTypes: preferences?.careTypes ?? [],
       });
     }
   });
 
-  onSubmit(): void {
+  protected onSubmit(): void {
     this.accountForm.markAllAsTouched();
     if (this.isLoading() || this.accountForm.invalid) return;
 
-    const { email, name } = this.accountForm.getRawValue();
+    const { email, name, careTypes } = this.accountForm.getRawValue();
 
     this.isLoading.set(true);
 
@@ -97,6 +104,8 @@ export class AccountComponent {
       .updateUserProfile(email, name)
       .pipe(
         tap(() => {
+          this.preferencesStore.updateCareTypes(careTypes);
+
           this.messageService.add({
             severity: 'success',
             summary: this.transloco.translate('common.success'),

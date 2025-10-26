@@ -25,7 +25,7 @@ import { MessageModule } from 'primeng/message';
 import { TranslocoModule } from '@jsverse/transloco';
 import { toSignal } from '@angular/core/rxjs-interop';
 
-import { Booking, Client, Service } from '@domain/entities';
+import { Booking, Client, Service, Subject } from '@domain/entities';
 import { AuthService } from '@application/services';
 import { BookingStore } from '@application/stores/booking.store';
 import { ClientStore } from '@application/stores/client.store';
@@ -59,25 +59,25 @@ import { ActionButtonComponent } from '../action-button/action-button.component'
 export class BookingFormDialogComponent {
   private readonly fb = inject(FormBuilder);
   private readonly authService = inject(AuthService);
-
   private readonly bookingStore = inject(BookingStore);
   protected readonly clientStore = inject(ClientStore);
   protected readonly serviceStore = inject(ServiceStore);
 
-  readonly bookingDialogVisible = model<boolean>(false);
+  // === UI State ===
+  readonly bookingDialogVisible = model(false);
+  readonly clientDialogVisible = model(false);
+  readonly subjectDialogVisible = model(false);
+  readonly serviceDialogVisible = model(false);
 
-  protected readonly loading = computed(() => this.bookingStore.loading());
-  protected readonly error = computed(() => this.bookingStore.error());
-  protected readonly success = computed(() => this.bookingStore.success());
-  protected readonly lastCreated = computed(() => this.bookingStore.lastCreated());
-
+  // === Store bindings ===
+  readonly loading = computed(() => this.bookingStore.loading());
+  readonly error = computed(() => this.bookingStore.error());
+  readonly success = computed(() => this.bookingStore.success());
+  readonly lastCreated = computed(() => this.bookingStore.lastCreated());
   readonly bookingCreated = output<Booking>();
 
-  clientDialogVisible = model(false);
-  subjectDialogVisible = model(false);
-  serviceDialogVisible = model(false);
-
-  protected readonly bookingForm: FormGroup<{
+  // === Form ===
+  readonly bookingForm: FormGroup<{
     clientId: FormControl<string>;
     serviceId: FormControl<string>;
     subjectId: FormControl<string>;
@@ -91,79 +91,112 @@ export class BookingFormDialogComponent {
     notes: this.fb.control('', { nonNullable: true }),
   });
 
-  private readonly clientIdValue = toSignal(this.bookingForm.controls.clientId.valueChanges, {
-    initialValue: '',
-  });
+  // === Signals ===
+  private readonly clientIdValue = toSignal(this.bookingForm.controls.clientId.valueChanges, { initialValue: '' });
+  private readonly subjectIdValue = toSignal(this.bookingForm.controls.subjectId.valueChanges, { initialValue: '' });
 
-  private readonly previousClientId = signal<string>('');
+  private readonly prevClientId = signal<string>('');
+  private readonly prevSubjectId = signal<string>('');
 
+  // === Computed ===
   readonly clientOptions = computed(() =>
-    this.clientStore.activeClients().map((c) => ({ label: c.name, value: c.id }))
-  );
-
-  readonly serviceOptions = computed(() =>
-    this.serviceStore.services().map((s) => ({ label: s.name, value: s.id }))
+    this.clientStore.activeClients().map(this.toOption)
   );
 
   readonly subjectOptions = computed(() => {
     const clientId = this.clientIdValue();
-    const allSubjects = this.clientStore.activeSubjects();
-    return allSubjects
-      .filter((s) => !clientId || s.clientId === clientId)
-      .map((s) => ({ label: s.name, value: s.id }));
+    return this.clientStore
+      .activeSubjects()
+      .filter(s => !clientId || s.clientId === clientId)
+      .map(this.toOption);
   });
 
-  private successEffect_ = effect(() => {
-    const success = this.success();
-    const lastCreated = this.lastCreated();
-    if (success && lastCreated) {
-      this.bookingCreated.emit(lastCreated);
+  private readonly selectedSubjectType = computed(() => {
+    const subjectId = this.subjectIdValue();
+    const subject = this.clientStore.activeSubjects().find(s => s.id === subjectId);
+    return subject?.type ?? null;
+  });
+
+  readonly serviceOptions = computed(() => {
+    const type = this.selectedSubjectType();
+    return type
+      ? this.serviceStore.services()
+          .filter(s => s.type === type)
+          .map(this.toOption)
+      : [];
+  });
+
+  readonly isServiceSelectDisabled = computed(() => !this.subjectIdValue());
+  readonly isAddSubjectDisabled = computed(() => !this.clientIdValue());
+  readonly isAddServiceDisabled = computed(() => !this.subjectIdValue());
+  readonly serviceDialogPrefilledType = computed(() => this.selectedSubjectType());
+
+  // === Effects ===
+  private readonly successEffect = effect(() => {
+    if (this.success() && this.lastCreated()) {
+      this.bookingCreated.emit(this.lastCreated()!);
       this.bookingDialogVisible.set(false);
       this.bookingForm.reset();
     }
   });
 
-  private readonly resetSubjectEffect_ = effect(() => {
-    const currentClientId = this.clientIdValue();
-    const prevClientId = this.previousClientId();
-
-    if (prevClientId && currentClientId !== prevClientId) {
-      this.bookingForm.controls.subjectId.setValue('', { emitEvent: false });
-    }
-
-    this.previousClientId.set(currentClientId);
+  private readonly resetRelationsEffect = effect(() => {
+    this.resetIfChanged(this.clientIdValue, this.prevClientId, this.bookingForm.controls.subjectId);
+    this.resetIfChanged(this.subjectIdValue, this.prevSubjectId, this.bookingForm.controls.serviceId);
   });
 
-  protected onSave(): void {
+  // === Helpers ===
+  private toOption<T extends { id: string; name: string }>(item: T) {
+    return { label: item.name, value: item.id };
+  }
+
+  private resetIfChanged(value: () => string, prev: { (): string; set: (v: string) => void }, control: FormControl<string>) {
+    const current = value();
+    if (prev() && current !== prev()) {
+      control.setValue('', { emitEvent: false });
+    }
+    prev.set(current);
+  }
+
+  private validateBookingForm(): { userId?: string; startDate?: Date; endDate?: Date } | null {
     const userId = this.authService.currentUser()?.id;
-    if (!userId) return this.bookingStore.setError('No user logged in');
+    if (!userId) return this.bookingStore.setError('No user logged in'), null;
 
     this.bookingForm.markAllAsTouched();
     this.bookingForm.markAllAsDirty();
-    if (this.bookingForm.invalid || this.loading()) return;
+    if (this.bookingForm.invalid || this.loading()) return null;
 
-    const { clientId, serviceId, subjectId, dateRange, notes } =
-      this.bookingForm.getRawValue();
-
-    if (!dateRange || dateRange.length !== 2 || !dateRange[0] || !dateRange[1])
-      return this.bookingStore.setError('Start and end dates are required');
+    const dateRange = this.bookingForm.controls.dateRange.value;
+    if (!dateRange || dateRange.length !== 2) {
+      this.bookingStore.setError('Start and end dates are required');
+      return null;
+    }
 
     const [startDate, endDate] = dateRange;
+    return { userId, startDate, endDate };
+  }
+
+  // === Actions ===
+  protected onSave(): void {
+    const validation = this.validateBookingForm();
+    if (!validation) return;
+
+    const { clientId, serviceId, subjectId, notes } = this.bookingForm.getRawValue();
 
     this.bookingStore.create({
-      sitterId: userId,
+      sitterId: validation.userId!,
       clientId,
       serviceId,
       subjectId,
-      startDate,
-      endDate,
+      startDate: validation.startDate!,
+      endDate: validation.endDate!,
       notes: notes || undefined,
       isCancelled: false,
     });
   }
 
-  protected onHide(event: boolean): void {
-    if (!event) {
+  protected onHide(visible: boolean): void {
+    if (!visible) {
       this.bookingDialogVisible.set(false);
       this.bookingForm.reset();
     }

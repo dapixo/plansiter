@@ -1,9 +1,9 @@
-export type SubjectType = 'pet' | 'plant' | 'child' | 'house' | 'other';
+import { CareType } from './user-preferences.entity';
 
 export interface Subject {
   id: string;
   clientId: string;
-  type: SubjectType;
+  type: CareType;
   name: string;
   breed?: string;
   age?: number;

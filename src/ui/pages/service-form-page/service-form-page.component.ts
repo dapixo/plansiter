@@ -17,14 +17,16 @@ import { MessageModule } from 'primeng/message';
 import { TranslocoModule } from '@jsverse/transloco';
 import { TextareaModule } from 'primeng/textarea';
 import { RadioButtonModule } from 'primeng/radiobutton';
-import { PriceType, Service, ServiceType } from '@domain/entities';
+import { PriceType, Service } from '@domain/entities';
+import { CareType } from '@domain/entities/user-preferences.entity';
 import { ServiceStore } from '@application/stores/service.store';
+import { UserPreferencesStore } from '@application/stores/user-preferences.store';
 import { AuthService } from '@application/services';
 import { LanguageService } from '@application/services/language.service';
 import { ActionButtonComponent } from '@ui/components/action-button/action-button.component';
-import { SERVICE_TYPE_OPTIONS } from '@ui/constants/service-types.constant';
 import { PRICE_TYPE_OPTIONS } from '@ui/constants/price-types.constant';
 import { RadioButtonWrapperDirective } from '@ui/directives/radio-button-wrapper.directive';
+import { CARE_TYPE_OPTIONS } from '@ui/constants/care-types.constant';
 
 @Component({
   selector: 'app-service-form-page',
@@ -51,6 +53,7 @@ export class ServiceFormPageComponent {
   private readonly route = inject(ActivatedRoute);
   private readonly router = inject(Router);
   private readonly store = inject(ServiceStore);
+  private readonly preferencesStore = inject(UserPreferencesStore);
   private readonly auth = inject(AuthService);
   protected readonly lang = inject(LanguageService);
 
@@ -64,18 +67,23 @@ export class ServiceFormPageComponent {
   protected readonly isEditMode = computed(() => !!this.serviceId());
   protected readonly isFormReady = computed(() => !this.isEditMode() || !!this.service());
 
-  protected readonly serviceTypes = SERVICE_TYPE_OPTIONS;
+  protected readonly serviceTypes = computed(() => {
+    const userCareTypes = this.preferencesStore.careTypes();
+    if (userCareTypes.length === 0) return CARE_TYPE_OPTIONS;
+    return CARE_TYPE_OPTIONS.filter(option => userCareTypes.includes(option.value));
+  });
+
   protected readonly priceTypes = PRICE_TYPE_OPTIONS;
 
   protected readonly form = this.fb.group<{
     name: FormControl<string>;
-    type: FormControl<ServiceType | null>;
+    type: FormControl<CareType | null>;
     description: FormControl<string>;
     priceType: FormControl<PriceType | null>;
     price: FormControl<number | null>;
   }>({
     name: this.fb.control('', { validators: Validators.required, nonNullable: true }),
-    type: this.fb.control<ServiceType | null>(null, { validators: Validators.required }),
+    type: this.fb.control<CareType | null>(null, { validators: Validators.required }),
     description: this.fb.control('', { nonNullable: true }),
     priceType: this.fb.control<PriceType | null>(null, { validators: Validators.required }),
     price: this.fb.control<number | null>(null, { validators: Validators.required })
@@ -88,13 +96,11 @@ export class ServiceFormPageComponent {
   }));
 
   private readonly shouldNavigateAfterSave = signal(false);
-  private readonly previousLoadingState = signal(false);
 
   private readonly _patchEffect = effect(() => {
     const service = this.service();
     if (!service) return;
 
-    // Déterminer le type de prix
     let priceType: PriceType | null = null;
     let price: number | null = null;
 
@@ -120,45 +126,32 @@ export class ServiceFormPageComponent {
 
   private readonly _navigationEffect = effect(() => {
     const isLoading = this.store.loading();
-    const wasLoading = this.previousLoadingState();
     const shouldNavigate = this.shouldNavigateAfterSave();
     const hasError = this.store.error();
 
-    this.previousLoadingState.set(isLoading);
-
-    if (wasLoading && !isLoading && shouldNavigate && !hasError) {
+    if (!isLoading && shouldNavigate && !hasError) {
       this.shouldNavigateAfterSave.set(false);
       const lang = this.lang.getCurrentLanguage();
       this.router.navigate([`/${lang}/dashboard/services`]);
     }
   });
 
-  /** Soumission */
   protected onSubmit(): void {
-    this.form.markAllAsTouched();
-    if (this.store.loading() || this.form.invalid) return;
+  this.form.markAllAsTouched();
+  if (this.form.invalid || this.store.loading()) return;
 
-    const payload = this.getServicePayload();
-    const user = this.auth.currentUser();
+  const user = this.auth.currentUser();
+  if (!user?.id) return this.store.setError('No user logged in');
 
-    if (!user?.id) {
-      this.store.setError('No user logged in');
-      return;
-    }
+  const payload = this.getServicePayload();
+  const current = this.service();
 
-    const currentService = this.service();
-    this.shouldNavigateAfterSave.set(true);
+  this.shouldNavigateAfterSave.set(true);
 
-    // Créer ou mettre à jour le service
-    if (currentService) {
-      this.store.update({ id: currentService.id, data: payload });
-    } else {
-      this.store.create({
-        ...payload,
-        userId: user.id
-      } as Omit<Service, 'id' | 'createdAt' | 'updatedAt'>);
-    }
-  }
+  current
+    ? this.store.update({ id: current.id, data: payload })
+    : this.store.create({ ...payload, userId: user.id } as Omit<Service, 'id' | 'createdAt' | 'updatedAt'>);
+}
 
   private getServicePayload(): Partial<Service> {
     const { name, type, description, priceType, price } = this.form.value;

@@ -1,14 +1,16 @@
 import { Injectable, inject } from '@angular/core';
 import { Observable } from 'rxjs';
 import { map } from 'rxjs/operators';
-import { Subject, SubjectType } from '@domain/entities';
+import { Subject } from '@domain/entities';
+import { CareType } from '@domain/entities/user-preferences.entity';
 import { ISubjectRepository } from '@domain/repositories';
 import { SupabaseService } from '../supabase.client';
+import { BaseSupabaseRepository } from './base-supabase.repository';
 
 type SubjectRow = {
   id: string;
   client_id: string;
-  type: SubjectType;
+  type: CareType;
   name: string;
   breed: string | null;
   age: number | null;
@@ -20,7 +22,7 @@ type SubjectRow = {
 };
 
 @Injectable()
-export class SubjectSupabaseRepository implements ISubjectRepository {
+export class SubjectSupabaseRepository extends BaseSupabaseRepository implements ISubjectRepository {
   private supabase = inject(SupabaseService);
 
   // ---------- PUBLIC METHODS ---------- //
@@ -86,16 +88,6 @@ export class SubjectSupabaseRepository implements ISubjectRepository {
   }
 
   // ---------- PRIVATE HELPERS ---------- //
-
-  /** Generic Supabase response handler */
-  private extractData<T>(response: any, strict = true): T {
-    if (response.error) {
-      console.error('Supabase error:', response.error);
-      if (strict) throw response.error;
-      return Array.isArray(response.data) ? [] as any : null as any;
-    }
-    return response.data;
-  }
 
   /** Map Supabase row → domain entity */
   private mapToEntity(row: SubjectRow): Subject {

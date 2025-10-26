@@ -4,11 +4,10 @@ import { RouterModule } from '@angular/router';
 import { ConfirmDialogModule } from 'primeng/confirmdialog';
 import { ConfirmationService } from 'primeng/api';
 import { TranslocoModule, TranslocoService } from '@jsverse/transloco';
-import { Service, ServiceType } from '@domain/entities';
+import { Service } from '@domain/entities';
 import { ServiceStore } from '@application/stores/service.store';
 import { EmptyStateComponent } from '@ui/components/empty-state/empty-state.component';
 import { ActionButtonComponent } from '@ui/components/action-button/action-button.component';
-import { SERVICE_TYPE_LABELS } from '@ui/constants/service-types.constant';
 
 @Component({
   selector: 'app-services',
@@ -47,9 +46,5 @@ export class ServicesComponent {
         this.store.delete(service.id);
       }
     });
-  }
-
-  protected getServiceTypeLabel(type: ServiceType): string {
-    return SERVICE_TYPE_LABELS[type] || type;
   }
 }

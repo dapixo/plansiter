@@ -5,7 +5,8 @@ import { ButtonModule } from 'primeng/button';
 import { ConfirmDialogModule } from 'primeng/confirmdialog';
 import { ConfirmationService } from 'primeng/api';
 import { TranslocoModule, TranslocoService } from '@jsverse/transloco';
-import { Client, SubjectType } from '@domain/entities';
+import { Client } from '@domain/entities';
+import { CareType } from '@domain/entities/user-preferences.entity';
 import { ClientStore } from '@application/stores/client.store';
 import { EmptyStateComponent } from '@ui/components/empty-state/empty-state.component';
 import { ActionButtonComponent } from '@ui/components/action-button/action-button.component';
@@ -32,7 +33,7 @@ export class ClientsComponent {
   private readonly transloco = inject(TranslocoService);
   private readonly confirmationService = inject(ConfirmationService);
 
-  private readonly SUBJECT_ICONS: Record<SubjectType, string> = {
+  private readonly SUBJECT_ICONS: Record<CareType, string> = {
     'pet': 'pi-heart',
     'plant': 'pi-sun',
     'child': 'pi-user',
@@ -72,7 +73,7 @@ export class ClientsComponent {
     return this.subjectsByClient()[clientId] || [];
   }
 
-  protected getSubjectIcon(type: SubjectType): string {
+  protected getSubjectIcon(type: CareType): string {
     return this.SUBJECT_ICONS[type] || this.SUBJECT_ICONS['other'];
   }
 }

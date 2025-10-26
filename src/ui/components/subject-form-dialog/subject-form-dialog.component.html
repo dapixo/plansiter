@@ -61,8 +61,8 @@
       <p-select
         id="subject-type"
         formControlName="type"
-        [options]="subjectTypes"
-        optionLabel="label"
+        [options]="subjectTypes()"
+        optionLabel="labelKey"
         optionValue="value"
         [placeholder]="'subjects.form.typePlaceholder' | transloco"
         class="w-full"
@@ -72,11 +72,11 @@
       >
         <ng-template pTemplate="selectedItem" let-selectedOption>
           @if (selectedOption) {
-          {{ selectedOption.label | transloco }}
+          {{ selectedOption.labelKey | transloco }}
           }
         </ng-template>
         <ng-template pTemplate="item" let-option>
-          {{ option.label | transloco }}
+          {{ option.labelKey | transloco }}
         </ng-template>
       </p-select>
       @if (subjectForm.controls.type.invalid && subjectForm.controls.type.touched && subjectForm.controls.type.dirty) {
