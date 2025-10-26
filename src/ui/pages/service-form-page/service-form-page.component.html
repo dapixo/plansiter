@@ -81,7 +81,14 @@
               }
             </ng-template>
             <ng-template pTemplate="item" let-option>
-              {{ option.labelKey | transloco }}
+              <div class="flex items-center gap-2">
+                {{ option.labelKey | transloco }}
+                @if (!activeCareTypes().includes(option.value)) {
+                  <span class="text-xs bg-amber-100 text-amber-700 px-2 py-0.5 rounded whitespace-nowrap">
+                    {{ 'common.disabled' | transloco }}
+                  </span>
+                }
+              </div>
             </ng-template>
           </p-select>
           @if (form.controls.type.invalid && form.controls.type.touched) {

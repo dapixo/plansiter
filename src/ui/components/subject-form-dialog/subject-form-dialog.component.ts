@@ -64,11 +64,21 @@ export class SubjectFormDialogComponent {
 
   protected readonly isEditMode = computed(() => !!this.subject()?.id);
   protected readonly isInEditMode = computed(() => !!this.clientId());
+  protected readonly activeCareTypes = computed(() => this.preferencesStore.careTypes());
 
   protected readonly subjectTypes = computed(() => {
     const userCareTypes = this.preferencesStore.careTypes();
+    const currentType = this.subject()?.type;
+    const isEditing = this.isEditMode();
+
     if (userCareTypes.length === 0) return CARE_TYPE_OPTIONS;
-    return CARE_TYPE_OPTIONS.filter(option => userCareTypes.includes(option.value));
+
+    // En création: uniquement les types activés
+    // En édition: types activés + le type courant (même s'il est désactivé)
+    return CARE_TYPE_OPTIONS.filter(option =>
+      userCareTypes.includes(option.value) ||
+      (isEditing && option.value === currentType)
+    );
   });
 
   protected readonly subjectForm = this.fb.group({

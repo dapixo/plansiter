@@ -9,6 +9,7 @@
     "back": "Back",
     "close": "Close",
     "delete": "Delete",
+    "disabled": "Disabled",
     "cancelAction": "Cancel creation or modification",
     "saveService": "Save service information",
     "saveClient": "Save client information",

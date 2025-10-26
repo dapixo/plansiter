@@ -66,11 +66,21 @@ export class ServiceFormPageComponent {
 
   protected readonly isEditMode = computed(() => !!this.serviceId());
   protected readonly isFormReady = computed(() => !this.isEditMode() || !!this.service());
+  protected readonly activeCareTypes = computed(() => this.preferencesStore.careTypes());
 
   protected readonly serviceTypes = computed(() => {
     const userCareTypes = this.preferencesStore.careTypes();
+    const currentType = this.service()?.type;
+    const isEditing = this.isEditMode();
+
     if (userCareTypes.length === 0) return CARE_TYPE_OPTIONS;
-    return CARE_TYPE_OPTIONS.filter(option => userCareTypes.includes(option.value));
+
+    // En création: uniquement les types activés
+    // En édition: types activés + le type courant (même s'il est désactivé)
+    return CARE_TYPE_OPTIONS.filter(option =>
+      userCareTypes.includes(option.value) ||
+      (isEditing && option.value === currentType)
+    );
   });
 
   protected readonly priceTypes = PRICE_TYPE_OPTIONS;

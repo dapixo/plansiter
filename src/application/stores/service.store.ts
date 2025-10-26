@@ -12,6 +12,7 @@ import { pipe, switchMap, tap, catchError, finalize } from 'rxjs';
 import { Service } from '@domain/entities';
 import { IServiceRepository, SERVICE_REPOSITORY } from '@domain/repositories';
 import { AuthService } from '../services/auth.service';
+import { UserPreferencesStore } from './user-preferences.store';
 import { updateInList, removeFromList, createStoreHelpers } from './store.utils';
 
 interface ServiceState {
@@ -33,9 +34,23 @@ const initialState: ServiceState = {
 export const ServiceStore = signalStore(
   withState(initialState),
 
-  withComputed((state) => ({
-    servicesCount: computed(() => state.services().length),
-  })),
+  withComputed(
+    (state, preferencesStore = inject(UserPreferencesStore)) => ({
+      servicesCount: computed(() => state.services().length),
+      activeServices: computed(() => {
+        const allServices = state.services();
+        const activeCareTypes = preferencesStore.careTypes();
+
+        // Si aucun type de soin n'est configuré, retourner tous les services
+        if (activeCareTypes.length === 0) return allServices;
+
+        // Retourner uniquement les services dont le type est activé
+        return allServices.filter((service) =>
+          activeCareTypes.includes(service.type)
+        );
+      }),
+    })
+  ),
 
   withMethods(
     (

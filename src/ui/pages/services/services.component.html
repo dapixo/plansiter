@@ -9,7 +9,7 @@
       </h2>
       <p class="text-gray-600 text-lg">{{ 'services.subtitle' | transloco }}</p>
     </div>
-    @if (store.services().length > 0) {
+    @if (store.activeServices().length > 0) {
     <app-action-button
       route="new"
       labelKey="services.addService"
@@ -21,7 +21,7 @@
 
   <!-- Services list -->
   <ul class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6" role="list">
-    @for (service of store.services(); track service.id) {
+    @for (service of store.activeServices(); track service.id) {
     <li class="relative group">
       <!-- Card cliquable -->
       <a
@@ -65,7 +65,7 @@
   </ul>
 
   <!-- Empty state -->
-  @if (store.services().length === 0 && !store.loading()) {
+  @if (store.activeServices().length === 0 && !store.loading()) {
   <app-empty-state
     icon="pi-briefcase"
     messageKey="services.noServices"
