@@ -16,16 +16,13 @@ import { SelectModule } from 'primeng/select';
 import { MessageModule } from 'primeng/message';
 import { TranslocoModule } from '@jsverse/transloco';
 import { TextareaModule } from 'primeng/textarea';
-import { RadioButtonModule } from 'primeng/radiobutton';
-import { PriceType, Service } from '@domain/entities';
+import { Service } from '@domain/entities';
 import { CareType } from '@domain/entities/user-preferences.entity';
 import { ServiceStore } from '@application/stores/service.store';
 import { UserPreferencesStore } from '@application/stores/user-preferences.store';
 import { AuthService } from '@application/services';
 import { LanguageService } from '@application/services/language.service';
 import { ActionButtonComponent } from '@ui/components/action-button/action-button.component';
-import { PRICE_TYPE_OPTIONS } from '@ui/constants/price-types.constant';
-import { RadioButtonWrapperDirective } from '@ui/directives/radio-button-wrapper.directive';
 import { CARE_TYPE_OPTIONS } from '@ui/constants/care-types.constant';
 
 @Component({
@@ -41,8 +38,6 @@ import { CARE_TYPE_OPTIONS } from '@ui/constants/care-types.constant';
     SelectModule,
     MessageModule,
     TranslocoModule,
-    RadioButtonModule,
-    RadioButtonWrapperDirective,
     ActionButtonComponent,
   ],
   templateUrl: './service-form-page.component.html',
@@ -83,19 +78,15 @@ export class ServiceFormPageComponent {
     );
   });
 
-  protected readonly priceTypes = PRICE_TYPE_OPTIONS;
-
   protected readonly form = this.fb.group<{
     name: FormControl<string>;
     type: FormControl<CareType | null>;
     description: FormControl<string>;
-    priceType: FormControl<PriceType | null>;
     price: FormControl<number | null>;
   }>({
     name: this.fb.control('', { validators: Validators.required, nonNullable: true }),
     type: this.fb.control<CareType | null>(null, { validators: Validators.required }),
     description: this.fb.control('', { nonNullable: true }),
-    priceType: this.fb.control<PriceType | null>(null, { validators: Validators.required }),
     price: this.fb.control<number | null>(null, { validators: Validators.required })
   });
 
@@ -111,26 +102,11 @@ export class ServiceFormPageComponent {
     const service = this.service();
     if (!service) return;
 
-    let priceType: PriceType | null = null;
-    let price: number | null = null;
-
-    if (service.pricePerVisit) {
-      priceType = 'per-visit';
-      price = service.pricePerVisit;
-    } else if (service.pricePerDay) {
-      priceType = 'per-day';
-      price = service.pricePerDay;
-    } else if (service.pricePerNight) {
-      priceType = 'per-night';
-      price = service.pricePerNight;
-    }
-
     this.form.reset({
       name: service.name,
       type: service.type,
       description: service.description ?? '',
-      priceType: priceType,
-      price: price
+      price: service.price
     });
   });
 
@@ -164,14 +140,12 @@ export class ServiceFormPageComponent {
 }
 
   private getServicePayload(): Partial<Service> {
-    const { name, type, description, priceType, price } = this.form.value;
+    const { name, type, description, price } = this.form.value;
     return {
       name: name!,
       type: type!,
       description: description || undefined,
-      pricePerVisit: priceType === 'per-visit' ? price || undefined : undefined,
-      pricePerDay: priceType === 'per-day' ? price || undefined : undefined,
-      pricePerNight: priceType === 'per-night' ? price || undefined : undefined
+      price: price!
     };
   }
 }

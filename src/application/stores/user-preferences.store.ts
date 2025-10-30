@@ -19,6 +19,7 @@ interface UserPreferencesState {
   loading: boolean;
   error: string | null;
   success: boolean;
+  initialized: boolean;
 }
 
 const initialState: UserPreferencesState = {
@@ -26,6 +27,7 @@ const initialState: UserPreferencesState = {
   loading: false,
   error: null,
   success: false,
+  initialized: false,
 };
 
 export const UserPreferencesStore = signalStore(
@@ -33,7 +35,7 @@ export const UserPreferencesStore = signalStore(
 
   withComputed((state) => ({
     careTypes: computed(() => state.preferences()?.careTypes ?? []),
-    hasCareTypes: computed(() => (state.preferences()?.careTypes.length ?? 0) > 0),
+    hasCareTypes: computed(() => (state.preferences()?.careTypes?.length ?? 0) > 0),
     isOnboarded: computed(() => state.preferences()?.isOnboarded ?? false),
   })),
 
@@ -58,7 +60,7 @@ export const UserPreferencesStore = signalStore(
                   tap((preferences) => patchState(store, { preferences })),
                   tap(setSuccess),
                   catchError(handleError),
-                  finalize(() => patchState(store, { loading: false }))
+                  finalize(() => patchState(store, { loading: false, initialized: true }))
                 )
               )
             )
@@ -70,7 +72,7 @@ export const UserPreferencesStore = signalStore(
             tap(setLoading),
             switchMap((careTypes) =>
               runAuthenticated((userId) =>
-                repo.upsert({ userId, careTypes, isOnboarded: false }).pipe(
+                repo.upsert({ userId, careTypes }).pipe(
                   tap((preferences) => patchState(store, { preferences })),
                   tap(setSuccess),
                   catchError(handleError),
@@ -87,15 +89,7 @@ export const UserPreferencesStore = signalStore(
             switchMap(() =>
               runAuthenticated((userId) =>
                 repo.markAsOnboarded(userId).pipe(
-                  tap(() => {
-                    // Update local state to mark as onboarded
-                    const current = store.preferences();
-                    if (current) {
-                      patchState(store, {
-                        preferences: { ...current, isOnboarded: true }
-                      });
-                    }
-                  }),
+                  tap((preferences) => patchState(store, { preferences })),
                   tap(setSuccess),
                   catchError(handleError),
                   finalize(() => patchState(store, { loading: false }))

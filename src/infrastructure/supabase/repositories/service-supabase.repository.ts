@@ -13,9 +13,7 @@ type ServiceRow = {
   name: string;
   type: CareType;
   description: string | null;
-  price_per_visit: number | null;
-  price_per_day: number | null;
-  price_per_night: number | null;
+  price: number;
   is_active: boolean;
   deleted_at: string | null;
   created_at: string;
@@ -98,9 +96,7 @@ export class ServiceSupabaseRepository extends BaseSupabaseRepository implements
       name: row.name,
       type: row.type,
       description: row.description ?? '',
-      pricePerVisit: row.price_per_visit ?? 0,
-      pricePerDay: row.price_per_day ?? 0,
-      pricePerNight: row.price_per_night ?? 0,
+      price: row.price,
       deletedAt: row.deleted_at ? new Date(row.deleted_at) : undefined,
       createdAt: new Date(row.created_at),
       updatedAt: new Date(row.updated_at),
@@ -114,9 +110,7 @@ export class ServiceSupabaseRepository extends BaseSupabaseRepository implements
     if (!partial || service.name !== undefined) payload.name = service.name!;
     if (!partial || service.type !== undefined) payload.type = service.type!;
     if (!partial || service.description !== undefined) payload.description = service.description ?? null;
-    if (!partial || service.pricePerVisit !== undefined) payload.price_per_visit = service.pricePerVisit ?? null;
-    if (!partial || service.pricePerDay !== undefined) payload.price_per_day = service.pricePerDay ?? null;
-    if (!partial || service.pricePerNight !== undefined) payload.price_per_night = service.pricePerNight ?? null;
+    if (!partial || service.price !== undefined) payload.price = service.price!;
     if (!partial || service.deletedAt !== undefined) payload.deleted_at = service.deletedAt?.toISOString() ?? null;
     return payload;
   }

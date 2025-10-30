@@ -28,12 +28,9 @@ import { ActionButtonComponent } from '@ui/components/action-button/action-butto
 import { ServiceStore } from '@application/stores/service.store';
 import { UserPreferencesStore } from '@application/stores/user-preferences.store';
 import { AuthService } from '@application/services';
-import { Service, PriceType } from '@domain/entities';
+import { Service } from '@domain/entities';
 import { CareType } from '@domain/entities/user-preferences.entity';
 import { CARE_TYPE_OPTIONS } from '@ui/constants/care-types.constant';
-import { PRICE_TYPE_OPTIONS } from '@ui/constants/price-types.constant';
-import { RadioButtonModule } from 'primeng/radiobutton';
-import { RadioButtonWrapperDirective } from '@ui/directives/radio-button-wrapper.directive';
 
 @Component({
   selector: 'app-service-form-dialog',
@@ -49,8 +46,6 @@ import { RadioButtonWrapperDirective } from '@ui/directives/radio-button-wrapper
     SelectModule,
     InputNumberModule,
     TextareaModule,
-    RadioButtonModule,
-    RadioButtonWrapperDirective,
     ActionButtonComponent,
   ],
   templateUrl: './service-form-dialog.component.html',
@@ -73,7 +68,6 @@ export class ServiceFormDialogComponent {
   protected readonly lastCreated = computed(() => this.store.lastCreated());
   protected readonly isTypeSelectHidden = computed(() => !!this.prefilledType());
 
-  protected readonly priceTypes = PRICE_TYPE_OPTIONS;
   protected readonly serviceTypes = computed(() => {
     const userCareTypes = this.preferencesStore.careTypes();
     if (userCareTypes.length === 0) return CARE_TYPE_OPTIONS;
@@ -84,13 +78,11 @@ export class ServiceFormDialogComponent {
     name: FormControl<string>;
     type: FormControl<CareType | null>;
     description: FormControl<string>;
-    priceType: FormControl<PriceType | null>;
     price: FormControl<number | null>;
   }> = this.fb.group({
     name: this.fb.control('', { validators: Validators.required, nonNullable: true }),
     type: this.fb.control<CareType | null>(null, { validators: Validators.required }),
     description: this.fb.control('', { nonNullable: true }),
-    priceType: this.fb.control<PriceType | null>(null, { validators: Validators.required }),
     price: this.fb.control<number | null>(null, { validators: Validators.required }),
   });
 
@@ -134,7 +126,6 @@ export class ServiceFormDialogComponent {
         name: '',
         type: null,
         description: '',
-        priceType: null,
         price: null,
       });
     }
@@ -171,7 +162,7 @@ export class ServiceFormDialogComponent {
       return;
     }
 
-    const { name, type, description, priceType, price } = this.serviceForm.getRawValue();
+    const { name, type, description, price } = this.serviceForm.getRawValue();
 
     const numericPrice = Number(price);
     if (!Number.isFinite(numericPrice) || numericPrice <= 0) {
@@ -184,9 +175,7 @@ export class ServiceFormDialogComponent {
       name,
       type: type!,
       description: description || undefined,
-      pricePerVisit: priceType === 'per-visit' ? numericPrice : undefined,
-      pricePerDay: priceType === 'per-day' ? numericPrice : undefined,
-      pricePerNight: priceType === 'per-night' ? numericPrice : undefined,
+      price: numericPrice,
     };
 
     this.store.create(serviceData);

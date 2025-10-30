@@ -116,38 +116,7 @@
 
       <!-- Tarification -->
       <fieldset class="flex flex-col gap-4 border-0 p-0">
-        <!-- Type de tarif (Radio Buttons) -->
-        <div class="flex flex-col gap-3">
-          <label class="font-medium text-gray-700">
-            {{ 'services.form.priceType' | transloco }}
-            <span class="text-red-500" aria-hidden="true">*</span>
-          </label>
-          <div class="flex flex-col sm:flex-row gap-3">
-            @for (option of priceTypes; track option.value) {
-            <div
-              [appRadioButtonWrapper]="form.controls.priceType.value === option.value">
-              <p-radiobutton
-                [inputId]="'priceType-' + option.value"
-                [value]="option.value"
-                formControlName="priceType"
-                [attr.aria-label]="option.labelKey | transloco" />
-              <label
-                [for]="'priceType-' + option.value"
-                class="flex items-center gap-2 cursor-pointer flex-1">
-                <i [class]="'pi ' + option.icon + ' text-indigo-600'" aria-hidden="true"></i>
-                <span class="font-medium">{{ option.labelKey | transloco }}</span>
-              </label>
-            </div>
-            }
-          </div>
-          @if (form.controls.priceType.invalid && form.controls.priceType.touched) {
-          <p-message id="priceType-error" severity="error" variant="simple" role="alert">
-            {{ 'services.form.priceTypeRequired' | transloco }}
-          </p-message>
-          }
-        </div>
-
-        <!-- Montant -->
+        <!-- Prix -->
         <div class="flex flex-col gap-2">
           <label for="price" class="font-medium text-gray-700">
             {{ 'services.form.price' | transloco }}

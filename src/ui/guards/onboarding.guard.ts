@@ -3,6 +3,8 @@ import { Router, CanActivateFn } from '@angular/router';
 import { AuthService } from '@application/services/auth.service';
 import { UserPreferencesStore } from '@application/stores/user-preferences.store';
 import { LanguageService } from '@application/services/language.service';
+import { map, filter, take } from 'rxjs/operators';
+import { toObservable } from '@angular/core/rxjs-interop';
 
 /**
  * Guard to protect the onboarding route.
@@ -21,14 +23,27 @@ export const onboardingGuard: CanActivateFn = () => {
     return router.createUrlTree([`/${currentLang}/login`]);
   }
 
-  // Check if user is already onboarded
-  const isOnboarded = preferencesStore.isOnboarded();
-  if (isOnboarded) {
-    // Already onboarded → redirect to dashboard
-    const currentLang = lang.getCurrentLanguage();
-    return router.createUrlTree([`/${currentLang}/dashboard`]);
+  // If not initialized yet, trigger loading
+  if (!preferencesStore.initialized() && !preferencesStore.loading()) {
+    preferencesStore.load();
   }
 
-  // Not onboarded → allow access to onboarding
-  return true;
+  // Wait for preferences store to be initialized, then check onboarding status
+  return toObservable(preferencesStore.initialized).pipe(
+    // Wait until preferences have been loaded (or attempted to load)
+    filter(initialized => initialized),
+    take(1),
+    map(() => {
+      const isOnboarded = preferencesStore.isOnboarded();
+
+      if (isOnboarded) {
+        // Already onboarded → redirect to dashboard
+        const currentLang = lang.getCurrentLanguage();
+        return router.createUrlTree([`/${currentLang}/dashboard`]);
+      }
+
+      // Not onboarded → allow access to onboarding
+      return true;
+    })
+  );
 };

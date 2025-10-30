@@ -21,7 +21,7 @@ export class UserPreferencesSupabaseRepository extends BaseSupabaseRepository im
 
   getByUserId(userId: string): Observable<UserPreferences | null> {
     return this.supabase.from$('user_preferences', q =>
-      q.select('*').eq('user_id', userId).single()
+      q.select('*').eq('user_id', userId).maybeSingle()
     ).pipe(
       map(res => this.extractData<UserPreferencesRow | null>(res, false)),
       map(row => (row ? this.mapToEntity(row) : null))
@@ -39,14 +39,15 @@ export class UserPreferencesSupabaseRepository extends BaseSupabaseRepository im
     );
   }
 
-  markAsOnboarded(userId: string): Observable<void> {
+  markAsOnboarded(userId: string): Observable<UserPreferences> {
     return this.supabase.from$('user_preferences', q =>
-      q.update({ is_onboarded: true }).eq('user_id', userId)
+      q.upsert(
+        { user_id: userId, is_onboarded: true },
+        { onConflict: 'user_id' }
+      ).select().single()
     ).pipe(
-      map(res => {
-        this.extractData(res, true);
-        return undefined;
-      })
+      map(res => this.extractData<UserPreferencesRow>(res, true)),
+      map(row => this.mapToEntity(row))
     );
   }
 

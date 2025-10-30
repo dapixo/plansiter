@@ -1,4 +1,12 @@
-import { Component, inject, signal, output, effect, ChangeDetectionStrategy, computed } from '@angular/core';
+import {
+  Component,
+  inject,
+  signal,
+  output,
+  ChangeDetectionStrategy,
+  computed,
+  DestroyRef,
+} from '@angular/core';
 import { CommonModule } from '@angular/common';
 import { NonNullableFormBuilder, ReactiveFormsModule, Validators } from '@angular/forms';
 import { ButtonModule } from 'primeng/button';
@@ -7,7 +15,10 @@ import { FloatLabelModule } from 'primeng/floatlabel';
 import { TranslocoModule, TranslocoService } from '@jsverse/transloco';
 import { MessageService } from 'primeng/api';
 import { MessageModule } from 'primeng/message';
-import { ClientStore } from '@application/stores/client.store';
+import { takeUntilDestroyed } from '@angular/core/rxjs-interop';
+import { EMPTY } from 'rxjs';
+import { tap, catchError, finalize } from 'rxjs/operators';
+import { IClientRepository, CLIENT_REPOSITORY } from '@domain/repositories';
 import { AuthService } from '@application/services/auth.service';
 
 @Component({
@@ -31,8 +42,8 @@ import { AuthService } from '@application/services/auth.service';
         {{ 'onboarding.step5.subtitle' | transloco }}
       </p>
 
-      @if (clientStore.error()) {
-      <p-message severity="error" class="mb-8">{{ clientStore.error() }}</p-message>
+      @if (error()) {
+      <p-message severity="error" class="mb-8">{{ error() }}</p-message>
       }
 
       <form
@@ -169,7 +180,7 @@ import { AuthService } from '@application/services/auth.service';
               type="button"
               (onClick)="previous.emit()"
               [outlined]="true"
-              [disabled]="clientStore.loading()"
+              [disabled]="loading()"
             />
 
             <p-button
@@ -177,7 +188,7 @@ import { AuthService } from '@application/services/auth.service';
               icon="pi pi-check"
               iconPos="right"
               type="submit"
-              [loading]="clientStore.loading()"
+              [loading]="loading()"
               [raised]="true"
             />
           </div>
@@ -190,7 +201,7 @@ import { AuthService } from '@application/services/auth.service';
             type="button"
             (onClick)="next.emit()"
             [text]="true"
-            [disabled]="clientStore.loading()"
+            [disabled]="loading()"
             styleClass="w-full"
           />
         </div>
@@ -201,20 +212,24 @@ import { AuthService } from '@application/services/auth.service';
 })
 export class ClientStepComponent {
   private readonly fb = inject(NonNullableFormBuilder);
-  protected readonly clientStore = inject(ClientStore);
+  private readonly clientRepo = inject<IClientRepository>(CLIENT_REPOSITORY);
   private readonly auth = inject(AuthService);
   private readonly messageService = inject(MessageService);
   private readonly transloco = inject(TranslocoService);
+  private readonly destroyRef = inject(DestroyRef);
 
   previous = output<void>();
   next = output<void>();
 
   private readonly isSubmitting = signal(false);
+  protected readonly loading = signal(false);
+  protected readonly error = signal<string | null>(null);
+  private readonly success = signal(false);
 
   protected readonly uiState = computed(() => ({
-    loading: this.clientStore.loading(),
-    success: this.clientStore.success(),
-    error: this.clientStore.error(),
+    loading: this.loading(),
+    success: this.success(),
+    error: this.error(),
   }));
 
   protected readonly form = this.fb.group({
@@ -225,35 +240,10 @@ export class ClientStepComponent {
     country: ['France', Validators.required],
   });
 
-  private _submitEffect = effect(() => {
-    if (this.isSubmitting() && this.uiState().success && !this.uiState().loading) {
-      const createdClient = this.clientStore.lastCreated();
-
-      if (createdClient) {
-        this.messageService.add({
-          severity: 'success',
-          summary: this.transloco.translate('onboarding.step5.successTitle'),
-          detail: this.transloco.translate('onboarding.step5.successMessage', {
-            name: createdClient.name,
-            city: createdClient.city,
-          }),
-          life: 4000,
-        });
-
-        this.isSubmitting.set(false);
-        this.next.emit();
-      }
-    }
-
-    if (this.isSubmitting() && this.uiState().error && !this.uiState().loading) {
-      this.isSubmitting.set(false);
-    }
-  });
-
   protected saveAndContinue(): void {
     this.form.markAllAsTouched();
 
-    if (this.form.invalid || this.clientStore.loading()) return;
+    if (this.form.invalid || this.loading()) return;
 
     const userId = this.auth.currentUser()?.id;
     if (!userId) {
@@ -263,17 +253,47 @@ export class ClientStepComponent {
     const formValue = this.form.getRawValue();
 
     this.isSubmitting.set(true);
+    this.loading.set(true);
+    this.error.set(null);
 
-    this.clientStore.create({
-      userId,
-      name: formValue.name,
-      address: formValue.address,
-      city: formValue.city,
-      postalCode: formValue.postalCode,
-      country: formValue.country,
-      state: undefined,
-      notes: undefined,
-      deletedAt: undefined
-    });
+    this.clientRepo
+      .create({
+        userId,
+        name: formValue.name,
+        address: formValue.address,
+        city: formValue.city,
+        postalCode: formValue.postalCode,
+        country: formValue.country,
+        state: undefined,
+        notes: undefined,
+        deletedAt: undefined
+      })
+      .pipe(
+        tap((createdClient) => {
+          this.success.set(true);
+
+          this.messageService.add({
+            severity: 'success',
+            summary: this.transloco.translate('onboarding.step5.successTitle'),
+            detail: this.transloco.translate('onboarding.step5.successMessage', {
+              name: createdClient.name,
+              city: createdClient.city,
+            }),
+            life: 4000,
+          });
+
+          this.next.emit();
+        }),
+        catchError((err) => {
+          this.error.set(err.message || 'An error occurred');
+          return EMPTY;
+        }),
+        finalize(() => {
+          this.loading.set(false);
+          this.isSubmitting.set(false);
+        }),
+        takeUntilDestroyed(this.destroyRef)
+      )
+      .subscribe();
   }
 }

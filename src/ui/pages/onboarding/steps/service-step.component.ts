@@ -6,6 +6,7 @@ import {
   output,
   effect,
   ChangeDetectionStrategy,
+  DestroyRef,
 } from '@angular/core';
 import { CommonModule } from '@angular/common';
 import { NonNullableFormBuilder, ReactiveFormsModule, Validators } from '@angular/forms';
@@ -16,8 +17,11 @@ import { SelectModule } from 'primeng/select';
 import { FloatLabelModule } from 'primeng/floatlabel';
 import { TranslocoModule, TranslocoService } from '@jsverse/transloco';
 import { MessageService } from 'primeng/api';
+import { takeUntilDestroyed } from '@angular/core/rxjs-interop';
+import { EMPTY } from 'rxjs';
+import { tap, catchError, finalize } from 'rxjs/operators';
 import { CareType } from '@domain/entities/user-preferences.entity';
-import { ServiceStore } from '@application/stores/service.store';
+import { IServiceRepository, SERVICE_REPOSITORY } from '@domain/repositories';
 import { UserPreferencesStore } from '@application/stores/user-preferences.store';
 import { AuthService } from '@application/services/auth.service';
 import { CARE_TYPE_OPTIONS } from '@ui/constants/care-types.constant';
@@ -46,8 +50,8 @@ import { MessageModule } from 'primeng/message';
         {{ 'onboarding.step4.subtitle' | transloco }}
       </p>
 
-      @if (serviceStore.error()) {
-      <p-message severity="error" class="mb-8">{{ serviceStore.error() }}</p-message>
+      @if (error()) {
+      <p-message severity="error" class="mb-8">{{ error() }}</p-message>
       }
 
       <form
@@ -108,29 +112,29 @@ import { MessageModule } from 'primeng/message';
         <div class="flex flex-col gap-2">
           <p-floatlabel variant="in">
             <p-inputnumber
-              inputId="pricePerVisit"
-              formControlName="pricePerVisit"
+              inputId="price"
+              formControlName="price"
               mode="currency"
               currency="EUR"
               locale="fr-FR"
               [min]="0"
               [class.ng-invalid]="
-                form.controls.pricePerVisit.invalid && form.controls.pricePerVisit.touched
+                form.controls.price.invalid && form.controls.price.touched
               "
-              [class.ng-dirty]="form.controls.pricePerVisit.touched"
+              [class.ng-dirty]="form.controls.price.touched"
               class="w-full"
               [attr.aria-invalid]="
-                form.controls.pricePerVisit.invalid && form.controls.pricePerVisit.touched
+                form.controls.price.invalid && form.controls.price.touched
               "
               [attr.aria-describedby]="
-                form.controls.pricePerVisit.invalid && form.controls.pricePerVisit.touched
+                form.controls.price.invalid && form.controls.price.touched
                   ? 'price-error'
                   : null
               "
             />
-            <label for="pricePerVisit">{{ 'onboarding.step4.priceLabel' | transloco }}</label>
+            <label for="price">{{ 'onboarding.step4.priceLabel' | transloco }}</label>
           </p-floatlabel>
-          @if (form.controls.pricePerVisit.invalid && form.controls.pricePerVisit.touched) {
+          @if (form.controls.price.invalid && form.controls.price.touched) {
           <p-message id="price-error" severity="error" variant="simple" role="alert">
             {{ 'onboarding.step4.priceRequired' | transloco }}
           </p-message>
@@ -144,7 +148,7 @@ import { MessageModule } from 'primeng/message';
               type="button"
               (onClick)="previous.emit()"
               [outlined]="true"
-              [disabled]="serviceStore.loading()"
+              [disabled]="loading()"
             />
 
             <p-button
@@ -152,7 +156,7 @@ import { MessageModule } from 'primeng/message';
               icon="pi pi-check"
               iconPos="right"
               type="submit"
-              [loading]="serviceStore.loading()"
+              [loading]="loading()"
               [raised]="true"
             />
           </div>
@@ -164,7 +168,7 @@ import { MessageModule } from 'primeng/message';
             type="button"
             (onClick)="next.emit()"
             [text]="true"
-            [disabled]="serviceStore.loading()"
+            [disabled]="loading()"
             styleClass="w-full"
           />
         </div>
@@ -175,7 +179,7 @@ import { MessageModule } from 'primeng/message';
 })
 export class ServiceStepComponent {
   private readonly fb = inject(NonNullableFormBuilder);
-  protected readonly serviceStore = inject(ServiceStore);
+  private readonly serviceRepo = inject<IServiceRepository>(SERVICE_REPOSITORY);
   private readonly preferencesStore = inject(UserPreferencesStore);
   private readonly auth = inject(AuthService);
   private readonly messageService = inject(MessageService);
@@ -185,6 +189,10 @@ export class ServiceStepComponent {
   next = output<void>();
 
   private readonly isSubmitting = signal(false);
+  protected readonly loading = signal(false);
+  protected readonly error = signal<string | null>(null);
+  private readonly success = signal(false);
+  private readonly destroyRef = inject(DestroyRef);
 
   protected readonly selectedCareTypes = computed(() => this.preferencesStore.careTypes());
   protected readonly availableTypeOptions = computed(() => {
@@ -195,59 +203,31 @@ export class ServiceStepComponent {
     }));
   });
   protected readonly uiState = computed(() => ({
-    loading: this.serviceStore.loading(),
-    success: this.serviceStore.success(),
-    error: this.serviceStore.error(),
+    loading: this.loading(),
+    success: this.success(),
+    error: this.error(),
   }));
 
   protected readonly form = this.fb.group({
     name: ['', Validators.required],
     type: [null as CareType | null, Validators.required],
-    pricePerVisit: [null as number | null, [Validators.required, Validators.min(0)]],
+    price: [null as number | null, [Validators.required, Validators.min(0)]],
   });
 
-  private _selectedCareTypesEffect = effect(() => {
-    const types = this.selectedCareTypes();
-    if (types.length === 1) {
-      this.form.patchValue({ type: types[0] });
-    }
-  });
-
-  private _submitEffect = effect(() => {
-    if (this.isSubmitting() && this.uiState().success && !this.uiState().loading) {
-      const createdService = this.serviceStore.lastCreated();
-
-      if (createdService) {
-        const careTypeOption = CARE_TYPE_OPTIONS.find((opt) => opt.value === createdService.type);
-        const careTypeLabel = careTypeOption
-          ? this.transloco.translate(careTypeOption.labelKey)
-          : createdService.type;
-
-        this.messageService.add({
-          severity: 'success',
-          summary: this.transloco.translate('onboarding.step4.successTitle'),
-          detail: this.transloco.translate('onboarding.step4.successMessage', {
-            name: createdService.name,
-            type: careTypeLabel,
-            price: createdService.pricePerVisit,
-          }),
-          life: 4000,
-        });
-
-        this.isSubmitting.set(false);
-        this.next.emit();
+  // Auto-select type if only one care type is available
+  constructor() {
+    effect(() => {
+      const types = this.selectedCareTypes();
+      if (types.length === 1) {
+        this.form.patchValue({ type: types[0] });
       }
-    }
-
-    if (this.isSubmitting() && this.uiState().error && !this.uiState().loading) {
-      this.isSubmitting.set(false);
-    }
-  });
+    });
+  }
 
   protected saveAndContinue(): void {
     this.form.markAllAsTouched();
 
-    if (this.form.invalid || this.serviceStore.loading()) return;
+    if (this.form.invalid || this.loading()) return;
 
     const userId = this.auth.currentUser()?.id;
     if (!userId) {
@@ -257,12 +237,48 @@ export class ServiceStepComponent {
     const formValue = this.form.getRawValue();
 
     this.isSubmitting.set(true);
+    this.loading.set(true);
+    this.error.set(null);
 
-    this.serviceStore.create({
-      userId,
-      name: formValue.name,
-      type: formValue.type!,
-      pricePerVisit: formValue.pricePerVisit!,
-    });
+    this.serviceRepo
+      .create({
+        userId,
+        name: formValue.name,
+        type: formValue.type!,
+        price: formValue.price!,
+      })
+      .pipe(
+        tap((createdService) => {
+          this.success.set(true);
+
+          const careTypeOption = CARE_TYPE_OPTIONS.find((opt) => opt.value === createdService.type);
+          const careTypeLabel = careTypeOption
+            ? this.transloco.translate(careTypeOption.labelKey)
+            : createdService.type;
+
+          this.messageService.add({
+            severity: 'success',
+            summary: this.transloco.translate('onboarding.step4.successTitle'),
+            detail: this.transloco.translate('onboarding.step4.successMessage', {
+              name: createdService.name,
+              type: careTypeLabel,
+              price: createdService.price,
+            }),
+            life: 4000,
+          });
+
+          this.next.emit();
+        }),
+        catchError((err) => {
+          this.error.set(err.message || 'An error occurred');
+          return EMPTY;
+        }),
+        finalize(() => {
+          this.loading.set(false);
+          this.isSubmitting.set(false);
+        }),
+        takeUntilDestroyed(this.destroyRef)
+      )
+      .subscribe();
   }
 }
