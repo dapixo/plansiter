@@ -264,7 +264,6 @@
     "emailRequired": "La dirección de correo electrónico es obligatoria",
     "name": "Nombre completo",
     "nameRequired": "El nombre es obligatorio",
-    "memberSince": "Miembro desde",
     "updateSuccess": "Tu información ha sido actualizada correctamente",
     "updateError": "Se ha producido un error al actualizar",
     "preferences": "Preferencias de cuidado",

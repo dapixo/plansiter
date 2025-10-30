@@ -7,7 +7,7 @@ import { TranslocoModule, TranslocoService } from '@jsverse/transloco';
 import { Service } from '@domain/entities';
 import { ServiceStore } from '@application/stores/service.store';
 import { EmptyStateComponent } from '@ui/components/empty-state/empty-state.component';
-import { ActionButtonComponent } from '@ui/components/action-button/action-button.component';
+import { ButtonModule } from 'primeng/button';
 
 @Component({
   selector: 'app-services',
@@ -17,12 +17,10 @@ import { ActionButtonComponent } from '@ui/components/action-button/action-butto
     RouterModule,
     ConfirmDialogModule,
     TranslocoModule,
-    EmptyStateComponent,
-    ActionButtonComponent
+    EmptyStateComponent,ButtonModule
   ],
   providers: [ConfirmationService],
   templateUrl: './services.component.html',
-  styleUrls: ['./services.component.css'],
   changeDetection: ChangeDetectionStrategy.OnPush,
 })
 export class ServicesComponent {

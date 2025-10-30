@@ -1,13 +1,15 @@
 <section class="p-8 bg-gray-50 min-h-full" aria-labelledby="service-form-title">
   <!-- Header -->
   <header class="mb-8">
-    <h1 id="service-form-title" class="text-4xl font-bold mb-2">
+    <h1 id="service-form-title" class="text-xl font-bold mb-1">
       <span class="bg-gradient-to-r from-indigo-600 to-purple-600 bg-clip-text text-transparent">
         {{ (isEditMode() ? 'services.editService' : 'services.createService') | transloco }}
       </span>
     </h1>
-    <p class="text-gray-600 text-lg">
-      {{ (isEditMode() ? 'services.form.editSubtitle' : 'services.form.createSubtitle') | transloco }}
+    <p class="text-gray-600 text-md">
+      {{
+        (isEditMode() ? 'services.form.editSubtitle' : 'services.form.createSubtitle') | transloco
+      }}
     </p>
   </header>
 
@@ -44,7 +46,9 @@
             class="w-full"
             aria-required="true"
             required
-            [attr.aria-invalid]="form.controls.name.invalid && form.controls.name.touched ? 'true' : 'false'"
+            [attr.aria-invalid]="
+              form.controls.name.invalid && form.controls.name.touched ? 'true' : 'false'
+            "
             [attr.aria-describedby]="
               form.controls.name.invalid && form.controls.name.touched ? 'name-error' : null
             "
@@ -70,7 +74,9 @@
             [placeholder]="'services.form.typePlaceholder' | transloco"
             class="w-full"
             aria-required="true"
-            [attr.aria-invalid]="form.controls.type.invalid && form.controls.type.touched ? 'true' : 'false'"
+            [attr.aria-invalid]="
+              form.controls.type.invalid && form.controls.type.touched ? 'true' : 'false'
+            "
             [attr.aria-describedby]="
               form.controls.type.invalid && form.controls.type.touched ? 'type-error' : null
             "
@@ -84,9 +90,11 @@
               <div class="flex items-center gap-2">
                 {{ option.labelKey | transloco }}
                 @if (!activeCareTypes().includes(option.value)) {
-                  <span class="text-xs bg-amber-100 text-amber-700 px-2 py-0.5 rounded whitespace-nowrap">
-                    {{ 'common.disabled' | transloco }}
-                  </span>
+                <span
+                  class="text-xs bg-amber-100 text-amber-700 px-2 py-0.5 rounded whitespace-nowrap"
+                >
+                  {{ 'common.disabled' | transloco }}
+                </span>
                 }
               </div>
             </ng-template>
@@ -132,10 +140,13 @@
             class="w-full"
             aria-required="true"
             [attr.aria-label]="'services.form.priceAriaLabel' | transloco"
-            [attr.aria-invalid]="form.controls.price.invalid && form.controls.price.touched ? 'true' : 'false'"
+            [attr.aria-invalid]="
+              form.controls.price.invalid && form.controls.price.touched ? 'true' : 'false'
+            "
             [attr.aria-describedby]="
               form.controls.price.invalid && form.controls.price.touched ? 'price-error' : null
-            " />
+            "
+          />
           @if (form.controls.price.invalid && form.controls.price.touched) {
           <p-message id="price-error" severity="error" variant="simple" role="alert">
             {{ 'services.form.priceRequired' | transloco }}
@@ -146,13 +157,12 @@
 
       <!-- Actions -->
       <div class="flex justify-end gap-3 pt-4 border-t border-gray-200">
-        <app-action-button
-          [route]="null"
-          type="submit"
-          labelKey="common.save"
-          icon="pi-check"
+        <p-button
+          [label]="'common.save' | transloco"
+          icon="pi pi-check"
           [loading]="uiState().loading"
-          ariaLabelKey="common.saveService"
+          type="submit"
+          size="small"
         />
       </div>
 

@@ -4,18 +4,18 @@
   <!-- Header -->
   <header class="flex justify-between items-center mb-8">
     <div>
-      <h2 id="services-section-title" class="text-4xl font-bold mb-2">
-        <span class="bg-gradient-to-r from-indigo-600 to-purple-600 bg-clip-text text-transparent">{{ 'services.title' | transloco }}</span>
+      <h2 id="services-section-title" class="text-xl font-bold mb-1">
+        <span
+          class="bg-gradient-to-r from-indigo-600 to-purple-600 bg-clip-text text-transparent"
+          >{{ 'services.title' | transloco }}</span
+        >
       </h2>
-      <p class="text-gray-600 text-lg">{{ 'services.subtitle' | transloco }}</p>
+      <p class="text-gray-600 text-md">{{ 'services.subtitle' | transloco }}</p>
     </div>
     @if (store.activeServices().length > 0) {
-    <app-action-button
-      route="new"
-      labelKey="services.addService"
-      icon="pi-plus"
-      ariaLabelKey="services.addService"
-    />
+    <a routerLink="new" pButton size="small" icon="pi pi-plus">
+      <span pButtonLabel>{{ 'services.addService' | transloco }}</span>
+    </a>
     }
   </header>
 
@@ -30,7 +30,9 @@
       >
         <!-- Infos service -->
         <div class="flex items-center gap-3 mb-4">
-          <div class="w-10 h-10 bg-gray-100 rounded-full flex items-center justify-center flex-shrink-0">
+          <div
+            class="w-10 h-10 bg-gray-100 rounded-full flex items-center justify-center flex-shrink-0"
+          >
             <i class="pi pi-briefcase text-gray-600" aria-hidden="true"></i>
           </div>
           <div class="flex-1 min-w-0">

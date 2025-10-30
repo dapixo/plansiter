@@ -7,40 +7,19 @@
     <p-toast/>
 
     <header class="mb-8">
-      <h2 id="account-section-title" class="text-4xl font-bold mb-2">
+      <h2 id="account-section-title" class="text-xl font-bold mb-1">
         <span
           class="bg-gradient-to-r from-indigo-600 to-purple-600 bg-clip-text text-transparent"
         >
           {{ 'account.title' | transloco }}
         </span>
       </h2>
-      <p class="text-gray-700 text-lg">
+      <p class="text-gray-700 text-md">
         {{ 'account.subtitle' | transloco }}
       </p>
     </header>
 
     <div class="max-w-2xl space-y-6">
-      <!-- Member Since Info -->
-      <aside
-        class="bg-white rounded-xl border border-gray-200 p-6"
-        aria-label="{{ 'account.memberSince' | transloco }}"
-      >
-        <div class="flex items-center gap-3">
-          <i
-            class="pi pi-calendar text-indigo-600 text-xl"
-            aria-hidden="true"
-          ></i>
-          <div>
-            <p class="text-sm text-gray-600">
-              {{ 'account.memberSince' | transloco }}
-            </p>
-            <p class="text-lg font-semibold text-gray-900">
-              {{ memberSince() }}
-            </p>
-          </div>
-        </div>
-      </aside>
-
       <!-- Account Info Card -->
       <article
         class="bg-white rounded-xl border border-gray-200 p-8"
@@ -194,13 +173,13 @@
 
           <!-- Actions -->
           <div class="flex justify-end gap-3 pt-4 border-t border-gray-200">
-            <app-action-button
-              type="submit"
-              labelKey="common.save"
-              icon="pi-check"
-              [loading]="isLoading()"
-              ariaLabelKey="common.save"
-            />
+                    <p-button
+          [label]="'common.save' | transloco"
+          icon="pi pi-check"
+          type="submit"
+          size="small"
+          [loading]="isLoading()"
+        />
           </div>
         </form>
       </article>

@@ -53,11 +53,14 @@
 
             <!-- Message d'erreur -->
             @if (errorMessage()) {
-              <div class="bg-red-50 border border-red-200 rounded-lg p-3">
-                <p id="email-error" class="text-red-600 text-sm" role="alert" aria-live="polite">
-                  {{ errorMessage() }}
-                </p>
-              </div>
+              <p-message
+                id="email-error"
+                severity="error"
+                role="alert"
+                aria-live="polite"
+              >
+                {{ errorMessage() }}
+              </p-message>
             }
 
             <!-- Bouton principal moderne -->
@@ -107,11 +110,14 @@
 
             <!-- Message d'erreur -->
             @if (errorMessage()) {
-              <div class="bg-red-50 border border-red-200 rounded-lg p-3">
-                <p class="text-red-600 text-sm text-center" role="alert" aria-live="polite">
-                  {{ errorMessage() }}
-                </p>
-              </div>
+              <p-message
+                severity="error"
+                role="alert"
+                aria-live="polite"
+                styleClass="text-center"
+              >
+                {{ errorMessage() }}
+              </p-message>
             }
 
             <!-- Bouton principal -->

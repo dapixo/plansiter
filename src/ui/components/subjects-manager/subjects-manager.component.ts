@@ -16,7 +16,7 @@ import { ClientStore } from '@application/stores/client.store';
 import { TempSubject } from '@application/services/client-management.service';
 import { SubjectCardComponent } from '@ui/components/subject-card/subject-card.component';
 import { SubjectFormDialogComponent } from '@ui/components/subject-form-dialog/subject-form-dialog.component';
-import { ActionButtonComponent } from '../action-button/action-button.component';
+import { ButtonModule } from 'primeng/button';
 
 @Component({
   selector: 'app-subjects-manager',
@@ -27,7 +27,7 @@ import { ActionButtonComponent } from '../action-button/action-button.component'
     ConfirmDialogModule,
     SubjectCardComponent,
     SubjectFormDialogComponent,
-    ActionButtonComponent
+    ButtonModule,
   ],
   providers: [ConfirmationService],
   changeDetection: ChangeDetectionStrategy.OnPush,
@@ -35,35 +35,33 @@ import { ActionButtonComponent } from '../action-button/action-button.component'
     <section class="flex flex-col gap-4" aria-label="{{ 'subjects.managerTitle' | transloco }}">
       <!-- Liste des subjects -->
       @if (displayedSubjects().length > 0) {
-        <div
-          class="grid grid-cols-1 md:grid-cols-2 gap-3"
-          role="list"
-          aria-label="{{ 'subjects.list' | transloco }}"
-        >
-          @for (
-            subject of displayedSubjects();
-            track subject.id || ('tempId' in subject ? subject.tempId : null);
-            let i = $index
-          ) {
-            <app-subject-card
-              role="listitem"
-              [subject]="subject"
-              (edit)="onEdit(i)"
-              (delete)="onDelete(i)"
-            />
-          }
-        </div>
+      <div
+        class="grid grid-cols-1 md:grid-cols-2 gap-3"
+        role="list"
+        aria-label="{{ 'subjects.list' | transloco }}"
+      >
+        @for ( subject of displayedSubjects(); track subject.id || ('tempId' in subject ?
+        subject.tempId : null); let i = $index ) {
+        <app-subject-card
+          role="listitem"
+          [subject]="subject"
+          (edit)="onEdit(i)"
+          (delete)="onDelete(i)"
+        />
+        }
+      </div>
       }
 
       <!-- Bouton ajouter -->
-      <app-action-button
-        [route]="null"
-        type="button"
-        (click)="onAdd()"
-        labelKey="subjects.addSubject"
-        icon="pi-plus"
-        ariaLabelKey="subjects.addSubject"
-      />
+      <div>
+        <p-button
+          [label]="'subjects.addSubject' | transloco"
+          icon="pi pi-plus"
+          type="button"
+          size="small"
+          (click)="onAdd()"
+        />
+      </div>
 
       <!-- Modale formulaire subject -->
       <app-subject-form-dialog
@@ -98,7 +96,7 @@ export class SubjectsManagerComponent {
   // Subjects affichés selon le mode
   protected readonly displayedSubjects = computed<Subject[] | TempSubject[]>(() => {
     return this.isEditMode()
-      ? this.store.subjects().filter(s => s.clientId === this.clientId() && !s.deletedAt)
+      ? this.store.subjects().filter((s) => s.clientId === this.clientId() && !s.deletedAt)
       : this.tempSubjects();
   });
 
@@ -129,7 +127,7 @@ export class SubjectsManagerComponent {
         this.isEditMode() && subject.id
           ? this.deletePersistedSubject(subject.id)
           : this.deleteTempSubject(index);
-      }
+      },
     });
   }
 
@@ -140,10 +138,10 @@ export class SubjectsManagerComponent {
     this.resetDialog();
   }
 
-  protected handleSubjectSaved(payload: Omit<Subject, 'id' | 'clientId' | 'createdAt' | 'updatedAt'>): void {
-    this.isEditMode()
-      ? this.updatePersistedSubject(payload)
-      : this.updateTempSubject(payload);
+  protected handleSubjectSaved(
+    payload: Omit<Subject, 'id' | 'clientId' | 'createdAt' | 'updatedAt'>
+  ): void {
+    this.isEditMode() ? this.updatePersistedSubject(payload) : this.updateTempSubject(payload);
     this.resetDialog();
   }
 
@@ -160,12 +158,14 @@ export class SubjectsManagerComponent {
     this.subjectsChange.emit(updated);
   }
 
-  private updateTempSubject(payload: Omit<Subject, 'id' | 'clientId' | 'createdAt' | 'updatedAt'>): void {
+  private updateTempSubject(
+    payload: Omit<Subject, 'id' | 'clientId' | 'createdAt' | 'updatedAt'>
+  ): void {
     const updated = [...this.tempSubjects()];
     const editing = this.editingSubject();
 
     if (editing && 'tempId' in editing) {
-      const idx = updated.findIndex(s => s.tempId === editing.tempId);
+      const idx = updated.findIndex((s) => s.tempId === editing.tempId);
       if (idx !== -1) updated[idx] = { ...updated[idx], ...payload };
     } else {
       updated.push({ tempId: crypto.randomUUID(), ...payload });

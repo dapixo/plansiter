@@ -9,7 +9,7 @@
   styleClass="w-full max-w-2xl"
 >
   <ng-template pTemplate="header">
-    <h2 class="text-2xl font-bold">
+    <h2 class="text-xl font-bold">
       <span class="bg-gradient-to-r from-indigo-600 to-purple-600 bg-clip-text text-transparent">
         {{ dialogTitle() }}
       </span>
@@ -141,23 +141,24 @@
   </div>
 
   <ng-template pTemplate="footer">
-    <div class="flex justify-end gap-3">
-      <app-action-button
-        [route]="null"
+        <div class="flex gap-3 justify-end">
+      <p-button
+        [label]="'common.cancel' | transloco"
+        severity="secondary"
         type="button"
-        labelKey="common.cancel"
-        variant="secondary"
+        size="small"
         (click)="onHide(false)"
         [disabled]="loading()"
       />
-      <app-action-button
-        [route]="null"
-        type="button"
-        labelKey="common.save"
-        icon="pi-check"
+      <p-button
+        [label]="'common.save' | transloco"
+        icon="pi pi-check"
         [loading]="loading()"
+        type="submit"
+        size="small"
         (click)="onSave()"
       />
     </div>
+
   </ng-template>
 </p-dialog>

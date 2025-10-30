@@ -24,7 +24,6 @@ import { TranslocoModule, TranslocoService } from '@jsverse/transloco';
 import { SelectModule } from 'primeng/select';
 import { InputNumberModule } from 'primeng/inputnumber';
 import { TextareaModule } from 'primeng/textarea';
-import { ActionButtonComponent } from '@ui/components/action-button/action-button.component';
 import { ServiceStore } from '@application/stores/service.store';
 import { UserPreferencesStore } from '@application/stores/user-preferences.store';
 import { AuthService } from '@application/services';
@@ -46,7 +45,6 @@ import { CARE_TYPE_OPTIONS } from '@ui/constants/care-types.constant';
     SelectModule,
     InputNumberModule,
     TextareaModule,
-    ActionButtonComponent,
   ],
   templateUrl: './service-form-dialog.component.html',
   changeDetection: ChangeDetectionStrategy.OnPush,
@@ -92,7 +90,7 @@ export class ServiceFormDialogComponent {
 
     const typeOption = CARE_TYPE_OPTIONS.find(opt => opt.value === type);
     const typeLabel = typeOption ? this.transloco.translate(typeOption.labelKey) : '';
-    return this.transloco.translate('services.form.createServiceForType', { type: typeLabel });
+    return this.transloco.translate('services.createServiceForType', { type: typeLabel });
   });
 
   // -----------------------

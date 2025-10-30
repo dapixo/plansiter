@@ -264,7 +264,6 @@
     "emailRequired": "Email address is required",
     "name": "Full name",
     "nameRequired": "Name is required",
-    "memberSince": "Member since",
     "updateSuccess": "Your information has been successfully updated",
     "updateError": "An error occurred while updating",
     "preferences": "Care preferences",

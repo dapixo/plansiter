@@ -4,18 +4,18 @@
   <!-- Header -->
   <header class="flex justify-between items-center mb-8">
     <div>
-      <h2 id="clients-section-title" class="text-4xl font-bold mb-2">
-        <span class="bg-gradient-to-r from-indigo-600 to-purple-600 bg-clip-text text-transparent">{{ 'clients.title' | transloco }}</span>
+      <h2 id="clients-section-title" class="text-xl font-bold mb-1">
+        <span
+          class="bg-gradient-to-r from-indigo-600 to-purple-600 bg-clip-text text-transparent"
+          >{{ 'clients.title' | transloco }}</span
+        >
       </h2>
-      <p class="text-gray-600 text-lg">{{ 'clients.subtitle' | transloco }}</p>
+      <p class="text-gray-600 text-md">{{ 'clients.subtitle' | transloco }}</p>
     </div>
     @if (store.activeClients().length > 0) {
-    <app-action-button
-      route="new"
-      labelKey="clients.addClient"
-      icon="pi-plus"
-      ariaLabelKey="clients.addClient"
-    />
+    <a routerLink="new" pButton size="small" icon="pi pi-plus">
+      <span pButtonLabel>{{'clients.addClient' | transloco}}</span>
+    </a>
     }
   </header>
 
@@ -30,16 +30,16 @@
       >
         <!-- Infos client -->
         <div class="flex items-center gap-3 mb-4">
-          <div class="w-10 h-10 bg-gray-100 rounded-full flex items-center justify-center flex-shrink-0">
+          <div
+            class="w-10 h-10 bg-gray-100 rounded-full flex items-center justify-center flex-shrink-0"
+          >
             <i class="pi pi-user text-gray-600" aria-hidden="true"></i>
           </div>
           <div class="flex-1 min-w-0">
             <h3 class="text-lg font-semibold text-gray-900 truncate">
               {{ client.name }}
             </h3>
-            <p class="text-sm text-gray-500">
-              {{ client.city }}, {{ client.country }}
-            </p>
+            <p class="text-sm text-gray-500">{{ client.city }}, {{ client.country }}</p>
           </div>
         </div>
 
@@ -53,7 +53,9 @@
         @if (getClientSubjects(client.id).length > 0) {
         <div class="flex flex-wrap gap-2 pt-3 border-t border-gray-100 mt-auto">
           @for (subject of getClientSubjects(client.id); track subject.id) {
-          <span class="inline-flex items-center gap-1.5 px-2.5 py-1 bg-gray-50 text-gray-700 text-xs rounded-full">
+          <span
+            class="inline-flex items-center gap-1.5 px-2.5 py-1 bg-gray-50 text-gray-700 text-xs rounded-full"
+          >
             <i [class]="'pi ' + getSubjectIcon(subject.type) + ' text-xs'" aria-hidden="true"></i>
             <span>{{ subject.name }}</span>
           </span>

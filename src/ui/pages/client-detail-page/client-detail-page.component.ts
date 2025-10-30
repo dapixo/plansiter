@@ -17,6 +17,7 @@ import { TextareaModule } from 'primeng/textarea';
 import { ClientStore } from '@application/stores/client.store';
 import { LanguageService } from '@application/services/language.service';
 import { SubjectsManagerComponent } from '@ui/components/subjects-manager/subjects-manager.component';
+import { ButtonModule } from 'primeng/button';
 
 @Component({
   selector: 'app-client-detail-page',
@@ -30,9 +31,9 @@ import { SubjectsManagerComponent } from '@ui/components/subjects-manager/subjec
     MessageModule,
     TranslocoModule,
     SubjectsManagerComponent,
+    ButtonModule
   ],
   templateUrl: './client-detail-page.component.html',
-  styleUrls: ['./client-detail-page.component.css'],
   changeDetection: ChangeDetectionStrategy.OnPush,
 })
 export class ClientDetailPageComponent {

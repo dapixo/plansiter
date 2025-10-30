@@ -15,7 +15,6 @@ import {
 } from '@angular/core';
 import { ButtonModule } from 'primeng/button';
 import { TranslocoModule } from '@jsverse/transloco';
-import { ActionButtonComponent } from '../action-button/action-button.component';
 import {
   addMonths,
   eachDayOfInterval,
@@ -42,7 +41,7 @@ import { Popover } from 'primeng/popover';
 @Component({
   selector: 'app-calendar',
   standalone: true,
-  imports: [DatePipe, NgClass, ButtonModule, TranslocoModule, ActionButtonComponent, Popover],
+  imports: [DatePipe, NgClass, ButtonModule, TranslocoModule, Popover],
   changeDetection: ChangeDetectionStrategy.OnPush,
   styles: [
     `

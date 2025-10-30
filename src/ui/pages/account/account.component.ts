@@ -20,8 +20,6 @@ import { UserPreferencesStore } from '@application/stores/user-preferences.store
 import { CareType } from '@domain/entities/user-preferences.entity';
 import { EMPTY } from 'rxjs';
 import { tap, catchError, finalize } from 'rxjs/operators';
-import { ActionButtonComponent } from '@ui/components/action-button/action-button.component';
-import { getLocaleCode } from '@ui/utils/locale.utils';
 import { CARE_TYPE_LABELS } from '@ui/constants/care-types.constant';
 
 @Component({
@@ -34,7 +32,6 @@ import { CARE_TYPE_LABELS } from '@ui/constants/care-types.constant';
     ButtonModule,
     ToastModule,
     MultiSelectModule,
-    ActionButtonComponent,
   ],
   providers: [MessageService],
   changeDetection: ChangeDetectionStrategy.OnPush,
@@ -63,20 +60,6 @@ export class AccountComponent {
     email: ['', [Validators.required, Validators.email]],
     name: ['', [Validators.required]],
     careTypes: [[] as CareType[], [Validators.required, Validators.minLength(1)]],
-  });
-
-  readonly memberSince = computed(() => {
-    const user = this.currentUser();
-    if (!user?.created_at) return '';
-
-    const date = new Date(user.created_at);
-    const locale = this.transloco.getActiveLang();
-
-    return date.toLocaleDateString(getLocaleCode(locale), {
-      year: 'numeric',
-      month: 'long',
-      day: 'numeric',
-    });
   });
 
   private _patchFormEffect = effect(() => {

@@ -9,7 +9,6 @@ import { Client } from '@domain/entities';
 import { CareType } from '@domain/entities/user-preferences.entity';
 import { ClientStore } from '@application/stores/client.store';
 import { EmptyStateComponent } from '@ui/components/empty-state/empty-state.component';
-import { ActionButtonComponent } from '@ui/components/action-button/action-button.component';
 
 @Component({
   selector: 'app-clients',
@@ -20,12 +19,10 @@ import { ActionButtonComponent } from '@ui/components/action-button/action-butto
     ButtonModule,
     ConfirmDialogModule,
     TranslocoModule,
-    EmptyStateComponent,
-    ActionButtonComponent
+    EmptyStateComponent
   ],
   providers: [ConfirmationService],
   templateUrl: './clients.component.html',
-  styleUrls: ['./clients.component.css'],
   changeDetection: ChangeDetectionStrategy.OnPush,
 })
 export class ClientsComponent {

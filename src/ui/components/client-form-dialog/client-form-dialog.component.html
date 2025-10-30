@@ -9,7 +9,7 @@
   styleClass="w-full max-w-2xl"
 >
   <ng-template pTemplate="header">
-    <h2 class="text-2xl font-bold">
+    <h2 class="text-xl font-bold">
       <span class="bg-gradient-to-r from-indigo-600 to-purple-600 bg-clip-text text-transparent">
         {{ 'clients.createClient' | transloco }}
       </span>
@@ -44,13 +44,22 @@
         required
         autocomplete="name"
         [attr.aria-invalid]="
-          clientForm.controls.name.invalid && clientForm.controls.name.touched && clientForm.controls.name.dirty ? 'true' : 'false'
+          clientForm.controls.name.invalid &&
+          clientForm.controls.name.touched &&
+          clientForm.controls.name.dirty
+            ? 'true'
+            : 'false'
         "
         [attr.aria-describedby]="
-          clientForm.controls.name.invalid && clientForm.controls.name.touched && clientForm.controls.name.dirty ? 'name-error' : null
+          clientForm.controls.name.invalid &&
+          clientForm.controls.name.touched &&
+          clientForm.controls.name.dirty
+            ? 'name-error'
+            : null
         "
       />
-      @if (clientForm.controls.name.invalid && clientForm.controls.name.touched && clientForm.controls.name.dirty) {
+      @if (clientForm.controls.name.invalid && clientForm.controls.name.touched &&
+      clientForm.controls.name.dirty) {
       <p-message id="name-error" severity="error" variant="simple" role="alert">
         {{ 'clients.form.nameRequired' | transloco }}
       </p-message>
@@ -73,17 +82,22 @@
         required
         autocomplete="address-line1"
         [attr.aria-invalid]="
-          clientForm.controls.address.invalid && clientForm.controls.address.touched && clientForm.controls.address.dirty
+          clientForm.controls.address.invalid &&
+          clientForm.controls.address.touched &&
+          clientForm.controls.address.dirty
             ? 'true'
             : 'false'
         "
         [attr.aria-describedby]="
-          clientForm.controls.address.invalid && clientForm.controls.address.touched && clientForm.controls.address.dirty
+          clientForm.controls.address.invalid &&
+          clientForm.controls.address.touched &&
+          clientForm.controls.address.dirty
             ? 'address-error'
             : null
         "
       />
-      @if (clientForm.controls.address.invalid && clientForm.controls.address.touched && clientForm.controls.address.dirty) {
+      @if (clientForm.controls.address.invalid && clientForm.controls.address.touched &&
+      clientForm.controls.address.dirty) {
       <p-message id="address-error" severity="error" variant="simple" role="alert">
         {{ 'clients.form.addressRequired' | transloco }}
       </p-message>
@@ -107,15 +121,22 @@
           required
           autocomplete="address-level2"
           [attr.aria-invalid]="
-            clientForm.controls.city.invalid && clientForm.controls.city.touched && clientForm.controls.city.dirty ? 'true' : 'false'
+            clientForm.controls.city.invalid &&
+            clientForm.controls.city.touched &&
+            clientForm.controls.city.dirty
+              ? 'true'
+              : 'false'
           "
           [attr.aria-describedby]="
-            clientForm.controls.city.invalid && clientForm.controls.city.touched && clientForm.controls.city.dirty
+            clientForm.controls.city.invalid &&
+            clientForm.controls.city.touched &&
+            clientForm.controls.city.dirty
               ? 'city-error'
               : null
           "
         />
-        @if (clientForm.controls.city.invalid && clientForm.controls.city.touched && clientForm.controls.city.dirty) {
+        @if (clientForm.controls.city.invalid && clientForm.controls.city.touched &&
+        clientForm.controls.city.dirty) {
         <p-message id="city-error" severity="error" variant="simple" role="alert">
           {{ 'clients.form.cityRequired' | transloco }}
         </p-message>
@@ -137,17 +158,22 @@
           required
           autocomplete="postal-code"
           [attr.aria-invalid]="
-            clientForm.controls.postalCode.invalid && clientForm.controls.postalCode.touched && clientForm.controls.postalCode.dirty
+            clientForm.controls.postalCode.invalid &&
+            clientForm.controls.postalCode.touched &&
+            clientForm.controls.postalCode.dirty
               ? 'true'
               : 'false'
           "
           [attr.aria-describedby]="
-            clientForm.controls.postalCode.invalid && clientForm.controls.postalCode.touched && clientForm.controls.postalCode.dirty
+            clientForm.controls.postalCode.invalid &&
+            clientForm.controls.postalCode.touched &&
+            clientForm.controls.postalCode.dirty
               ? 'postalCode-error'
               : null
           "
         />
-        @if (clientForm.controls.postalCode.invalid && clientForm.controls.postalCode.touched && clientForm.controls.postalCode.dirty) {
+        @if (clientForm.controls.postalCode.invalid && clientForm.controls.postalCode.touched &&
+        clientForm.controls.postalCode.dirty) {
         <p-message id="postalCode-error" severity="error" variant="simple" role="alert">
           {{ 'clients.form.postalCodeRequired' | transloco }}
         </p-message>
@@ -185,17 +211,22 @@
         required
         autocomplete="country-name"
         [attr.aria-invalid]="
-          clientForm.controls.country.invalid && clientForm.controls.country.touched && clientForm.controls.country.dirty
+          clientForm.controls.country.invalid &&
+          clientForm.controls.country.touched &&
+          clientForm.controls.country.dirty
             ? 'true'
             : 'false'
         "
         [attr.aria-describedby]="
-          clientForm.controls.country.invalid && clientForm.controls.country.touched && clientForm.controls.country.dirty
+          clientForm.controls.country.invalid &&
+          clientForm.controls.country.touched &&
+          clientForm.controls.country.dirty
             ? 'country-error'
             : null
         "
       />
-      @if (clientForm.controls.country.invalid && clientForm.controls.country.touched && clientForm.controls.country.dirty) {
+      @if (clientForm.controls.country.invalid && clientForm.controls.country.touched &&
+      clientForm.controls.country.dirty) {
       <p-message id="country-error" severity="error" variant="simple" role="alert">
         {{ 'clients.form.countryRequired' | transloco }}
       </p-message>
@@ -220,21 +251,21 @@
   </div>
 
   <ng-template pTemplate="footer">
-    <div class="flex justify-end gap-3">
-      <app-action-button
-        [route]="null"
+    <div class="flex gap-3 justify-end">
+      <p-button
+        [label]="'common.cancel' | transloco"
+        severity="secondary"
         type="button"
-        labelKey="common.cancel"
-        variant="secondary"
+        size="small"
         (click)="onHide(false)"
         [disabled]="loading()"
       />
-      <app-action-button
-        [route]="null"
-        type="button"
-        labelKey="common.save"
-        icon="pi-check"
+      <p-button
+        [label]="'common.save' | transloco"
+        icon="pi pi-check"
         [loading]="loading()"
+        type="submit"
+        size="small"
         (click)="onSave()"
       />
     </div>

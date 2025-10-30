@@ -98,9 +98,7 @@
               class="w-full"
               aria-required="true"
               [attr.aria-invalid]="
-                infoForm.controls.name.invalid && infoForm.controls.name.touched
-                  ? 'true'
-                  : 'false'
+                infoForm.controls.name.invalid && infoForm.controls.name.touched ? 'true' : 'false'
               "
               [attr.aria-describedby]="
                 infoForm.controls.name.invalid && infoForm.controls.name.touched
@@ -279,21 +277,22 @@
           </div>
 
           <!-- Action buttons -->
-          <div class="flex gap-3 pt-2">
-            <button
+          <div class="flex gap-3 pt-2 justify-end">
+            <p-button
+              [label]="'common.cancel' | transloco"
+              severity="secondary"
+              [disabled]="loading()"
               type="button"
+              size="small"
               (click)="onCancelInfo()"
-              class="px-4 py-2 bg-gray-200 text-gray-700 rounded hover:bg-gray-300 focus:outline-none focus:ring-2 focus:ring-indigo-500 focus:ring-offset-2"
-            >
-              {{ 'common.cancel' | transloco }}
-            </button>
-            <button
+            />
+            <p-button
+              [label]="'common.save' | transloco"
+              icon="pi pi-check"
+              [loading]="loading()"
               type="submit"
-              [disabled]="infoForm.invalid"
-              class="px-4 py-2 bg-indigo-600 text-white rounded hover:bg-indigo-700 focus:outline-none focus:ring-2 focus:ring-indigo-500 focus:ring-offset-2"
-            >
-              {{ 'common.save' | transloco }}
-            </button>
+              size="small"
+            />
           </div>
         </form>
       </div>
@@ -348,20 +347,23 @@
         <div id="edit-notes-help" class="sr-only">
           {{ 'clients.form.notesPlaceholder' | transloco }}
         </div>
-        <div class="flex gap-3">
-          <button
+
+        <div class="flex gap-3 pt-2 justify-end">
+          <p-button
+            [label]="'common.cancel' | transloco"
+            severity="secondary"
+            [disabled]="loading()"
             type="button"
+            size="small"
             (click)="onCancelNotes()"
-            class="px-4 py-2 bg-gray-200 text-gray-700 rounded hover:bg-gray-300 focus:outline-none focus:ring-2 focus:ring-indigo-500 focus:ring-offset-2"
-          >
-            {{ 'common.cancel' | transloco }}
-          </button>
-          <button
+          />
+          <p-button
+            [label]="'common.save' | transloco"
+            icon="pi pi-check"
+            [loading]="loading()"
             type="submit"
-            class="px-4 py-2 bg-indigo-600 text-white rounded hover:bg-indigo-700 focus:outline-none focus:ring-2 focus:ring-indigo-500 focus:ring-offset-2"
-          >
-            {{ 'common.save' | transloco }}
-          </button>
+            size="small"
+          />
         </div>
       </form>
       }

@@ -22,8 +22,8 @@ import { ServiceStore } from '@application/stores/service.store';
 import { UserPreferencesStore } from '@application/stores/user-preferences.store';
 import { AuthService } from '@application/services';
 import { LanguageService } from '@application/services/language.service';
-import { ActionButtonComponent } from '@ui/components/action-button/action-button.component';
 import { CARE_TYPE_OPTIONS } from '@ui/constants/care-types.constant';
+import { ButtonModule } from 'primeng/button';
 
 @Component({
   selector: 'app-service-form-page',
@@ -38,7 +38,7 @@ import { CARE_TYPE_OPTIONS } from '@ui/constants/care-types.constant';
     SelectModule,
     MessageModule,
     TranslocoModule,
-    ActionButtonComponent,
+    ButtonModule,
   ],
   templateUrl: './service-form-page.component.html',
   changeDetection: ChangeDetectionStrategy.OnPush,

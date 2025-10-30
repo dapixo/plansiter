@@ -25,7 +25,7 @@ import { MessageModule } from 'primeng/message';
 import { TranslocoModule } from '@jsverse/transloco';
 import { toSignal } from '@angular/core/rxjs-interop';
 
-import { Booking, Client, Service, Subject } from '@domain/entities';
+import { Booking, Client, Service } from '@domain/entities';
 import { AuthService } from '@application/services';
 import { BookingStore } from '@application/stores/booking.store';
 import { ClientStore } from '@application/stores/client.store';
@@ -33,7 +33,6 @@ import { ServiceStore } from '@application/stores/service.store';
 import { SubjectFormDialogComponent } from '../subject-form-dialog/subject-form-dialog.component';
 import { ClientFormDialogComponent } from '../client-form-dialog/client-form-dialog.component';
 import { ServiceFormDialogComponent } from '../service-form-dialog/service-form-dialog.component';
-import { ActionButtonComponent } from '../action-button/action-button.component';
 
 @Component({
   selector: 'app-booking-form-dialog',
@@ -51,7 +50,6 @@ import { ActionButtonComponent } from '../action-button/action-button.component'
     SubjectFormDialogComponent,
     ClientFormDialogComponent,
     ServiceFormDialogComponent,
-    ActionButtonComponent,
   ],
   templateUrl: './booking-form-dialog.component.html',
   changeDetection: ChangeDetectionStrategy.OnPush,

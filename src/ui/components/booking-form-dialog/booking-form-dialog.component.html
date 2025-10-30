@@ -9,7 +9,7 @@
   styleClass="w-full max-w-4xl"
 >
   <ng-template pTemplate="header">
-    <h2 class="text-2xl font-bold">
+    <h2 class="text-xl font-bold">
       <span class="bg-gradient-to-r from-indigo-600 to-purple-600 bg-clip-text text-transparent">
         {{ 'booking.form.title' | transloco }}
       </span>
@@ -189,8 +189,8 @@
       <small class="text-amber-600">
         {{ 'booking.form.noMatchingServices' | transloco }}
       </small>
-      } @else if (bookingForm.controls.serviceId.invalid && bookingForm.controls.serviceId.touched &&
-      bookingForm.controls.serviceId.dirty) {
+      } @else if (bookingForm.controls.serviceId.invalid && bookingForm.controls.serviceId.touched
+      && bookingForm.controls.serviceId.dirty) {
       <p-message id="serviceId-error" severity="error" variant="simple" role="alert">
         {{ 'booking.form.serviceRequired' | transloco }}
       </p-message>
@@ -253,21 +253,21 @@
   }
 
   <ng-template pTemplate="footer">
-    <div class="flex justify-end gap-3">
-      <app-action-button
-        [route]="null"
+    <div class="flex gap-3 justify-end">
+      <p-button
+        [label]="'common.cancel' | transloco"
+        severity="secondary"
         type="button"
-        labelKey="common.cancel"
-        variant="secondary"
+        size="small"
         (click)="onHide(false)"
         [disabled]="loading()"
       />
-      <app-action-button
-        [route]="null"
-        type="button"
-        labelKey="booking.form.create"
-        icon="pi-check"
+      <p-button
+        [label]="'booking.form.create' | transloco"
+        icon="pi pi-check"
         [loading]="loading()"
+        type="submit"
+        size="small"
         (click)="onSave()"
       />
     </div>
