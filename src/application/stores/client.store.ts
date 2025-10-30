@@ -17,7 +17,7 @@ import {
   SUBJECT_REPOSITORY,
 } from '@domain/repositories';
 import { AuthService } from '../services/auth.service';
-import { updateInList, createStoreHelpers } from './store.utils';
+import { updateInList, createStoreHelpers, createStoreOnInit } from './store.utils';
 
 interface ClientState {
   clients: Client[];
@@ -208,8 +208,9 @@ export const ClientStore = signalStore(
   }),
 
   withHooks({
-    onInit(store) {
-      if (!store.clients().length) store.loadAll();
-    },
+    onInit: createStoreOnInit(
+      (store) => store.loadAll(),
+      (store) => store.clients().length > 0
+    ),
   })
 );

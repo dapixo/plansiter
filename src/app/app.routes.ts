@@ -3,6 +3,8 @@ import { authGuard } from './guards/auth.guard';
 import { guestGuard } from './guards/guest.guard';
 import { languageGuard } from './guards/language.guard';
 import { redirectToPreferredLangGuard } from './guards/redirect-to-preferred-lang.guard';
+import { requiresOnboardingGuard } from './guards/requires-onboarding.guard';
+import { onboardingGuard } from '../ui/guards/onboarding.guard';
 
 export interface BreadcrumbData {
   label: string | string[]; // Clé de traduction pour le label (string pour statique, string[] pour [create, edit])
@@ -32,8 +34,14 @@ export const routes: Routes = [
           import('../ui/pages/login/login.component').then(m => m.LoginComponent)
       },
       {
+        path: 'onboarding',
+        canActivate: [onboardingGuard],
+        loadComponent: () =>
+          import('../ui/pages/onboarding/onboarding.component').then(m => m.OnboardingComponent)
+      },
+      {
         path: 'dashboard',
-        canActivate: [authGuard],
+        canActivate: [authGuard, requiresOnboardingGuard],
         loadComponent: () =>
           import('../ui/layouts/dashboard-layout/dashboard-layout.component').then(m => m.DashboardLayoutComponent),
         children: [

@@ -10,6 +10,7 @@ type UserPreferencesRow = {
   id: string;
   user_id: string;
   care_types: CareType[];
+  is_onboarded: boolean;
   created_at: string;
   updated_at: string;
 };
@@ -38,6 +39,17 @@ export class UserPreferencesSupabaseRepository extends BaseSupabaseRepository im
     );
   }
 
+  markAsOnboarded(userId: string): Observable<void> {
+    return this.supabase.from$('user_preferences', q =>
+      q.update({ is_onboarded: true }).eq('user_id', userId)
+    ).pipe(
+      map(res => {
+        this.extractData(res, true);
+        return undefined;
+      })
+    );
+  }
+
   // ---------- PRIVATE HELPERS ---------- //
 
   /** Map Supabase row → domain entity */
@@ -46,6 +58,7 @@ export class UserPreferencesSupabaseRepository extends BaseSupabaseRepository im
       id: row.id,
       userId: row.user_id,
       careTypes: row.care_types,
+      isOnboarded: row.is_onboarded,
       createdAt: new Date(row.created_at),
       updatedAt: new Date(row.updated_at)
     };
@@ -55,7 +68,8 @@ export class UserPreferencesSupabaseRepository extends BaseSupabaseRepository im
   private toDbPayload(preferences: Partial<UserPreferences>): Partial<UserPreferencesRow> {
     return {
       user_id: preferences.userId,
-      care_types: preferences.careTypes ?? []
+      care_types: preferences.careTypes ?? [],
+      is_onboarded: preferences.isOnboarded
     };
   }
 }

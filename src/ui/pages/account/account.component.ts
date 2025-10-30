@@ -101,7 +101,7 @@ export class AccountComponent {
     this.isLoading.set(true);
 
     this.authService
-      .updateUserProfile(email, name)
+      .updateUserProfile({email, name})
       .pipe(
         tap(() => {
           this.preferencesStore.updateCareTypes(careTypes);

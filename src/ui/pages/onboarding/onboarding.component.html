@@ -1,0 +1,32 @@
+@if(started()) {
+<div class="min-h-screen bg-gray-50">
+  <app-steps-wrapper />
+</div>
+} @else {
+<div class="min-h-screen bg-gray-50 py-8 px-4 flex flex-col items-center justify-center">
+  <div class="max-w-4xl mx-auto">
+    <div class="flex flex-col items-center justify-center py-12">
+      <h1 class="text-3xl font-bold text-gray-900 mb-4 text-center">
+        {{ 'onboarding.title' | transloco }}
+      </h1>
+      <p class="text-lg text-gray-600 text-center max-w-2xl mb-8">
+        {{ 'onboarding.subtitle' | transloco }}
+      </p>
+      <div class="bg-white rounded-lg shadow-sm p-6 max-w-xl mb-8">
+        <p class="text-gray-700 text-center leading-relaxed">
+          {{ 'onboarding.description' | transloco }}
+        </p>
+      </div>
+      <p-button
+        [label]="'onboarding.startButton' | transloco"
+        icon="pi pi-arrow-right"
+        iconPos="right"
+        size="large"
+        type="button"
+        [raised]="true"
+        (onClick)="start()"
+      />
+    </div>
+  </div>
+</div>
+}

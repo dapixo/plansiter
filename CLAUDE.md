@@ -303,15 +303,15 @@ Le projet suit une **architecture hexagonale (Clean Architecture)** avec sépara
 
 ### Client
 - Information client liée à un utilisateur
-- Propriétés : id, userId, address, preferences, createdAt, updatedAt
+- Propriétés : id, userId, address, preferences, createdAt, updatedAt, deletedAt
 
 ### Subject
 - Enfant à garder
-- Propriétés : id, clientId, firstName, lastName, birthDate, medicalInfo, createdAt, updatedAt
+- Propriétés : id, clientId, firstName, lastName, birthDate, medicalInfo, createdAt, updatedAt, deletedAt
 
 ### Service
 - Type de service proposé (garde ponctuelle, régulière, etc.)
-- Propriétés : id, name, description, basePrice, isActive, createdAt, updatedAt
+- Propriétés : id, name, description, basePrice, createdAt, updatedAt, deletedAt
 
 ### Booking
 - Réservation de baby-sitting

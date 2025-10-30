@@ -13,7 +13,7 @@ import { Service } from '@domain/entities';
 import { IServiceRepository, SERVICE_REPOSITORY } from '@domain/repositories';
 import { AuthService } from '../services/auth.service';
 import { UserPreferencesStore } from './user-preferences.store';
-import { updateInList, removeFromList, createStoreHelpers } from './store.utils';
+import { updateInList, removeFromList, createStoreHelpers, createStoreOnInit } from './store.utils';
 
 interface ServiceState {
   services: Service[];
@@ -142,8 +142,9 @@ export const ServiceStore = signalStore(
   ),
 
   withHooks({
-    onInit(store) {
-      if (!store.services().length) store.loadAll();
-    },
+    onInit: createStoreOnInit(
+      (store) => store.loadAll(),
+      (store) => store.services().length > 0
+    ),
   })
 );

@@ -12,7 +12,7 @@ import { pipe, switchMap, tap, catchError, finalize } from 'rxjs';
 import { UserPreferences, CareType } from '@domain/entities/user-preferences.entity';
 import { IUserPreferencesRepository, USER_PREFERENCES_REPOSITORY } from '@domain/repositories';
 import { AuthService } from '../services/auth.service';
-import { createStoreHelpers } from './store.utils';
+import { createStoreHelpers, createStoreOnInit } from './store.utils';
 
 interface UserPreferencesState {
   preferences: UserPreferences | null;
@@ -34,6 +34,7 @@ export const UserPreferencesStore = signalStore(
   withComputed((state) => ({
     careTypes: computed(() => state.preferences()?.careTypes ?? []),
     hasCareTypes: computed(() => (state.preferences()?.careTypes.length ?? 0) > 0),
+    isOnboarded: computed(() => state.preferences()?.isOnboarded ?? false),
   })),
 
   withMethods(
@@ -69,8 +70,32 @@ export const UserPreferencesStore = signalStore(
             tap(setLoading),
             switchMap((careTypes) =>
               runAuthenticated((userId) =>
-                repo.upsert({ userId, careTypes }).pipe(
+                repo.upsert({ userId, careTypes, isOnboarded: false }).pipe(
                   tap((preferences) => patchState(store, { preferences })),
+                  tap(setSuccess),
+                  catchError(handleError),
+                  finalize(() => patchState(store, { loading: false }))
+                )
+              )
+            )
+          )
+        ),
+
+        markAsOnboarded: rxMethod<void>(
+          pipe(
+            tap(setLoading),
+            switchMap(() =>
+              runAuthenticated((userId) =>
+                repo.markAsOnboarded(userId).pipe(
+                  tap(() => {
+                    // Update local state to mark as onboarded
+                    const current = store.preferences();
+                    if (current) {
+                      patchState(store, {
+                        preferences: { ...current, isOnboarded: true }
+                      });
+                    }
+                  }),
                   tap(setSuccess),
                   catchError(handleError),
                   finalize(() => patchState(store, { loading: false }))
@@ -84,8 +109,9 @@ export const UserPreferencesStore = signalStore(
   ),
 
   withHooks({
-    onInit(store) {
-      if (!store.preferences()) store.load();
-    },
+    onInit: createStoreOnInit(
+      (store) => store.load(),
+      (store) => !!store.preferences()
+    ),
   })
 );

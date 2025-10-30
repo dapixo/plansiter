@@ -289,5 +289,70 @@
       "house": "Cuidado de casa",
       "other": "Otro"
     }
+  },
+  "onboarding": {
+    "title": "¡Bienvenido a PlanSitter! 👋",
+    "subtitle": "Estamos encantados de tenerte",
+    "description": "En unos pocos pasos simples, configuraremos tu perfil para que puedas empezar a gestionar tus servicios de cuidado de manera eficiente.",
+    "startButton": "Comenzar",
+    "step2": {
+      "title": "¿Cómo te gustaría que te llamemos?",
+      "subtitle": "Este nombre se utilizará en toda la aplicación",
+      "nameLabel": "Tu nombre",
+      "nextButton": "Siguiente",
+      "error": "Se ha producido un error al actualizar tu nombre"
+    },
+    "step3": {
+      "title": "¿Qué tipos de cuidado ofreces?",
+      "subtitle": "Elige al menos un tipo",
+      "nextButton": "Siguiente",
+      "validationError": "Por favor elige al menos un tipo de cuidado",
+      "error": "Se ha producido un error al guardar"
+    },
+    "step4": {
+      "title": "Crea tu primer servicio",
+      "subtitle": "Define los detalles de tu oferta",
+      "nameLabel": "Nombre del servicio",
+      "nameRequired": "El nombre del servicio es obligatorio",
+      "typeLabel": "Tipo de cuidado",
+      "typeRequired": "El tipo de cuidado es obligatorio",
+      "priceLabel": "Precio por visita (€)",
+      "priceRequired": "El precio es obligatorio",
+      "createButton": "Crear servicio",
+      "skipButton": "Saltar este paso",
+      "successTitle": "¡Servicio creado!",
+      "successMessage": "{{name}} ({{type}}) - {{price}}€/visita"
+    },
+    "step5": {
+      "title": "Añade tu primer cliente",
+      "subtitle": "¿Quién será tu primer cliente?",
+      "nameLabel": "Nombre",
+      "nameRequired": "El nombre es obligatorio",
+      "addressLabel": "Dirección",
+      "addressRequired": "La dirección es obligatoria",
+      "cityLabel": "Ciudad",
+      "cityRequired": "La ciudad es obligatoria",
+      "postalCodeLabel": "Código postal",
+      "postalCodeRequired": "El código postal es obligatorio",
+      "countryLabel": "País",
+      "countryRequired": "El país es obligatorio",
+      "createButton": "Crear cliente",
+      "skipButton": "Saltar este paso",
+      "successTitle": "¡Cliente creado!",
+      "successMessage": "{{name}} en {{city}}"
+    },
+    "step6": {
+      "title": "¡Felicitaciones! 🎉",
+      "subtitle": "Tu cuenta está lista para usar",
+      "message": "Ahora puedes gestionar tus servicios, clientes y reservas desde tu panel de control.",
+      "dashboardButton": "Ir al panel de control"
+    },
+    "stepper": {
+      "name": "Nombre",
+      "careTypes": "Tipos",
+      "service": "Servicio",
+      "client": "Cliente",
+      "done": "Completado"
+    }
   }
 }

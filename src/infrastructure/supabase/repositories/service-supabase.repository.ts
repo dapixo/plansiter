@@ -101,7 +101,6 @@ export class ServiceSupabaseRepository extends BaseSupabaseRepository implements
       pricePerVisit: row.price_per_visit ?? 0,
       pricePerDay: row.price_per_day ?? 0,
       pricePerNight: row.price_per_night ?? 0,
-      isActive: row.is_active,
       deletedAt: row.deleted_at ? new Date(row.deleted_at) : undefined,
       createdAt: new Date(row.created_at),
       updatedAt: new Date(row.updated_at),
@@ -118,7 +117,6 @@ export class ServiceSupabaseRepository extends BaseSupabaseRepository implements
     if (!partial || service.pricePerVisit !== undefined) payload.price_per_visit = service.pricePerVisit ?? null;
     if (!partial || service.pricePerDay !== undefined) payload.price_per_day = service.pricePerDay ?? null;
     if (!partial || service.pricePerNight !== undefined) payload.price_per_night = service.pricePerNight ?? null;
-    if (!partial || service.isActive !== undefined) payload.is_active = service.isActive ?? false;
     if (!partial || service.deletedAt !== undefined) payload.deleted_at = service.deletedAt?.toISOString() ?? null;
     return payload;
   }

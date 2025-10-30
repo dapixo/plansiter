@@ -15,7 +15,7 @@ import { AuthService } from '../services/auth.service';
 import { ClientStore } from './client.store';
 import { ServiceStore } from './service.store';
 import { BookingDetail, TimelineBar } from '@ui/components/calendar';
-import { updateInList, removeFromList, normalizeDate, createStoreHelpers } from './store.utils';
+import { updateInList, removeFromList, normalizeDate, createStoreHelpers, createStoreOnInit } from './store.utils';
 
 interface BookingState {
   bookings: Booking[];
@@ -205,9 +205,10 @@ export const BookingStore = signalStore(
   ),
 
   withHooks({
-    onInit(store) {
-      if (!store.bookings().length) store.loadAll();
-    },
+    onInit: createStoreOnInit(
+      (store) => store.loadAll(),
+      (store) => store.bookings().length > 0
+    ),
   })
 );
 

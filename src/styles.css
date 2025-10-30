@@ -200,6 +200,18 @@
 }
 
 /* ========================================
+   Selectable Button Wrapper (Checkbox/Radio)
+   ======================================== */
+
+/* Focus state pour les boutons checkbox/radio personnalisés */
+.selectable-button-wrapper:focus-within {
+  outline: 0 none !important;
+  outline-offset: 0 !important;
+  box-shadow: 0 0 0 0.2rem rgba(99, 102, 241, 0.25) !important; /* indigo-500 */
+  border-color: #6366f1 !important; /* indigo-500 */
+}
+
+/* ========================================
    Angular Calendar Custom Theme (Planning)
    ======================================== */
 

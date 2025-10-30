@@ -5,7 +5,11 @@ import { map } from 'rxjs/operators';
 
 /**
  * Guard pour les routes protégées (dashboard, etc.)
- * Attend que la session soit chargée, puis redirige vers /:lang/login si l'utilisateur n'est pas authentifié
+ * Attend que la session soit chargée, puis vérifie uniquement l'authentification.
+ * La vérification de l'onboarding est gérée par l'onboardingGuard sur la route /onboarding.
+ *
+ * - Redirige vers /:lang/login si l'utilisateur n'est pas authentifié
+ * - Permet l'accès si l'utilisateur est authentifié
  */
 export const authGuard: CanActivateFn = () => {
   const authService = inject(AuthService);
@@ -14,11 +18,14 @@ export const authGuard: CanActivateFn = () => {
 
   return authService.waitForSessionLoad().pipe(
     map(() => {
-      if (authService.isAuthenticated()) {
-        return true;
+      // Check authentication only
+      if (!authService.isAuthenticated()) {
+        router.navigate([languageService.getCurrentLanguage(), 'login']);
+        return false;
       }
-      router.navigate([languageService.getCurrentLanguage(), 'login']);
-      return false;
+
+      // Authenticated → allow access
+      return true;
     })
   );
 };

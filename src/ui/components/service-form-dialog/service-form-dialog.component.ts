@@ -187,7 +187,6 @@ export class ServiceFormDialogComponent {
       pricePerVisit: priceType === 'per-visit' ? numericPrice : undefined,
       pricePerDay: priceType === 'per-day' ? numericPrice : undefined,
       pricePerNight: priceType === 'per-night' ? numericPrice : undefined,
-      isActive: true,
     };
 
     this.store.create(serviceData);

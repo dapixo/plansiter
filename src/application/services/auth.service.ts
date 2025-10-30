@@ -68,19 +68,20 @@ export class AuthService {
     );
   }
 
-  updateUserProfile(email: string, name: string): Observable<User> {
+  updateUserProfile(params: { email?: string; name?: string }): Observable<User> {
+    const { email, name } = params;
+
+    const updateData: any = {};
+    if (email) updateData.email = email;
+    if (name) updateData.data = { full_name: name };
+
+    if (Object.keys(updateData).length === 0) {
+      throw new Error('At least one field (email or name) must be provided');
+    }
+
     return this.supabase
-      .updateUser({
-        email,
-        data: {
-          full_name: name,
-        },
-      })
-      .pipe(
-        tap((user) => {
-          this.currentUserSignal.set(user);
-        })
-      );
+      .updateUser(updateData)
+      .pipe(tap((user) => this.currentUserSignal.set(user)));
   }
 
   signOut(): Observable<void> {

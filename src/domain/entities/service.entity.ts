@@ -11,7 +11,6 @@ export interface Service {
   pricePerVisit?: number;
   pricePerDay?: number;
   pricePerNight?: number;
-  isActive: boolean;
   deletedAt?: Date; // null/undefined = active, Date = soft-deleted
   createdAt: Date;
   updatedAt: Date;

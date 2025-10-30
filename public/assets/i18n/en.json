@@ -289,5 +289,70 @@
       "house": "House sitting",
       "other": "Other"
     }
+  },
+  "onboarding": {
+    "title": "Welcome to PlanSitter! 👋",
+    "subtitle": "We're delighted to have you",
+    "description": "In just a few simple steps, we'll configure your profile so you can start managing your care services efficiently.",
+    "startButton": "Get started",
+    "step2": {
+      "title": "What would you like to be called?",
+      "subtitle": "This name will be used throughout the app",
+      "nameLabel": "Your name",
+      "nextButton": "Next",
+      "error": "An error occurred while updating your name"
+    },
+    "step3": {
+      "title": "What types of care do you offer?",
+      "subtitle": "Choose at least one type",
+      "nextButton": "Next",
+      "validationError": "Please choose at least one care type",
+      "error": "An error occurred while saving"
+    },
+    "step4": {
+      "title": "Create your first service",
+      "subtitle": "Define the details of your offering",
+      "nameLabel": "Service name",
+      "nameRequired": "Service name is required",
+      "typeLabel": "Care type",
+      "typeRequired": "Care type is required",
+      "priceLabel": "Price per visit (€)",
+      "priceRequired": "Price is required",
+      "createButton": "Create service",
+      "skipButton": "Skip this step",
+      "successTitle": "Service created!",
+      "successMessage": "{{name}} ({{type}}) - €{{price}}/visit"
+    },
+    "step5": {
+      "title": "Add your first client",
+      "subtitle": "Who will be your first client?",
+      "nameLabel": "Name",
+      "nameRequired": "Name is required",
+      "addressLabel": "Address",
+      "addressRequired": "Address is required",
+      "cityLabel": "City",
+      "cityRequired": "City is required",
+      "postalCodeLabel": "Postal code",
+      "postalCodeRequired": "Postal code is required",
+      "countryLabel": "Country",
+      "countryRequired": "Country is required",
+      "createButton": "Create client",
+      "skipButton": "Skip this step",
+      "successTitle": "Client created!",
+      "successMessage": "{{name}} in {{city}}"
+    },
+    "step6": {
+      "title": "Congratulations! 🎉",
+      "subtitle": "Your account is ready to use",
+      "message": "You can now manage your services, clients, and bookings from your dashboard.",
+      "dashboardButton": "Go to dashboard"
+    },
+    "stepper": {
+      "name": "Name",
+      "careTypes": "Types",
+      "service": "Service",
+      "client": "Client",
+      "done": "Done"
+    }
   }
 }

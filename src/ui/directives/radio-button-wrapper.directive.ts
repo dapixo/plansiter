@@ -1,5 +1,9 @@
 import { Directive, HostBinding, Input } from '@angular/core';
 
+/**
+ * @deprecated Use SelectableButtonWrapperDirective instead.
+ * This directive is kept for backward compatibility.
+ */
 @Directive({
   selector: '[appRadioButtonWrapper]',
   standalone: true

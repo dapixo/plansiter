@@ -5,6 +5,7 @@ import { UserPreferences } from '../entities/user-preferences.entity';
 export interface IUserPreferencesRepository {
   getByUserId(userId: string): Observable<UserPreferences | null>;
   upsert(preferences: Omit<UserPreferences, 'id' | 'createdAt' | 'updatedAt'>): Observable<UserPreferences>;
+  markAsOnboarded(userId: string): Observable<void>;
 }
 
 export const USER_PREFERENCES_REPOSITORY = new InjectionToken<IUserPreferencesRepository>('IUserPreferencesRepository');

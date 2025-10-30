@@ -289,5 +289,70 @@
       "house": "Custodia casa",
       "other": "Altro"
     }
+  },
+  "onboarding": {
+    "title": "Benvenuto su PlanSitter! 👋",
+    "subtitle": "Siamo felici di averti con noi",
+    "description": "In pochi semplici passaggi, configureremo il tuo profilo in modo che tu possa iniziare a gestire i tuoi servizi di custodia in modo efficiente.",
+    "startButton": "Inizia",
+    "step2": {
+      "title": "Come vorresti essere chiamato?",
+      "subtitle": "Questo nome verrà utilizzato in tutta l'applicazione",
+      "nameLabel": "Il tuo nome",
+      "nextButton": "Avanti",
+      "error": "Si è verificato un errore durante l'aggiornamento del tuo nome"
+    },
+    "step3": {
+      "title": "Che tipi di custodia offri?",
+      "subtitle": "Scegli almeno un tipo",
+      "nextButton": "Avanti",
+      "validationError": "Scegli almeno un tipo di custodia",
+      "error": "Si è verificato un errore durante il salvataggio"
+    },
+    "step4": {
+      "title": "Crea il tuo primo servizio",
+      "subtitle": "Definisci i dettagli della tua offerta",
+      "nameLabel": "Nome del servizio",
+      "nameRequired": "Il nome del servizio è obbligatorio",
+      "typeLabel": "Tipo di custodia",
+      "typeRequired": "Il tipo di custodia è obbligatorio",
+      "priceLabel": "Prezzo per visita (€)",
+      "priceRequired": "Il prezzo è obbligatorio",
+      "createButton": "Crea servizio",
+      "skipButton": "Salta questo passaggio",
+      "successTitle": "Servizio creato!",
+      "successMessage": "{{name}} ({{type}}) - {{price}}€/visita"
+    },
+    "step5": {
+      "title": "Aggiungi il tuo primo cliente",
+      "subtitle": "Chi sarà il tuo primo cliente?",
+      "nameLabel": "Nome",
+      "nameRequired": "Il nome è obbligatorio",
+      "addressLabel": "Indirizzo",
+      "addressRequired": "L'indirizzo è obbligatorio",
+      "cityLabel": "Città",
+      "cityRequired": "La città è obbligatoria",
+      "postalCodeLabel": "Codice postale",
+      "postalCodeRequired": "Il codice postale è obbligatorio",
+      "countryLabel": "Paese",
+      "countryRequired": "Il paese è obbligatorio",
+      "createButton": "Crea cliente",
+      "skipButton": "Salta questo passaggio",
+      "successTitle": "Cliente creato!",
+      "successMessage": "{{name}} a {{city}}"
+    },
+    "step6": {
+      "title": "Congratulazioni! 🎉",
+      "subtitle": "Il tuo account è pronto per l'uso",
+      "message": "Ora puoi gestire i tuoi servizi, clienti e prenotazioni dalla tua dashboard.",
+      "dashboardButton": "Vai alla dashboard"
+    },
+    "stepper": {
+      "name": "Nome",
+      "careTypes": "Tipi",
+      "service": "Servizio",
+      "client": "Cliente",
+      "done": "Completato"
+    }
   }
 }
