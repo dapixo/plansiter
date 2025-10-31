@@ -1,8 +1,8 @@
-<section class="p-8 bg-gray-50 min-h-full" aria-labelledby="service-form-title">
+<section class="p-8 min-h-full" aria-labelledby="service-form-title">
   <!-- Header -->
   <header class="mb-8">
     <h1 id="service-form-title" class="text-xl font-bold mb-1">
-      <span class="bg-gradient-to-r from-indigo-600 to-purple-600 bg-clip-text text-transparent">
+      <span class="text-primary-500">
         {{ (isEditMode() ? 'services.editService' : 'services.createService') | transloco }}
       </span>
     </h1>
@@ -18,7 +18,7 @@
     @if (!isFormReady()) {
     <!-- Loader en mode édition -->
     <div class="flex items-center justify-center py-12" role="status" aria-live="polite">
-      <i class="pi pi-spin pi-spinner text-4xl text-indigo-600" aria-hidden="true"></i>
+      <i class="pi pi-spin pi-spinner text-4xl text-primary-600" aria-hidden="true"></i>
       <span class="sr-only">
         {{ 'common.loading' | transloco }}
       </span>

@@ -2,7 +2,7 @@
   <!-- Header avec navigation -->
   <div class="flex flex-col gap-4 md:flex-row md:items-center md:justify-between">
     <h2 class="text-xl font-bold">
-      <span class="bg-gradient-to-r from-indigo-600 to-purple-600 bg-clip-text text-transparent">
+      <span class="text-primary-500">
         {{ 'calendar.months.' + currentMonthDisplay().monthKey | transloco }}
         {{ currentMonthDisplay().year }}
       </span>
@@ -56,7 +56,7 @@
     <!-- En-têtes des jours -->
     <div class="grid grid-cols-7 gap-1 text-center text-xs font-semibold leading-6 text-gray-600">
       @for (item of daysMetadata(); track item.dayKey) {
-      <div [class.text-indigo-600]="item.isToday" [class.font-bold]="item.isToday">
+      <div [class.text-primary-500]="item.isToday" [class.font-bold]="item.isToday">
         {{ 'calendar.days.' + item.dayKey | transloco }}
       </div>
       }
@@ -74,7 +74,7 @@
           <div class="absolute top-1 left-1/2 -translate-x-1/2">
             <div
               class="flex h-5 w-5 items-center justify-center rounded-full text-xs font-semibold"
-              [class.bg-indigo-600]="day.isToday && day.isCurrentMonth"
+              [class.bg-primary-500]="day.isToday && day.isCurrentMonth"
               [class.text-white]="day.isToday && day.isCurrentMonth"
               [class.text-gray-400]="!day.isCurrentMonth"
               [class.text-gray-600]="!day.isToday && day.isCurrentMonth"

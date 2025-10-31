@@ -1,12 +1,12 @@
 <p-confirmDialog />
 
-<section class="p-8 bg-gray-50 min-h-full" aria-labelledby="clients-section-title">
+<section class="p-8 min-h-full" aria-labelledby="clients-section-title">
   <!-- Header -->
   <header class="flex justify-between items-center mb-8">
     <div>
       <h2 id="clients-section-title" class="text-xl font-bold mb-1">
         <span
-          class="bg-gradient-to-r from-indigo-600 to-purple-600 bg-clip-text text-transparent"
+          class="text-primary-500"
           >{{ 'clients.title' | transloco }}</span
         >
       </h2>
@@ -26,7 +26,7 @@
       <!-- Card cliquable -->
       <a
         [routerLink]="[client.id]"
-        class="flex flex-col h-full bg-white rounded-xl border border-gray-200 hover:shadow-lg hover:border-indigo-200 transition-all duration-200 p-6 cursor-pointer"
+        class="flex flex-col h-full bg-white rounded-xl border border-grey-200 hover:shadow-lg hover:border-primary-200 transition-all duration-200 p-6 cursor-pointer"
       >
         <!-- Infos client -->
         <div class="flex items-center gap-3 mb-4">

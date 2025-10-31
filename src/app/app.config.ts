@@ -14,21 +14,25 @@ import { routes } from './app.routes';
 import { translocoConfig } from '@infrastructure/i18n/transloco.config';
 import { initializePrimeNGLocale } from '@infrastructure/primeng/primeng-locale.initializer';
 
-// Personnalisation du thème Aura avec couleurs indigo/purple
+// Personnalisation du thème Aura avec la palette PlanSitter (Rose/Terracotta)
 const PlansitterTheme = definePreset(Aura, {
   semantic: {
     primary: {
-      50: '{indigo.50}',
-      100: '{indigo.100}',
-      200: '{indigo.200}',
-      300: '{indigo.300}',
-      400: '{indigo.400}',
-      500: '{indigo.500}',
-      600: '{indigo.600}',
-      700: '{indigo.700}',
-      800: '{indigo.800}',
-      900: '{indigo.900}',
-      950: '{indigo.950}'
+      50: '#F5E9FF',
+      100: '#E9D5FF',
+      200: '#D8B4FE',
+      300: '#C084FC',
+      400: '#A855F7',
+      500: '#9333EA',
+      600: '#7E22CE',
+      700: '#6B21A8',
+      800: '#581C87',
+      900: '#3B0764',
+      950: '#210033'
+    },
+    colorScheme: {
+      light: {
+      }
     }
   }
 });

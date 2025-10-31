@@ -21,7 +21,6 @@ import { DialogModule } from 'primeng/dialog';
 import { MessageModule } from 'primeng/message';
 import { TranslocoModule } from '@jsverse/transloco';
 import { TextareaModule } from 'primeng/textarea';
-import { ActionButtonComponent } from '@ui/components/action-button/action-button.component';
 import { ClientStore } from '@application/stores/client.store';
 import { AuthService } from '@application/services';
 import { Client } from '@domain/entities';
@@ -38,7 +37,6 @@ import { Client } from '@domain/entities';
     MessageModule,
     TranslocoModule,
     TextareaModule,
-    ActionButtonComponent,
   ],
   templateUrl: './client-form-dialog.component.html',
   changeDetection: ChangeDetectionStrategy.OnPush,

@@ -7,12 +7,12 @@
     <!-- Header avec logo -->
     <div class="p-6 flex items-center">
       <a routerLink="." class="flex items-center gap-3 group">
-        <div class="w-10 h-10 bg-gradient-to-br from-indigo-500 to-purple-600 rounded-xl flex items-center justify-center shadow-md group-hover:shadow-lg transition-shadow">
+        <div class="w-10 h-10 bg-gradient-to-br from-primary-500 to-primary-700 rounded-xl flex items-center justify-center shadow-md group-hover:shadow-lg transition-shadow">
           <i class="pi pi-home text-xl text-white" aria-hidden="true"></i>
         </div>
         @if (!isCollapsed()) {
         <h1 class="text-xl font-bold">
-          <span class="bg-gradient-to-r from-indigo-600 to-purple-600 bg-clip-text text-transparent">Plan</span><span class="text-gray-900">Sitter</span>
+          <span class="text-primary-500">Plan</span><span class="text-grey-950">Sitter</span>
         </h1>
         }
       </a>
@@ -23,7 +23,7 @@
       @for (item of menuItems; track item.route) {
       <a
         [routerLink]="item.route"
-        routerLinkActive="bg-indigo-50 text-indigo-600"
+        routerLinkActive="bg-primary-50 text-primary-600"
         [class]="isCollapsed() ? 'justify-center' : 'gap-3'"
         class="flex items-center px-4 py-3 rounded-lg text-gray-700 hover:bg-gray-50 transition-colors font-medium"
         [pTooltip]="isCollapsed() ? (item.label | transloco) : ''"
@@ -111,7 +111,7 @@
             <p-avatar
               icon="pi pi-user"
               shape="circle"
-              class="bg-gradient-to-br from-indigo-600 to-purple-600 text-white text-sm"
+              class="bg-gradient-to-br from-primary-500 to-primary-800 text-white text-sm"
               size="normal"
             />
             <span class="hidden sm:block text-sm font-medium text-gray-900 max-w-[100px] truncate">

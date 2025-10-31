@@ -37,7 +37,6 @@
       "verifyButton": "Verify code",
       "resendButton": "Resend code",
       "changeEmailButton": "Change email",
-      "expiryInfo": "Code expires in 60 minutes",
       "invalidCode": "Please enter the 6-digit code",
       "verificationError": "Invalid or expired code",
       "sendError": "An error occurred"

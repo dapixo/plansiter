@@ -1,7 +1,7 @@
 <section class="text-center py-20" role="status" aria-live="polite">
   <!-- Icône -->
-  <div class="inline-flex items-center justify-center w-16 h-16 rounded-full bg-gradient-to-br from-indigo-100 to-purple-100 mb-4">
-    <i [class]="'pi ' + icon() + ' text-3xl text-indigo-600'" aria-hidden="true"></i>
+  <div class="inline-flex items-center justify-center w-16 h-16 rounded-full bg-gradient-to-br from-primary-100 to-purple-100 mb-4">
+    <i [class]="'pi ' + icon() + ' text-3xl text-primary-600'" aria-hidden="true"></i>
   </div>
 
   <!-- Message -->
@@ -12,7 +12,7 @@
   <!-- Action -->
   <a
     [routerLink]="actionRoute()"
-    class="inline-flex items-center gap-2 text-indigo-600 hover:text-indigo-700 font-medium transition-colors"
+    class="inline-flex items-center gap-2 text-primary-600 hover:text-primary-700 font-medium transition-colors"
     [attr.aria-label]="actionAriaLabelKey() ? (actionAriaLabelKey() | transloco) : null"
   >
     <i class="pi pi-plus text-sm" aria-hidden="true"></i>

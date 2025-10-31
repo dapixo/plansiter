@@ -1,5 +1,5 @@
 <section
-  class="p-8 bg-gray-50 min-h-full"
+  class="p-8 min-h-full"
   aria-labelledby="client-detail-title"
   [attr.aria-busy]="!isReady() ? 'true' : null"
 >
@@ -13,7 +13,7 @@
   <!-- Loader -->
   @if (!isReady()) {
   <div class="flex items-center justify-center py-12" role="status" aria-live="polite">
-    <i class="pi pi-spin pi-spinner text-4xl text-indigo-600" aria-hidden="true"></i>
+    <i class="pi pi-spin pi-spinner text-4xl text-primary-600" aria-hidden="true"></i>
     <span class="sr-only">{{ 'common.loading' | transloco }}</span>
   </div>
   } @else {
@@ -34,7 +34,7 @@
           <!-- Avatar -->
           <div class="flex-shrink-0">
             <div
-              class="w-24 h-24 rounded-full bg-gradient-to-br from-indigo-500 to-purple-500 flex items-center justify-center text-white text-3xl font-bold shadow-lg"
+              class="w-24 h-24 rounded-full bg-gradient-to-br from-primary-500 to-primary-700 flex items-center justify-center text-white text-3xl font-bold shadow-lg"
               aria-hidden="true"
             >
               {{ getInitials() }}
@@ -51,7 +51,7 @@
               <button
                 type="button"
                 (click)="onEditInfo()"
-                class="p-2 text-gray-400 hover:text-indigo-600 hover:bg-indigo-50 rounded-lg transition-colors focus:outline-none focus:ring-2 focus:ring-indigo-500 focus:ring-offset-2"
+                class="p-2 text-gray-400 hover:text-primary-600 hover:bg-primary-50 rounded-lg transition-colors focus:outline-none focus:ring-2 focus:ring-primary-500 focus:ring-offset-2"
                 [attr.aria-label]="'clients.editInfo' | transloco"
               >
                 <i class="pi pi-pencil text-sm" aria-hidden="true"></i>
@@ -61,7 +61,7 @@
             <!-- Adresse -->
             <div class="flex items-start gap-3 text-gray-700">
               <i
-                class="pi pi-map-marker text-indigo-500 mt-0.5 flex-shrink-0"
+                class="pi pi-map-marker text-primary-500 mt-0.5 flex-shrink-0"
                 aria-hidden="true"
               ></i>
               <div class="leading-relaxed">
@@ -323,7 +323,7 @@
         <button
           type="button"
           (click)="onEditNotes()"
-          class="p-2 text-gray-400 hover:text-indigo-600 hover:bg-indigo-50 rounded-lg transition-colors focus:outline-none focus:ring-2 focus:ring-indigo-500 focus:ring-offset-2"
+          class="p-2 text-gray-400 hover:text-primary-600 hover:bg-primary-50 rounded-lg transition-colors focus:outline-none focus:ring-2 focus:ring-primary-500 focus:ring-offset-2"
           [attr.aria-label]="'clients.editNotes' | transloco"
         >
           <i class="pi pi-pencil text-sm" aria-hidden="true"></i>

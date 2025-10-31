@@ -20,7 +20,6 @@ import { InputNumberModule } from 'primeng/inputnumber';
 import { TextareaModule } from 'primeng/textarea';
 import { Subject } from '@domain/entities';
 import { CareType } from '@domain/entities/user-preferences.entity';
-import { ActionButtonComponent } from '@ui/components/action-button/action-button.component';
 import { CARE_TYPE_OPTIONS } from '@ui/constants/care-types.constant';
 import { ClientStore } from '@application/stores/client.store';
 import { UserPreferencesStore } from '@application/stores/user-preferences.store';
@@ -40,7 +39,6 @@ import { TempSubject } from '@application/services/client-management.service';
     SelectModule,
     InputNumberModule,
     TextareaModule,
-    ActionButtonComponent,
   ],
   templateUrl: './subject-form-dialog.component.html',
   changeDetection: ChangeDetectionStrategy.OnPush,

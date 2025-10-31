@@ -1,8 +1,8 @@
-<section class="p-8 bg-gray-50 min-h-full" aria-labelledby="client-form-title">
+<section class="p-8 min-h-full" aria-labelledby="client-form-title">
   <!-- Header -->
   <header class="mb-8">
     <h1 id="client-form-title" class="text-4xl font-bold mb-2">
-      <span class="bg-gradient-to-r from-indigo-600 to-purple-600 bg-clip-text text-transparent">
+      <span class="text-primary-500">
         {{ 'clients.createClient' | transloco }}
       </span>
     </h1>
@@ -35,7 +35,9 @@
             class="w-full"
             aria-required="true"
             required
-            [attr.aria-invalid]="form.controls.name.invalid && form.controls.name.touched ? 'true' : 'false'"
+            [attr.aria-invalid]="
+              form.controls.name.invalid && form.controls.name.touched ? 'true' : 'false'
+            "
             [invalid]="form.controls.name.invalid && form.controls.name.touched"
             [attr.aria-describedby]="
               form.controls.name.invalid && form.controls.name.touched ? 'name-error' : null
@@ -63,7 +65,9 @@
             class="w-full"
             aria-required="true"
             required
-            [attr.aria-invalid]="form.controls.address.invalid && form.controls.address.touched ? 'true' : 'false'"
+            [attr.aria-invalid]="
+              form.controls.address.invalid && form.controls.address.touched ? 'true' : 'false'
+            "
             [invalid]="form.controls.address.invalid && form.controls.address.touched"
             [attr.aria-describedby]="
               form.controls.address.invalid && form.controls.address.touched
@@ -95,7 +99,9 @@
             class="w-full"
             aria-required="true"
             required
-            [attr.aria-invalid]="form.controls.city.invalid && form.controls.city.touched ? 'true' : 'false'"
+            [attr.aria-invalid]="
+              form.controls.city.invalid && form.controls.city.touched ? 'true' : 'false'
+            "
             [invalid]="form.controls.city.invalid && form.controls.city.touched"
             [attr.aria-describedby]="
               form.controls.city.invalid && form.controls.city.touched ? 'city-error' : null
@@ -122,7 +128,11 @@
             class="w-full"
             aria-required="true"
             required
-            [attr.aria-invalid]="form.controls.postalCode.invalid && form.controls.postalCode.touched ? 'true' : 'false'"
+            [attr.aria-invalid]="
+              form.controls.postalCode.invalid && form.controls.postalCode.touched
+                ? 'true'
+                : 'false'
+            "
             [invalid]="form.controls.postalCode.invalid && form.controls.postalCode.touched"
             [attr.aria-describedby]="
               form.controls.postalCode.invalid && form.controls.postalCode.touched
@@ -167,7 +177,9 @@
             class="w-full"
             aria-required="true"
             required
-            [attr.aria-invalid]="form.controls.country.invalid && form.controls.country.touched ? 'true' : 'false'"
+            [attr.aria-invalid]="
+              form.controls.country.invalid && form.controls.country.touched ? 'true' : 'false'
+            "
             [invalid]="form.controls.country.invalid && form.controls.country.touched"
             [attr.aria-describedby]="
               form.controls.country.invalid && form.controls.country.touched
@@ -200,21 +212,17 @@
 
       <!-- Subjects Section (composant enfant) -->
       <fieldset class="flex flex-col gap-4 border-0 p-0">
-        <app-subjects-manager
-          [clientId]="null"
-          (subjectsChange)="onSubjectsChange($event)"
-        />
+        <app-subjects-manager [clientId]="null" (subjectsChange)="onSubjectsChange($event)" />
       </fieldset>
 
       <!-- Actions -->
       <div class="flex justify-end gap-3 pt-4 border-t border-gray-200">
-        <app-action-button
-          [route]="null"
-          type="submit"
-          labelKey="common.save"
-          icon="pi-check"
+        <p-button
+          [label]="'common.save' | transloco"
+          icon="pi pi-check"
           [loading]="clientStore.loading()"
-          ariaLabelKey="common.saveClient"
+          type="submit"
+          size="small"
         />
       </div>
 

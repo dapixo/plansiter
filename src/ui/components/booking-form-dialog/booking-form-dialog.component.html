@@ -10,7 +10,7 @@
 >
   <ng-template pTemplate="header">
     <h2 class="text-xl font-bold">
-      <span class="bg-gradient-to-r from-indigo-600 to-purple-600 bg-clip-text text-transparent">
+      <span class="text-primary-500">
         {{ 'booking.form.title' | transloco }}
       </span>
     </h2>
@@ -27,7 +27,7 @@
   </div>
   } @if (clientStore.loading() || serviceStore.loading()) {
   <div class="flex justify-center items-center py-8" role="status" aria-live="polite">
-    <i class="pi pi-spin pi-spinner text-4xl text-indigo-600" aria-hidden="true"></i>
+    <i class="pi pi-spin pi-spinner text-4xl text-primary-600" aria-hidden="true"></i>
     <span class="sr-only">{{ 'common.loading' | transloco }}</span>
   </div>
   } @if (!clientStore.loading() && !serviceStore.loading()) {

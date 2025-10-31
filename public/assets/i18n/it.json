@@ -37,7 +37,6 @@
       "verifyButton": "Verifica codice",
       "resendButton": "Reinvia codice",
       "changeEmailButton": "Modifica email",
-      "expiryInfo": "Il codice scade tra 60 minuti",
       "invalidCode": "Inserisci il codice a 6 cifre",
       "verificationError": "Codice non valido o scaduto",
       "sendError": "Si è verificato un errore"

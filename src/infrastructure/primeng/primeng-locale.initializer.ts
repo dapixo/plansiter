@@ -1,6 +1,6 @@
 import { inject, effect } from '@angular/core';
 import { PrimeNG } from 'primeng/config';
-import { LanguageService, AvailableLang } from '@application/services';
+import { LanguageService } from '@application/services';
 import frLocale from 'primelocale/fr.json';
 import enLocale from 'primelocale/en.json';
 import esLocale from 'primelocale/es.json';

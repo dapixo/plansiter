@@ -22,7 +22,7 @@ import {
   TempSubject,
 } from '@application/services/client-management.service';
 import { SubjectsManagerComponent } from '@ui/components/subjects-manager/subjects-manager.component';
-import { ActionButtonComponent } from '@ui/components/action-button/action-button.component';
+import { ButtonModule } from 'primeng/button';
 
 @Component({
   selector: 'app-client-form-page',
@@ -36,7 +36,7 @@ import { ActionButtonComponent } from '@ui/components/action-button/action-butto
     MessageModule,
     TranslocoModule,
     SubjectsManagerComponent,
-    ActionButtonComponent,
+    ButtonModule,
   ],
   templateUrl: './client-form-page.component.html',
   changeDetection: ChangeDetectionStrategy.OnPush,
