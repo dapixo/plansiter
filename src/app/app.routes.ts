@@ -4,7 +4,7 @@ import { guestGuard } from './guards/guest.guard';
 import { languageGuard } from './guards/language.guard';
 import { redirectToPreferredLangGuard } from './guards/redirect-to-preferred-lang.guard';
 import { requiresOnboardingGuard } from './guards/requires-onboarding.guard';
-import { onboardingGuard } from '../ui/guards/onboarding.guard';
+import { onboardingGuard } from './guards/onboarding.guard';
 
 export interface BreadcrumbData {
   label: string | string[]; // Clé de traduction pour le label (string pour statique, string[] pour [create, edit])
