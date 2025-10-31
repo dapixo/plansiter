@@ -51,6 +51,10 @@ Thumbs.db
 .env.local
 .env.production
 
+# Environment configuration files (use .example files as templates)
+src/infrastructure/environment/environment.ts
+src/infrastructure/environment/environment.prod.ts
+
 # Test files
 req*.txt
 demo/
