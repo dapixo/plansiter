@@ -19,7 +19,6 @@ interface UserPreferencesState {
   loading: boolean;
   error: string | null;
   success: boolean;
-  initialized: boolean;
 }
 
 const initialState: UserPreferencesState = {
@@ -27,7 +26,6 @@ const initialState: UserPreferencesState = {
   loading: false,
   error: null,
   success: false,
-  initialized: false,
 };
 
 export const UserPreferencesStore = signalStore(
@@ -36,7 +34,6 @@ export const UserPreferencesStore = signalStore(
   withComputed((state) => ({
     careTypes: computed(() => state.preferences()?.careTypes ?? []),
     hasCareTypes: computed(() => (state.preferences()?.careTypes?.length ?? 0) > 0),
-    isOnboarded: computed(() => state.preferences()?.isOnboarded ?? false),
   })),
 
   withMethods(
@@ -60,7 +57,7 @@ export const UserPreferencesStore = signalStore(
                   tap((preferences) => patchState(store, { preferences })),
                   tap(setSuccess),
                   catchError(handleError),
-                  finalize(() => patchState(store, { loading: false, initialized: true }))
+                  finalize(() => patchState(store, { loading: false }))
                 )
               )
             )
@@ -73,22 +70,6 @@ export const UserPreferencesStore = signalStore(
             switchMap((careTypes) =>
               runAuthenticated((userId) =>
                 repo.upsert({ userId, careTypes }).pipe(
-                  tap((preferences) => patchState(store, { preferences })),
-                  tap(setSuccess),
-                  catchError(handleError),
-                  finalize(() => patchState(store, { loading: false }))
-                )
-              )
-            )
-          )
-        ),
-
-        markAsOnboarded: rxMethod<void>(
-          pipe(
-            tap(setLoading),
-            switchMap(() =>
-              runAuthenticated((userId) =>
-                repo.markAsOnboarded(userId).pipe(
                   tap((preferences) => patchState(store, { preferences })),
                   tap(setSuccess),
                   catchError(handleError),

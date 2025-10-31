@@ -4,7 +4,6 @@ export interface UserPreferences {
   id: string;
   userId: string;
   careTypes?: CareType[];
-  isOnboarded?: boolean;
   createdAt?: Date;
   updatedAt?: Date;
 }

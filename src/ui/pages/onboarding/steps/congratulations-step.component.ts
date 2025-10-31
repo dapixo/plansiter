@@ -1,10 +1,12 @@
-import { Component, inject, ChangeDetectionStrategy, signal, effect, computed } from '@angular/core';
+import { Component, inject, ChangeDetectionStrategy, signal, DestroyRef } from '@angular/core';
+import { takeUntilDestroyed } from '@angular/core/rxjs-interop';
 import { Router } from '@angular/router';
 import { CommonModule } from '@angular/common';
 import { ButtonModule } from 'primeng/button';
 import { TranslocoModule } from '@jsverse/transloco';
-import { UserPreferencesStore } from '@application/stores/user-preferences.store';
+import { AuthService } from '@application/services/auth.service';
 import { LanguageService } from '@application/services/language.service';
+import { finalize, tap } from 'rxjs/operators';
 
 @Component({
   selector: 'app-congratulations-step',
@@ -45,25 +47,12 @@ import { LanguageService } from '@application/services/language.service';
   changeDetection: ChangeDetectionStrategy.OnPush,
 })
 export class CongratulationsStepComponent {
-  private readonly preferencesStore = inject(UserPreferencesStore);
+  private readonly authService = inject(AuthService);
   private readonly router = inject(Router);
   private readonly lang = inject(LanguageService);
+  private readonly destroyRef = inject(DestroyRef);
 
   protected readonly isNavigating = signal(false);
-
-  protected readonly uiState = computed(() => ({
-    loading: this.preferencesStore.loading(),
-    success: this.preferencesStore.success(),
-    error: this.preferencesStore.error(),
-  }));
-
-  private _navigationEffect = effect(() => {
-    if (this.isNavigating() && this.uiState().success && !this.uiState().loading) {
-      // Navigate to dashboard
-      const currentLang = this.lang.getCurrentLanguage();
-      this.router.navigate([`/${currentLang}/dashboard`]);
-    }
-  });
 
   /**
    * Mark onboarding as completed and navigate to dashboard
@@ -73,7 +62,15 @@ export class CongratulationsStepComponent {
 
     this.isNavigating.set(true);
 
-    // Mark as onboarded in database
-    this.preferencesStore.markAsOnboarded();
+    // Mark as onboarded in user_metadata via AuthService
+    this.authService.markAsOnboarded().pipe(
+      tap(() => {
+        // Navigate to dashboard on success
+        const currentLang = this.lang.getCurrentLanguage();
+        this.router.navigate([`/${currentLang}/dashboard`]);
+      }),
+      finalize(() => this.isNavigating.set(false)),
+      takeUntilDestroyed(this.destroyRef)
+    ).subscribe();
   }
 }

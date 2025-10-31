@@ -16,10 +16,12 @@ export class AuthService {
 
   private isAuthenticatedSignal = signal<boolean>(false);
   private currentUserSignal = signal<User | null>(null);
+  private isOnboardedSignal = signal<boolean>(false);
   private sessionLoadedSubject = new BehaviorSubject<boolean>(false);
 
   readonly isAuthenticated = this.isAuthenticatedSignal.asReadonly();
   readonly currentUser = this.currentUserSignal.asReadonly();
+  readonly isOnboarded = this.isOnboardedSignal.asReadonly();
   readonly sessionLoaded$ = this.sessionLoadedSubject.asObservable();
 
   // Computed signal for user display name with fallback
@@ -44,9 +46,12 @@ export class AuthService {
     if (session?.user) {
       this.isAuthenticatedSignal.set(true);
       this.currentUserSignal.set(session.user);
+      // Read isOnboarded from user_metadata (defaults to false for new users)
+      this.isOnboardedSignal.set(session.user.user_metadata?.['isOnboarded'] ?? false);
     } else {
       this.isAuthenticatedSignal.set(false);
       this.currentUserSignal.set(null);
+      this.isOnboardedSignal.set(false);
     }
   }
 
@@ -82,6 +87,23 @@ export class AuthService {
     return this.supabase
       .updateUser(updateData)
       .pipe(tap((user) => this.currentUserSignal.set(user)));
+  }
+
+  /**
+   * Marks the current user as onboarded by updating user_metadata.
+   * This updates the Supabase Auth user metadata and refreshes the local state.
+   */
+  markAsOnboarded(): Observable<User> {
+    return this.supabase
+      .updateUser({
+        data: { isOnboarded: true }
+      })
+      .pipe(
+        tap((user) => {
+          this.currentUserSignal.set(user);
+          this.isOnboardedSignal.set(true);
+        })
+      );
   }
 
   signOut(): Observable<void> {
