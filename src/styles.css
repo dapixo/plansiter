@@ -1,25 +1,176 @@
 /* PrimeNG Icons */
 @import 'primeicons/primeicons.css';
 
+/* PlanSitter Custom Theme */
+@import './styles/theme-plansitter.css';
+
 @tailwind base;
 @tailwind components;
 @tailwind utilities;
 
-/* You can add global styles to this file, and also import other style files */
-
 /* ========================================
-   PrimeNG Custom Theme - Focus States
+   PrimeNG Focus States - Méthode centralisée
    ======================================== */
 
-/* Override PrimeNG focus ring avec le thème indigo - État normal */
-.p-inputtext:enabled:focus {
+/* Input text & textarea - État normal */
+.p-inputtext:enabled:focus,
+.p-inputtextarea:enabled:focus,
+.p-textarea:enabled:focus {
   outline: 0 none !important;
   outline-offset: 0 !important;
-  box-shadow: 0 0 0 0.2rem rgba(99, 102, 241, 0.25) !important; /* indigo-500 */
-  border-color: #6366f1 !important; /* indigo-500 */
+  box-shadow: 0 0 0 var(--focus-ring-width) var(--focus-ring-color) !important;
+  border-color: var(--focus-border-color) !important;
 }
 
-/* Supprimer le background bleu de l'autofill */
+/* Input text & textarea - État invalide */
+.p-inputtext.p-invalid,
+.p-inputtext[aria-invalid="true"] {
+  border-color: var(--error-border-color) !important;
+}
+
+.p-inputtext.p-invalid:enabled:focus,
+.p-inputtext[aria-invalid="true"]:enabled:focus,
+.p-inputtextarea.p-invalid:enabled:focus,
+.p-inputtextarea[aria-invalid="true"]:enabled:focus,
+.p-textarea.p-invalid:enabled:focus,
+.p-textarea[aria-invalid="true"]:enabled:focus {
+  outline: 0 none !important;
+  outline-offset: 0 !important;
+  box-shadow: 0 0 0 var(--focus-ring-width) var(--error-ring-color) !important;
+  border-color: var(--error-border-color) !important;
+}
+
+/* InputOTP - État normal */
+.p-inputotp-input:enabled:focus {
+  outline: 0 none !important;
+  outline-offset: 0 !important;
+  box-shadow: 0 0 0 var(--focus-ring-width) var(--focus-ring-color) !important;
+  border-color: var(--focus-border-color) !important;
+}
+
+/* InputOTP - État invalide */
+.p-inputotp.p-invalid .p-inputotp-input {
+  border-color: var(--error-border-color) !important;
+}
+
+.p-inputotp.p-invalid .p-inputotp-input:enabled:focus {
+  outline: 0 none !important;
+  outline-offset: 0 !important;
+  box-shadow: 0 0 0 var(--focus-ring-width) var(--error-ring-color) !important;
+  border-color: var(--error-border-color) !important;
+}
+
+/* InputNumber - État normal */
+.p-inputnumber input:enabled:focus {
+  outline: 0 none !important;
+  outline-offset: 0 !important;
+  box-shadow: 0 0 0 var(--focus-ring-width) var(--focus-ring-color) !important;
+  border-color: var(--focus-border-color) !important;
+}
+
+/* InputNumber - État invalide */
+.p-inputnumber.p-invalid input,
+.p-inputnumber[aria-invalid="true"] input {
+  border-color: var(--error-border-color) !important;
+}
+
+.p-inputnumber.p-invalid input:enabled:focus,
+.p-inputnumber[aria-invalid="true"] input:enabled:focus {
+  outline: 0 none !important;
+  outline-offset: 0 !important;
+  box-shadow: 0 0 0 var(--focus-ring-width) var(--error-ring-color) !important;
+  border-color: var(--error-border-color) !important;
+}
+
+/* Select (PrimeNG v18+) - État normal */
+.p-select:not(.p-disabled).p-focus {
+  outline: 0 none !important;
+  outline-offset: 0 !important;
+  box-shadow: 0 0 0 var(--focus-ring-width) var(--focus-ring-color) !important;
+  border-color: var(--focus-border-color) !important;
+}
+
+/* Select - État invalide */
+.p-select.p-invalid,
+.p-select[aria-invalid="true"] {
+  border-color: var(--error-border-color) !important;
+}
+
+.p-select.p-invalid:not(.p-disabled).p-focus,
+.p-select[aria-invalid="true"]:not(.p-disabled).p-focus {
+  outline: 0 none !important;
+  outline-offset: 0 !important;
+  box-shadow: 0 0 0 var(--focus-ring-width) var(--error-ring-color) !important;
+  border-color: var(--error-border-color) !important;
+}
+
+/* Select - Options */
+.p-select-option.p-select-option-selected {
+  background: var(--selected-bg-color) !important;
+  color: var(--color-primary-700) !important;
+}
+
+.p-select-option:not(.p-select-option-selected):hover {
+  background: var(--hover-bg-color) !important;
+}
+
+/* Dropdown (legacy) - État normal */
+.p-dropdown:not(.p-disabled).p-focus {
+  outline: 0 none !important;
+  outline-offset: 0 !important;
+  box-shadow: 0 0 0 var(--focus-ring-width) var(--focus-ring-color) !important;
+  border-color: var(--focus-border-color) !important;
+}
+
+/* Dropdown - État invalide */
+.p-dropdown.p-invalid:not(.p-disabled).p-focus {
+  outline: 0 none !important;
+  outline-offset: 0 !important;
+  box-shadow: 0 0 0 var(--focus-ring-width) var(--error-ring-color) !important;
+  border-color: var(--error-border-color) !important;
+}
+
+/* MultiSelect - État normal */
+.p-multiselect:not(.p-disabled).p-focus {
+  outline: 0 none !important;
+  outline-offset: 0 !important;
+  box-shadow: 0 0 0 var(--focus-ring-width) var(--focus-ring-color) !important;
+  border-color: var(--focus-border-color) !important;
+}
+
+/* MultiSelect - État invalide */
+.p-multiselect.p-invalid,
+.p-multiselect[aria-invalid="true"] {
+  border-color: var(--error-border-color) !important;
+}
+
+.p-multiselect.p-invalid:not(.p-disabled).p-focus,
+.p-multiselect[aria-invalid="true"]:not(.p-disabled).p-focus {
+  outline: 0 none !important;
+  outline-offset: 0 !important;
+  box-shadow: 0 0 0 var(--focus-ring-width) var(--error-ring-color) !important;
+  border-color: var(--error-border-color) !important;
+}
+
+/* MultiSelect - Options */
+.p-multiselect-option.p-multiselect-option-selected {
+  background: var(--selected-bg-color) !important;
+  color: var(--color-primary-700) !important;
+}
+
+.p-multiselect-option:not(.p-multiselect-option-selected):hover {
+  background: var(--hover-bg-color) !important;
+}
+
+/* Selectable button wrapper (Checkbox/Radio personnalisés) */
+.selectable-button-wrapper:focus-within {
+  outline: 0 none !important;
+  outline-offset: 0 !important;
+  box-shadow: 0 0 0 var(--focus-ring-width) var(--focus-ring-color) !important;
+  border-color: var(--focus-border-color) !important;
+}
+
+/* Autofill - Supprimer le background bleu par défaut */
 .p-inputtext:-webkit-autofill,
 .p-inputtext:-webkit-autofill:hover,
 .p-inputtext:-webkit-autofill:focus,
@@ -31,403 +182,4 @@
   -webkit-box-shadow: 0 0 0 1000px white inset !important;
   box-shadow: 0 0 0 1000px white inset !important;
   -webkit-text-fill-color: inherit !important;
-}
-
-/* État invalide - Bordure rouge */
-.p-inputtext.p-invalid,
-.p-inputtext[aria-invalid="true"] {
-  border-color: #ef4444 !important; /* red-500 */
-}
-
-.p-inputtext.p-invalid:enabled:focus,
-.p-inputtext[aria-invalid="true"]:enabled:focus {
-  outline: 0 none !important;
-  outline-offset: 0 !important;
-  box-shadow: 0 0 0 0.2rem rgba(239, 68, 68, 0.25) !important; /* red-500 */
-  border-color: #ef4444 !important; /* red-500 */
-}
-
-/* Override pour p-inputOtp - État normal */
-.p-inputotp-input:enabled:focus {
-  outline: 0 none !important;
-  outline-offset: 0 !important;
-  box-shadow: 0 0 0 0.2rem rgba(99, 102, 241, 0.25) !important; /* indigo-500 */
-  border-color: #6366f1 !important; /* indigo-500 */
-}
-
-/* Override pour p-inputOtp - État invalide */
-.p-inputotp.p-invalid .p-inputotp-input {
-  border-color: #ef4444 !important; /* red-500 */
-}
-
-.p-inputotp.p-invalid .p-inputotp-input:enabled:focus {
-  outline: 0 none !important;
-  outline-offset: 0 !important;
-  box-shadow: 0 0 0 0.2rem rgba(239, 68, 68, 0.25) !important; /* red-500 */
-  border-color: #ef4444 !important; /* red-500 */
-}
-
-/* Textarea */
-.p-inputtextarea:enabled:focus,
-.p-textarea:enabled:focus {
-  outline: 0 none !important;
-  outline-offset: 0 !important;
-  box-shadow: 0 0 0 0.2rem rgba(99, 102, 241, 0.25) !important; /* indigo-500 */
-  border-color: #6366f1 !important; /* indigo-500 */
-}
-
-.p-inputtextarea.p-invalid:enabled:focus,
-.p-textarea.p-invalid:enabled:focus {
-  outline: 0 none !important;
-  outline-offset: 0 !important;
-  box-shadow: 0 0 0 0.2rem rgba(239, 68, 68, 0.25) !important; /* red-500 */
-  border-color: #ef4444 !important; /* red-500 */
-}
-
-/* Dropdown (legacy) */
-.p-dropdown:not(.p-disabled).p-focus {
-  outline: 0 none !important;
-  outline-offset: 0 !important;
-  box-shadow: 0 0 0 0.2rem rgba(99, 102, 241, 0.25) !important; /* indigo-500 */
-  border-color: #6366f1 !important; /* indigo-500 */
-}
-
-.p-dropdown.p-invalid:not(.p-disabled).p-focus {
-  outline: 0 none !important;
-  outline-offset: 0 !important;
-  box-shadow: 0 0 0 0.2rem rgba(239, 68, 68, 0.25) !important; /* red-500 */
-  border-color: #ef4444 !important; /* red-500 */
-}
-
-/* Select (PrimeNG v18+) - État normal */
-.p-select:not(.p-disabled).p-focus {
-  outline: 0 none !important;
-  outline-offset: 0 !important;
-  box-shadow: 0 0 0 0.2rem rgba(99, 102, 241, 0.25) !important; /* indigo-500 */
-  border-color: #6366f1 !important; /* indigo-500 */
-}
-
-/* Select - Bordure rouge en état invalide (sans focus) */
-.p-select.p-invalid,
-.p-select[aria-invalid="true"] {
-  border-color: #ef4444 !important; /* red-500 */
-}
-
-/* Select - État invalide au focus */
-.p-select.p-invalid:not(.p-disabled).p-focus,
-.p-select[aria-invalid="true"]:not(.p-disabled).p-focus {
-  outline: 0 none !important;
-  outline-offset: 0 !important;
-  box-shadow: 0 0 0 0.2rem rgba(239, 68, 68, 0.25) !important; /* red-500 */
-  border-color: #ef4444 !important; /* red-500 */
-}
-
-/* Select - Option sélectionnée dans le dropdown (override du vert par défaut) */
-.p-select-option.p-select-option-selected {
-  background: rgba(99, 102, 241, 0.12) !important; /* indigo-500 avec opacity */
-  color: #4338ca !important; /* indigo-700 */
-}
-
-/* Select - Option au hover */
-.p-select-option:not(.p-select-option-selected):hover {
-  background: rgba(99, 102, 241, 0.04) !important; /* indigo-500 très léger */
-}
-
-/* Textarea - Ajout état invalide avec aria-invalid */
-.p-inputtextarea[aria-invalid="true"]:enabled:focus,
-.p-textarea[aria-invalid="true"]:enabled:focus {
-  outline: 0 none !important;
-  outline-offset: 0 !important;
-  box-shadow: 0 0 0 0.2rem rgba(239, 68, 68, 0.25) !important; /* red-500 */
-  border-color: #ef4444 !important; /* red-500 */
-}
-
-/* InputNumber - État normal */
-.p-inputnumber input:enabled:focus {
-  outline: 0 none !important;
-  outline-offset: 0 !important;
-  box-shadow: 0 0 0 0.2rem rgba(99, 102, 241, 0.25) !important; /* indigo-500 */
-  border-color: #6366f1 !important; /* indigo-500 */
-}
-
-/* InputNumber - Bordure rouge en état invalide (sans focus) */
-.p-inputnumber.p-invalid input,
-.p-inputnumber[aria-invalid="true"] input {
-  border-color: #ef4444 !important; /* red-500 */
-}
-
-/* InputNumber - État invalide au focus */
-.p-inputnumber.p-invalid input:enabled:focus,
-.p-inputnumber[aria-invalid="true"] input:enabled:focus {
-  outline: 0 none !important;
-  outline-offset: 0 !important;
-  box-shadow: 0 0 0 0.2rem rgba(239, 68, 68, 0.25) !important; /* red-500 */
-  border-color: #ef4444 !important; /* red-500 */
-}
-
-/* MultiSelect (PrimeNG v18+) - État normal */
-.p-multiselect:not(.p-disabled).p-focus {
-  outline: 0 none !important;
-  outline-offset: 0 !important;
-  box-shadow: 0 0 0 0.2rem rgba(99, 102, 241, 0.25) !important; /* indigo-500 */
-  border-color: #6366f1 !important; /* indigo-500 */
-}
-
-/* MultiSelect - Bordure rouge en état invalide (sans focus) */
-.p-multiselect.p-invalid,
-.p-multiselect[aria-invalid="true"] {
-  border-color: #ef4444 !important; /* red-500 */
-}
-
-/* MultiSelect - État invalide au focus */
-.p-multiselect.p-invalid:not(.p-disabled).p-focus,
-.p-multiselect[aria-invalid="true"]:not(.p-disabled).p-focus {
-  outline: 0 none !important;
-  outline-offset: 0 !important;
-  box-shadow: 0 0 0 0.2rem rgba(239, 68, 68, 0.25) !important; /* red-500 */
-  border-color: #ef4444 !important; /* red-500 */
-}
-
-/* MultiSelect - Option sélectionnée dans le dropdown (override du vert par défaut) */
-.p-multiselect-option.p-multiselect-option-selected {
-  background: rgba(99, 102, 241, 0.12) !important; /* indigo-500 avec opacity */
-  color: #4338ca !important; /* indigo-700 */
-}
-
-/* MultiSelect - Option au hover */
-.p-multiselect-option:not(.p-multiselect-option-selected):hover {
-  background: rgba(99, 102, 241, 0.04) !important; /* indigo-500 très léger */
-}
-
-/* ========================================
-   Selectable Button Wrapper (Checkbox/Radio)
-   ======================================== */
-
-/* Focus state pour les boutons checkbox/radio personnalisés */
-.selectable-button-wrapper:focus-within {
-  outline: 0 none !important;
-  outline-offset: 0 !important;
-  box-shadow: 0 0 0 0.2rem rgba(99, 102, 241, 0.25) !important; /* indigo-500 */
-  border-color: #6366f1 !important; /* indigo-500 */
-}
-
-/* ========================================
-   Angular Calendar Custom Theme (Planning)
-   ======================================== */
-
-/* General */
-.cal-month-view,
-.cal-week-view,
-.cal-day-view {
-  font-family: inherit;
-  background: white;
-}
-
-/* ========== MONTH VIEW ========== */
-
-/* Header (days of week) */
-.cal-month-view .cal-header {
-  background: #eef2ff !important; /* indigo-50 */
-  border: none !important;
-  border-bottom: 2px solid #6366f1 !important; /* indigo-500 */
-  padding: 1rem 0 !important;
-}
-
-.cal-month-view .cal-header .cal-cell {
-  color: #4338ca !important; /* indigo-700 */
-  font-weight: 600 !important;
-  font-size: 0.875rem !important;
-  text-transform: uppercase !important;
-  letter-spacing: 0.025em !important;
-  padding: 0.5rem !important;
-}
-
-/* Day cells */
-.cal-month-view .cal-days {
-  border-top: 1px solid #e5e7eb !important;
-}
-
-.cal-month-view .cal-day-cell {
-  min-height: 100px !important;
-  border-right: 1px solid #f3f4f6 !important;
-  border-bottom: 1px solid #f3f4f6 !important;
-  transition: all 0.2s !important;
-  background-color: white !important;
-}
-
-.cal-month-view .cal-day-cell:hover {
-  background-color: #faf5ff !important;
-}
-
-.cal-month-view .cal-cell-top {
-  padding: 0.5rem !important;
-}
-
-/* Day number */
-.cal-month-view .cal-day-number {
-  font-size: 0.875rem !important;
-  font-weight: 600 !important;
-  color: #1f2937 !important;
-  width: 2rem !important;
-  height: 2rem !important;
-  display: inline-flex !important;
-  align-items: center !important;
-  justify-content: center !important;
-  border-radius: 0.5rem !important;
-  transition: all 0.2s !important;
-}
-
-/* Today cell */
-.cal-month-view .cal-day-cell.cal-today {
-  background: linear-gradient(135deg, rgba(99, 102, 241, 0.08) 0%, rgba(168, 85, 247, 0.08) 100%) !important;
-}
-
-.cal-month-view .cal-day-cell.cal-today .cal-day-number {
-  background: white !important;
-  color: #6366f1 !important;
-  font-weight: 700 !important;
-  box-shadow: 0 0 0 2px #6366f1, 0 2px 8px rgba(99, 102, 241, 0.3) !important;
-}
-
-/* Weekend cells */
-.cal-month-view .cal-day-cell.cal-weekend {
-  background-color: #fafafa !important;
-}
-
-.cal-month-view .cal-day-cell.cal-weekend:hover {
-  background-color: #f5f3ff !important;
-}
-
-/* Other month cells */
-.cal-month-view .cal-day-cell.cal-out-month {
-  background-color: #f9fafb !important;
-}
-
-.cal-month-view .cal-day-cell.cal-out-month .cal-day-number {
-  color: #d1d5db !important;
-}
-
-/* ========== WEEK VIEW ========== */
-
-.cal-week-view .cal-day-headers {
-  border: none !important;
-  background: #eef2ff !important; /* indigo-50 */
-  border-bottom: 2px solid #6366f1 !important; /* indigo-500 */
-}
-
-.cal-week-view .cal-day-headers .cal-header {
-  background: transparent !important;
-  color: #4338ca !important; /* indigo-700 */
-  padding: 1rem !important;
-  border-right: 1px solid #c7d2fe !important; /* indigo-200 */
-  font-weight: 600 !important;
-}
-
-.cal-week-view .cal-day-headers .cal-header:last-child {
-  border-right: none !important;
-}
-
-.cal-week-view .cal-day-headers .cal-header.cal-today {
-  background: rgba(99, 102, 241, 0.1) !important; /* indigo avec opacity */
-  position: relative;
-}
-
-.cal-week-view .cal-day-headers .cal-header.cal-today::after {
-  content: '';
-  position: absolute;
-  bottom: -2px;
-  left: 0;
-  right: 0;
-  height: 4px;
-  background: #6366f1; /* indigo-500 */
-}
-
-.cal-week-view .cal-time {
-  font-size: 0.75rem !important;
-  color: #6b7280 !important;
-  font-weight: 500 !important;
-  padding: 0.5rem !important;
-}
-
-.cal-week-view .cal-hour-segment,
-.cal-day-view .cal-hour-segment {
-  border-bottom: 1px solid #f3f4f6 !important;
-  transition: background-color 0.2s !important;
-}
-
-.cal-week-view .cal-hour-segment:hover,
-.cal-day-view .cal-hour-segment:hover {
-  background-color: #faf5ff !important;
-}
-
-.cal-week-view .cal-day-column {
-  border-right: 1px solid #f3f4f6 !important;
-}
-
-.cal-week-view .cal-day-column:last-child {
-  border-right: none !important;
-}
-
-/* ========== DAY VIEW ========== */
-
-.cal-day-view .cal-hour-rows {
-  border: none !important;
-}
-
-.cal-day-view .cal-hour:nth-child(odd) {
-  background-color: #fafafa !important;
-}
-
-/* ========== EVENTS ========== */
-
-.cal-event {
-  border: none !important;
-  border-radius: 0.5rem !important;
-  padding: 0.5rem !important;
-  font-size: 0.875rem !important;
-  font-weight: 500 !important;
-  cursor: pointer !important;
-  transition: all 0.2s !important;
-  box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1) !important;
-  overflow: hidden !important;
-  position: relative !important;
-}
-
-.cal-event::before {
-  content: '';
-  position: absolute;
-  left: 0;
-  top: 0;
-  bottom: 0;
-  width: 4px;
-  background: currentColor;
-  opacity: 0.7;
-}
-
-.cal-event:hover {
-  transform: translateY(-1px);
-  box-shadow: 0 4px 8px rgba(0, 0, 0, 0.15) !important;
-}
-
-.cal-event-title {
-  font-weight: 600 !important;
-  display: block !important;
-  white-space: nowrap !important;
-  overflow: hidden !important;
-  text-overflow: ellipsis !important;
-}
-
-.cal-month-view .cal-events {
-  margin-top: 0.25rem !important;
-}
-
-.cal-month-view .cal-event {
-  margin: 0.125rem 0.5rem !important;
-  padding: 0.25rem 0.5rem !important;
-  font-size: 0.75rem !important;
-}
-
-.cal-week-view .cal-event,
-.cal-day-view .cal-event {
-  margin: 0 0.25rem !important;
 }
